@@ -1,0 +1,135 @@
+@if (loading()) {
+  <div class="min-h-screen flex items-center justify-center">
+    <div class="text-center">
+      <div class="w-10 h-10 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin mx-auto"></div>
+      <p class="text-slate-500 mt-4 text-sm">Cargando menú…</p>
+    </div>
+  </div>
+} @else if (errorMessage()) {
+  <div class="min-h-screen flex items-center justify-center px-4">
+    <div class="text-center">
+      <div class="text-5xl mb-4">🍽️</div>
+      <h1 class="text-xl font-semibold text-slate-900">{{ errorMessage() }}</h1>
+      <p class="text-slate-500 mt-2 text-sm">Verifica el enlace o escanea el código QR nuevamente.</p>
+    </div>
+  </div>
+} @else if (menu()) {
+  <div class="min-h-screen bg-slate-50">
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+      <div class="max-w-md mx-auto px-4 py-4 flex items-center gap-3">
+        @if (menu()!.restaurant.logoUrl) {
+          <img [src]="menu()!.restaurant.logoUrl" alt="Logo" class="w-12 h-12 rounded-full object-cover" />
+        } @else {
+          <div class="w-12 h-12 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold text-lg">
+            {{ menu()!.restaurant.name.charAt(0) }}
+          </div>
+        }
+        <div>
+          <h1 class="font-bold text-lg text-slate-900 leading-tight">{{ menu()!.restaurant.name }}</h1>
+          @if (menu()!.restaurant.address) {
+            <p class="text-xs text-slate-500">{{ menu()!.restaurant.address }}</p>
+          }
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-md mx-auto px-4 pb-16">
+      @if (menu()!.restaurant.description) {
+        <p class="text-sm text-slate-600 mt-4">{{ menu()!.restaurant.description }}</p>
+      }
+
+      @if (menu()!.categories.length === 0) {
+        <div class="text-center py-16">
+          <p class="text-slate-500">El menú aún no tiene categorías.</p>
+        </div>
+      } @else {
+        <!-- Categorías -->
+        <nav class="flex gap-2 overflow-x-auto py-4 -mx-4 px-4">
+          @for (category of menu()!.categories; track category.id) {
+            <button
+              (click)="selectCategory(category.id)"
+              [class]="
+                activeCategory() === category.id
+                  ? 'bg-primary-600 text-white'
+                  : 'bg-white text-slate-700 border border-slate-200'
+              "
+              class="px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition"
+            >
+              {{ category.name }}
+            </button>
+          }
+        </nav>
+
+        <!-- Productos de la categoría activa -->
+        @for (category of menu()!.categories; track category.id) {
+          @if (category.id === activeCategory()) {
+            <section>
+              @if (category.description) {
+                <p class="text-xs text-slate-500 mb-3">{{ category.description }}</p>
+              }
+              <div class="space-y-3">
+                @for (product of category.products; track product.id) {
+                  <article
+                    class="bg-white rounded-xl border border-slate-200 p-4 flex gap-4"
+                    [class.opacity-60]="!product.available"
+                  >
+                    @if (product.imageUrl) {
+                      <img [src]="product.imageUrl" [alt]="product.name" class="w-20 h-20 rounded-lg object-cover shrink-0" />
+                    } @else {
+                      <div class="w-20 h-20 rounded-lg bg-slate-100 flex items-center justify-center text-2xl shrink-0">
+                        🍽️
+                      </div>
+                    }
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-start justify-between gap-2">
+                        <h3 class="font-semibold text-slate-900">{{ product.name }}</h3>
+                        <span class="font-bold text-primary-700 whitespace-nowrap">{{ formatCurrency(product.price) }}</span>
+                      </div>
+                      @if (product.description) {
+                        <p class="text-sm text-slate-500 mt-1">{{ product.description }}</p>
+                      }
+                      @if (!product.available) {
+                        <span class="inline-block mt-2 text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">
+                          Agotado
+                        </span>
+                      }
+                    </div>
+                  </article>
+                } @empty {
+                  <p class="text-sm text-slate-500 text-center py-8">Sin productos en esta categoría.</p>
+                }
+              </div>
+            </section>
+          }
+        }
+      }
+
+      <!-- Redes y contacto -->
+      <footer class="mt-10 pt-6 border-t border-slate-200 text-center space-y-1">
+        @if (menu()!.restaurant.whatsapp) {
+          <a
+            [href]="'https://wa.me/' + menu()!.restaurant.whatsapp"
+            target="_blank"
+            rel="noopener"
+            class="block text-sm text-primary-600 font-medium hover:underline"
+          >
+            💬 Escríbenos por WhatsApp
+          </a>
+        }
+        <div class="flex justify-center gap-4 text-sm text-slate-500">
+          @if (menu()!.restaurant.instagram) {
+            <a [href]="'https://instagram.com/' + menu()!.restaurant.instagram" target="_blank" rel="noopener" class="hover:text-primary-600">Instagram</a>
+          }
+          @if (menu()!.restaurant.facebook) {
+            <a [href]="'https://facebook.com/' + menu()!.restaurant.facebook" target="_blank" rel="noopener" class="hover:text-primary-600">Facebook</a>
+          }
+          @if (menu()!.restaurant.phone) {
+            <a [href]="'tel:' + menu()!.restaurant.phone" class="hover:text-primary-600">{{ menu()!.restaurant.phone }}</a>
+          }
+        </div>
+        <p class="text-xs text-slate-400 pt-2">Powered by Menu SaaS</p>
+      </footer>
+    </main>
+  </div>
+}

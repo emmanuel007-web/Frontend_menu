@@ -1,0 +1,155 @@
+export interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+  timestamp: string;
+}
+
+export interface TokenUser {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  restaurantId: number | null;
+}
+
+export interface TokenResponse {
+  accessToken: string;
+  refreshToken: string;
+  expiresInSeconds: number;
+  user: TokenUser;
+}
+
+export interface Restaurant {
+  id: number;
+  name: string;
+  slug: string;
+  logoUrl: string | null;
+  description: string | null;
+  phone: string | null;
+  address: string | null;
+  whatsapp: string | null;
+  instagram: string | null;
+  facebook: string | null;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface RestaurantRequest {
+  name: string;
+  slug: string;
+  logoUrl?: string | null;
+  description?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  whatsapp?: string | null;
+  instagram?: string | null;
+  facebook?: string | null;
+  active?: boolean | null;
+}
+
+export interface Category {
+  id: number;
+  restaurantId: number;
+  name: string;
+  description: string | null;
+  position: number;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CategoryRequest {
+  name: string;
+  description?: string | null;
+  position?: number | null;
+  active?: boolean | null;
+}
+
+export interface Product {
+  id: number;
+  restaurantId: number;
+  categoryId: number;
+  name: string;
+  description: string | null;
+  price: number;
+  imageUrl: string | null;
+  available: boolean;
+  position: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProductRequest {
+  categoryId: number;
+  name: string;
+  description?: string | null;
+  price: number;
+  imageUrl?: string | null;
+  available?: boolean | null;
+  position?: number | null;
+}
+
+export interface PublicMenu {
+  restaurant: {
+    name: string;
+    slug: string;
+    logoUrl: string | null;
+    description: string | null;
+    phone: string | null;
+    address: string | null;
+    whatsapp: string | null;
+    instagram: string | null;
+    facebook: string | null;
+  };
+  categories: Array<{
+    id: number;
+    name: string;
+    description: string | null;
+    position: number;
+    products: Array<{
+      id: number;
+      name: string;
+      description: string | null;
+      price: number;
+      imageUrl: string | null;
+      available: boolean;
+    }>;
+  }>;
+}
+
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  restaurantId: number | null;
+  active: boolean;
+  createdAt: string;
+}
+
+export interface Plan {
+  id: number;
+  code: string;
+  name: string;
+  description: string | null;
+  priceMonthly: number;
+}
+
+export interface Subscription {
+  id: number;
+  restaurantId: number;
+  plan: Plan;
+  status: string;
+  startsAt: string;
+  endsAt: string | null;
+}
+
+export interface MenuSummary {
+  id: number;
+  name: string;
+  slug: string;
+  categoryCount: number;
+  productCount: number;
+}

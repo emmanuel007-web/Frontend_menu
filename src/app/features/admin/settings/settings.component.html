@@ -1,0 +1,66 @@
+<div>
+  <h1 class="text-2xl font-bold text-slate-900">Plan y suscripción</h1>
+  <p class="text-slate-500 mt-1">Elige el plan que se ajusta a tu restaurante.</p>
+
+  @if (message()) {
+    <div
+      [class]="message()!.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-red-50 border-red-200 text-red-700'"
+      class="mt-4 rounded-lg border px-4 py-3 text-sm"
+    >
+      {{ message()!.text }}
+    </div>
+  }
+
+  @if (subscription()) {
+    <div class="mt-6 bg-emerald-50 border border-emerald-200 rounded-xl p-5 flex items-center gap-3">
+      <span class="text-2xl">✅</span>
+      <div>
+        <p class="font-semibold text-emerald-800">Plan {{ subscription()!.plan.name }} activo</p>
+        <p class="text-sm text-emerald-700">
+          Desde {{ subscription()!.startsAt | date: 'mediumDate' }}
+          @if (subscription()!.endsAt) {
+            · hasta {{ subscription()!.endsAt | date: 'mediumDate' }}
+          }
+        </p>
+      </div>
+    </div>
+  }
+
+  @if (loading()) {
+    <p class="text-slate-500 mt-6">Cargando planes…</p>
+  } @else {
+    <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      @for (plan of plans(); track plan.id) {
+        <div
+          class="bg-white rounded-2xl border p-6 flex flex-col"
+          [class]="subscription()?.plan?.id === plan.id ? 'border-primary-500 ring-2 ring-primary-100' : 'border-slate-200'"
+        >
+          <h3 class="font-semibold text-slate-900">{{ plan.name }}</h3>
+          @if (plan.description) {
+            <p class="text-sm text-slate-500 mt-1 flex-1">{{ plan.description }}</p>
+          } @else {
+            <div class="flex-1"></div>
+          }
+          <p class="mt-4 text-2xl font-bold text-slate-900">
+            {{ formatCurrency(plan.priceMonthly) }}
+            <span class="text-sm font-normal text-slate-400">/mes</span>
+          </p>
+          <button
+            (click)="subscribe(plan.code)"
+            [disabled]="subscribing() || subscription()?.plan?.id === plan.id"
+            class="mt-4 rounded-lg py-2 text-sm font-semibold transition"
+            [class]="subscription()?.plan?.id === plan.id
+              ? 'bg-emerald-100 text-emerald-700 cursor-default'
+              : 'bg-primary-600 text-white hover:bg-primary-700 disabled:opacity-50'"
+          >
+            {{ subscription()?.plan?.id === plan.id ? 'Plan actual' : (subscribing() ? 'Activando…' : 'Activar') }}
+          </button>
+        </div>
+      }
+    </div>
+
+    <p class="text-xs text-slate-400 mt-6">
+      En esta etapa la activación de planes es manual. Próximamente podrás pagar en línea.
+    </p>
+  }
+</div>

@@ -1,0 +1,81 @@
+<div class="min-h-screen flex items-center justify-center px-4 py-10">
+  <div class="w-full max-w-lg">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-slate-900">Crea tu menú digital</h1>
+      <p class="text-slate-500 mt-2">Registra tu restaurante y empieza en minutos</p>
+    </div>
+
+    @if (errorMessage) {
+      <div class="mb-4 rounded-lg bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm">
+        {{ errorMessage }}
+      </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1" for="name">Tu nombre</label>
+        <input id="name" type="text" formControlName="name" class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="Ana Rodríguez" />
+        @if (form.get('name')?.touched && form.get('name')?.invalid) {
+          <p class="text-xs text-red-600 mt-1">El nombre es obligatorio</p>
+        }
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1" for="email">Correo electrónico</label>
+        <input id="email" type="email" formControlName="email" class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="ana@restaurante.com" />
+        @if (form.get('email')?.touched && form.get('email')?.invalid) {
+          <p class="text-xs text-red-600 mt-1">Ingresa un correo válido</p>
+        }
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1" for="restaurantName">Nombre del restaurante</label>
+        <input id="restaurantName" type="text" formControlName="restaurantName" (blur)="suggestSlug()" class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="Frito Mix" />
+        @if (form.get('restaurantName')?.touched && form.get('restaurantName')?.invalid) {
+          <p class="text-xs text-red-600 mt-1">El nombre del restaurante es obligatorio</p>
+        }
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1" for="slug">Enlace del menú</label>
+        <div class="flex items-center rounded-lg border border-slate-300 focus-within:ring-2 focus-within:ring-primary-500 overflow-hidden">
+          <span class="bg-slate-50 text-slate-500 text-sm px-3 py-2 border-r border-slate-200 whitespace-nowrap">menu.saas.com/</span>
+          <input id="slug" type="text" formControlName="slug" class="w-full px-3 py-2 focus:outline-none" placeholder="fritomix" />
+        </div>
+        @if (form.get('slug')?.touched && form.get('slug')?.invalid) {
+          <p class="text-xs text-red-600 mt-1">Solo minúsculas, números y guiones (ej: frito-mix)</p>
+        }
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1" for="password">Contraseña</label>
+          <input id="password" type="password" formControlName="password" autocomplete="new-password" class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="••••••••" />
+          @if (form.get('password')?.touched && form.get('password')?.invalid) {
+            <p class="text-xs text-red-600 mt-1">Mínimo 8 caracteres con mayúscula, minúscula y número</p>
+          }
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1" for="confirmPassword">Confirmar contraseña</label>
+          <input id="confirmPassword" type="password" formControlName="confirmPassword" autocomplete="new-password" class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="••••••••" />
+          @if (form.hasError('mismatch') && form.get('confirmPassword')?.touched) {
+            <p class="text-xs text-red-600 mt-1">Las contraseñas no coinciden</p>
+          }
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        [disabled]="form.invalid || loading"
+        class="w-full rounded-lg bg-primary-600 text-white font-semibold py-2.5 hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+      >
+        {{ loading ? 'Creando cuenta…' : 'Crear mi menú digital' }}
+      </button>
+    </form>
+
+    <p class="text-center text-sm text-slate-500 mt-6">
+      ¿Ya tienes cuenta?
+      <a routerLink="/login" class="text-primary-600 font-medium hover:underline">Inicia sesión</a>
+    </p>
+  </div>
+</div>

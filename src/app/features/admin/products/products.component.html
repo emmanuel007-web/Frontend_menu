@@ -1,0 +1,144 @@
+<div>
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900">Productos</h1>
+      <p class="text-slate-500 mt-1">Agrega y actualiza los productos de tu menú.</p>
+    </div>
+    @if (editingId() === null) {
+      <button (click)="startCreate()" class="rounded-lg bg-primary-600 text-white font-semibold px-4 py-2 hover:bg-primary-700 transition">
+        + Nuevo producto
+      </button>
+    }
+  </div>
+
+  @if (errorMessage()) {
+    <div class="mt-4 rounded-lg bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm">{{ errorMessage() }}</div>
+  }
+
+  @if (editingId() !== null) {
+    <form [formGroup]="form" (ngSubmit)="submit()" class="mt-6 bg-white rounded-2xl border border-slate-200 p-6 space-y-4 max-w-2xl">
+      <h2 class="font-semibold text-slate-900">{{ editingId() === -1 ? 'Nuevo producto' : 'Editar producto' }}</h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Categoría</label>
+          <select formControlName="categoryId" class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white">
+            @for (category of categories(); track category.id) {
+              <option [value]="category.id">{{ category.name }}</option>
+            }
+          </select>
+          @if (categories().length === 0) {
+            <p class="text-xs text-amber-600 mt-1">Crea una categoría antes de agregar productos.</p>
+          }
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Precio</label>
+          <input type="number" step="0.01" min="0" formControlName="price" class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="18000" />
+          @if (form.get('price')?.invalid && form.get('price')?.touched) {
+            <p class="text-xs text-red-600 mt-1">Ingresa un precio válido</p>
+          }
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">Nombre</label>
+        <input type="text" formControlName="name" class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="Hamburguesa Especial" />
+        @if (form.get('name')?.invalid && form.get('name')?.touched) {
+          <p class="text-xs text-red-600 mt-1">El nombre es obligatorio</p>
+        }
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">Descripción</label>
+        <textarea formControlName="description" rows="3" class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"></textarea>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="w-16 h-16 rounded-lg bg-slate-100 overflow-hidden flex items-center justify-center text-2xl shrink-0">
+          @if (previewUrl()) {
+            <img [src]="previewUrl()" alt="Imagen" class="w-full h-full object-cover" />
+          } @else {
+            🖼️
+          }
+        </div>
+        <label class="block text-sm font-medium text-slate-700 cursor-pointer">
+          <span class="inline-block bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-lg px-4 py-2 transition">
+            {{ uploading() ? 'Subiendo…' : 'Subir imagen' }}
+          </span>
+          <input type="file" accept="image/*" class="hidden" (change)="onImageSelected($event)" [disabled]="uploading()" />
+        </label>
+        <label class="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+          <input type="checkbox" formControlName="available" class="w-4 h-4 rounded accent-primary-600" />
+          Disponible
+        </label>
+      </div>
+
+      <div class="flex gap-2">
+        <button type="submit" [disabled]="form.invalid || saving() || categories().length === 0" class="rounded-lg bg-primary-600 text-white font-semibold px-5 py-2 hover:bg-primary-700 disabled:opacity-50 transition">
+          {{ saving() ? 'Guardando…' : 'Guardar' }}
+        </button>
+        <button type="button" (click)="cancelEdit()" class="rounded-lg bg-slate-100 text-slate-700 font-semibold px-5 py-2 hover:bg-slate-200 transition">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  }
+
+  @if (loading()) {
+    <p class="text-slate-500 mt-6">Cargando…</p>
+  } @else if (products().length === 0) {
+    <div class="mt-6 bg-white border border-dashed border-slate-300 rounded-2xl p-10 text-center">
+      <p class="text-4xl mb-2">🍔</p>
+      <p class="text-slate-600 font-medium">Aún no tienes productos</p>
+      <p class="text-sm text-slate-400 mt-1">Agrega tu primer producto para que aparezca en el menú público.</p>
+    </div>
+  } @else {
+    <div class="mt-6 overflow-x-auto bg-white rounded-2xl border border-slate-200">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="text-left text-slate-500 border-b border-slate-200">
+            <th class="px-4 py-3 font-medium">Producto</th>
+            <th class="px-4 py-3 font-medium">Categoría</th>
+            <th class="px-4 py-3 font-medium text-right">Precio</th>
+            <th class="px-4 py-3 font-medium">Estado</th>
+            <th class="px-4 py-3 font-medium text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (product of products(); track product.id) {
+            <tr class="border-b border-slate-100 last:border-0 hover:bg-slate-50">
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-lg bg-slate-100 overflow-hidden flex items-center justify-center shrink-0">
+                    @if (product.imageUrl) {
+                      <img [src]="product.imageUrl" alt="" class="w-full h-full object-cover" />
+                    } @else {
+                      🍽️
+                    }
+                  </div>
+                  <div>
+                    <p class="font-medium text-slate-900">{{ product.name }}</p>
+                    @if (product.description) {
+                      <p class="text-xs text-slate-400 truncate max-w-[200px]">{{ product.description }}</p>
+                    }
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-3 text-slate-600">{{ categoryName(product.categoryId) }}</td>
+              <td class="px-4 py-3 text-right font-semibold text-slate-900">{{ formatCurrency(product.price) }}</td>
+              <td class="px-4 py-3">
+                <button (click)="toggleAvailable(product)" class="text-xs px-2 py-1 rounded-full font-medium transition" [class]="product.available ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'">
+                  {{ product.available ? 'Disponible' : 'Agotado' }}
+                </button>
+              </td>
+              <td class="px-4 py-3 text-right whitespace-nowrap">
+                <button (click)="startEdit(product)" class="text-primary-600 hover:underline mr-3">Editar</button>
+                <button (click)="remove(product)" class="text-red-600 hover:underline">Eliminar</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

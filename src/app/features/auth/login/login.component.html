@@ -1,0 +1,53 @@
+<div class="min-h-screen flex items-center justify-center px-4">
+  <div class="w-full max-w-md">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-slate-900">Menu SaaS</h1>
+      <p class="text-slate-500 mt-2">Inicia sesión para administrar tu menú digital</p>
+    </div>
+
+    @if (errorMessage) {
+      <div class="mb-4 rounded-lg bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm">
+        {{ errorMessage }}
+      </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1" for="email">Correo electrónico</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          autocomplete="email"
+          class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          placeholder="admin@restaurante.com"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1" for="password">Contraseña</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          autocomplete="current-password"
+          class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          placeholder="••••••••"
+        />
+      </div>
+
+      <button
+        type="submit"
+        [disabled]="form.invalid || loading"
+        class="w-full rounded-lg bg-primary-600 text-white font-semibold py-2.5 hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+      >
+        {{ loading ? 'Ingresando…' : 'Ingresar' }}
+      </button>
+    </form>
+
+    <p class="text-center text-sm text-slate-500 mt-6">
+      ¿Aún no tienes cuenta?
+      <a routerLink="/register" class="text-primary-600 font-medium hover:underline">Registra tu restaurante</a>
+    </p>
+  </div>
+</div>
