@@ -1,5 +1,5 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CategoryService } from '../../../core/services/category.service';
 import { ProductService } from '../../../core/services/product.service';
 import { RestaurantService } from '../../../core/services/restaurant.service';
@@ -27,7 +27,14 @@ export class DashboardComponent implements OnInit {
   readonly planName = signal<string | null>(null);
   readonly loading = signal(true);
 
+  private readonly router = inject(Router);
+
   ngOnInit(): void {
+    if (this.user()?.role === 'SUPER_ADMIN') {
+      this.router.navigate(['/admin/super-admin/dashboard']);
+      return;
+    }
+
     this.restaurantService.getMine().subscribe({
       next: (r) => {
         this.restaurantName.set(r.name);

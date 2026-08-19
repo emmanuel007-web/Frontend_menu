@@ -27,7 +27,7 @@ export class RegisterComponent {
         [
           Validators.required,
           Validators.minLength(8),
-          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/),
+          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/),
         ],
       ],
       confirmPassword: ['', Validators.required],
@@ -67,7 +67,23 @@ export class RegisterComponent {
         next: () => this.router.navigate(['/admin']),
         error: (err) => {
           this.loading = false;
-          this.errorMessage = err.error?.message ?? 'No se pudo completar el registro';
+          const msg = err.error?.message ?? '';
+          const fieldErrors = err.error?.fieldErrors;
+
+          if (fieldErrors && Object.keys(fieldErrors).length > 0) {
+            const firstKey = Object.keys(fieldErrors)[0];
+            this.errorMessage = fieldErrors[firstKey];
+          } else if (msg) {
+            this.errorMessage = msg;
+            if (msg.toLowerCase().includes('correo')) {
+              this.form.get('email')?.setErrors({ conflict: true });
+            }
+            if (msg.toLowerCase().includes('slug')) {
+              this.form.get('slug')?.setErrors({ conflict: true });
+            }
+          } else {
+            this.errorMessage = 'No se pudo completar el registro';
+          }
         },
       });
   }

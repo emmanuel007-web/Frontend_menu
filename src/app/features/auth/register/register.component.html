@@ -98,7 +98,9 @@
             </div>
             <input id="email" type="email" formControlName="email" class="w-full rounded-xl border border-stone-200 pl-12 pr-4 py-3 text-stone-900 placeholder-stone-400 focus:outline-none input-glow transition-all duration-200 bg-stone-50/50 hover:bg-white" placeholder="ana@restaurante.com" />
           </div>
-          @if (form.get('email')?.touched && form.get('email')?.invalid) {
+          @if (form.get('email')?.hasError('conflict')) {
+            <p class="text-xs text-red-600 pl-1 anim-fade-in-scale">Este correo ya se encuentra registrado</p>
+          } @else if (form.get('email')?.touched && form.get('email')?.invalid) {
             <p class="text-xs text-red-600 pl-1 anim-fade-in-scale">Ingresa un correo válido</p>
           }
         </div>
@@ -126,7 +128,9 @@
             <span class="bg-stone-100 text-stone-500 text-sm px-4 py-3 border-r border-stone-200 whitespace-nowrap font-medium">menu.saas.com/</span>
             <input id="slug" type="text" formControlName="slug" class="w-full px-4 py-3 focus:outline-none bg-transparent text-stone-900 placeholder-stone-400" placeholder="fritomix" />
           </div>
-          @if (form.get('slug')?.touched && form.get('slug')?.invalid) {
+          @if (form.get('slug')?.hasError('conflict')) {
+            <p class="text-xs text-red-600 pl-1 anim-fade-in-scale">Este enlace ya está en uso por otro restaurante</p>
+          } @else if (form.get('slug')?.touched && form.get('slug')?.invalid) {
             <p class="text-xs text-red-600 pl-1 anim-fade-in-scale">Solo minúsculas, números y guiones (ej: frito-mix)</p>
           }
         </div>
@@ -144,7 +148,7 @@
               <input id="password" type="password" formControlName="password" autocomplete="new-password" class="w-full rounded-xl border border-stone-200 pl-12 pr-4 py-3 text-stone-900 placeholder-stone-400 focus:outline-none input-glow transition-all duration-200 bg-stone-50/50 hover:bg-white" placeholder="••••••••" />
             </div>
             @if (form.get('password')?.touched && form.get('password')?.invalid) {
-              <p class="text-xs text-red-600 pl-1 anim-fade-in-scale">Mínimo 8 caracteres con mayúscula, minúscula y número</p>
+              <p class="text-xs text-red-600 pl-1 anim-fade-in-scale">Mínimo 8 caracteres con mayúscula, minúscula, número y símbolo (ej: !@#$)</p>
             }
           </div>
           <div class="space-y-1.5">

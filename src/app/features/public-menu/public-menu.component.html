@@ -14,56 +14,62 @@
     </div>
   </div>
 } @else if (menu()) {
-  <div class="min-h-screen bg-stone-50 font-sans selection:bg-primary-200 selection:text-primary-900 pb-20">
+  <div class="min-h-screen bg-stone-50/80 font-sans selection:bg-primary-200 selection:text-primary-900 pb-32">
     
-    <!-- Hero / Header Section -->
-    <div class="relative w-full h-40 bg-primary-600 overflow-hidden">
-      <!-- Decoración de fondo (patrón simple) -->
-      <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 20px 20px;"></div>
-      <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+    <!-- Hero Header Banner -->
+    <div class="relative w-full h-44 bg-gradient-to-r from-primary-700 via-primary-600 to-amber-700 overflow-hidden shadow-sm">
+      <div class="absolute inset-0 opacity-15" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 24px 24px;"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
     </div>
 
-    <!-- Info del Restaurante superpuesta -->
-    <div class="max-w-2xl mx-auto px-4 sm:px-6 relative -mt-16 z-10">
-      <div class="bg-white rounded-3xl shadow-xl border border-stone-100 p-6 text-center transform transition-all hover:shadow-2xl">
+    <!-- Restaurant Header Card -->
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 relative -mt-16 z-10">
+      <div class="bg-white rounded-3xl shadow-xl border border-stone-100 p-6 sm:p-7 text-center">
         <div class="relative inline-block">
           @if (menu()!.restaurant.logoUrl) {
-            <img [src]="menu()!.restaurant.logoUrl" alt="Logo" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg mx-auto bg-white -mt-16" />
+            <img
+              [src]="menu()!.restaurant.logoUrl"
+              alt="Logo"
+              (error)="onImageError($event)"
+              class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl object-cover border-4 border-white shadow-lg mx-auto bg-white -mt-16 sm:-mt-20"
+            />
           } @else {
-            <div class="w-24 h-24 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold text-4xl border-4 border-white shadow-lg mx-auto -mt-16">
+            <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-primary-500 to-primary-700 text-white flex items-center justify-center font-black text-4xl border-4 border-white shadow-lg mx-auto -mt-16 sm:-mt-20">
               {{ menu()!.restaurant.name.charAt(0) }}
             </div>
           }
         </div>
         
-        <h1 class="font-extrabold text-3xl text-stone-900 mt-4 tracking-tight">{{ menu()!.restaurant.name }}</h1>
+        <h1 class="font-black text-3xl sm:text-4xl text-stone-900 mt-3 tracking-tight">{{ menu()!.restaurant.name }}</h1>
+        
         @if (menu()!.restaurant.address) {
-          <div class="flex items-center justify-center gap-1.5 text-stone-500 mt-2 text-sm font-medium">
+          <div class="flex items-center justify-center gap-1.5 text-stone-500 mt-2 text-sm font-semibold">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-primary-500">
               <path fill-rule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.976.544l.062.029.018.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" clip-rule="evenodd" />
             </svg>
             <span>{{ menu()!.restaurant.address }}</span>
           </div>
         }
+
         @if (menu()!.restaurant.description) {
-          <p class="text-stone-600 mt-3 text-sm leading-relaxed max-w-md mx-auto">{{ menu()!.restaurant.description }}</p>
+          <p class="text-stone-600 mt-3 text-sm leading-relaxed max-w-lg mx-auto font-normal">{{ menu()!.restaurant.description }}</p>
         }
       </div>
     </div>
 
-    <!-- Navegación Sticky Glassmorphism -->
-    <div class="sticky top-0 z-40 mt-6 backdrop-blur-xl bg-white/70 border-y border-stone-200/50 shadow-sm transition-all">
-      <div class="max-w-2xl mx-auto">
-        <nav class="flex gap-3 overflow-x-auto py-3 px-4 sm:px-6 hide-scrollbar items-center">
+    <!-- Sticky Glassmorphism Category Navigation -->
+    <div class="sticky top-0 z-30 mt-6 backdrop-blur-xl bg-white/80 border-y border-stone-200/60 shadow-xs">
+      <div class="max-w-3xl mx-auto">
+        <nav class="flex gap-2.5 overflow-x-auto py-3 px-4 sm:px-6 hide-scrollbar items-center">
           @for (category of menu()!.categories; track category.id) {
             <button
               (click)="selectCategory(category.id)"
               [class]="
                 activeCategory() === category.id
-                  ? 'bg-stone-900 text-white shadow-md scale-105'
-                  : 'bg-white text-stone-600 hover:bg-stone-100 border border-stone-200 hover:border-stone-300'
+                  ? 'bg-stone-900 text-white shadow-md scale-102 font-extrabold'
+                  : 'bg-white text-stone-600 hover:bg-stone-100 border border-stone-200/80 font-bold'
               "
-              class="px-5 py-2.5 rounded-2xl text-sm font-semibold whitespace-nowrap transition-all duration-300 ease-out flex-shrink-0"
+              class="px-5 py-2.5 rounded-2xl text-xs sm:text-sm whitespace-nowrap transition-all duration-200 shrink-0"
             >
               {{ category.name }}
             </button>
@@ -72,75 +78,114 @@
       </div>
     </div>
 
-    <main class="max-w-2xl mx-auto px-4 sm:px-6 pt-8">
+    <!-- Main Content: Products Grid -->
+    <main class="max-w-3xl mx-auto px-4 sm:px-6 pt-8">
       @if (menu()!.categories.length === 0) {
-        <div class="text-center py-24 bg-white rounded-3xl border border-stone-100 shadow-sm mt-6">
-          <div class="text-4xl mb-3 opacity-50">📋</div>
-          <p class="text-stone-500 font-medium text-lg">El menú aún no tiene categorías.</p>
+        <div class="text-center py-20 bg-white rounded-3xl border border-stone-100 shadow-sm">
+          <div class="text-5xl mb-3 opacity-40">📋</div>
+          <p class="text-stone-500 font-bold text-lg">El menú aún no tiene categorías disponibles.</p>
         </div>
       } @else {
-        <!-- Productos de la categoría activa -->
-        <div class="space-y-8 fade-in">
+        <div class="space-y-8">
           @for (category of menu()!.categories; track category.id) {
             @if (category.id === activeCategory()) {
-              <section class="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div class="mb-6 flex items-center justify-between">
-                  <h2 class="text-2xl font-bold text-stone-900">{{ category.name }}</h2>
+              <section class="anim-fade-in-up">
+                <!-- Category Title & Description -->
+                <div class="mb-6 flex flex-wrap items-center justify-between gap-2 border-b border-stone-200/60 pb-3">
+                  <h2 class="text-2xl font-black text-stone-900 tracking-tight">{{ category.name }}</h2>
                   @if (category.description) {
-                    <span class="text-sm font-medium text-primary-600 bg-primary-50 px-3 py-1 rounded-full">
+                    <span class="text-xs font-bold text-primary-700 bg-primary-50 px-3 py-1 rounded-full border border-primary-100">
                       {{ category.description }}
                     </span>
                   }
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <!-- Products Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
                   @for (product of category.products; track product.id) {
                     <article
-                      class="group bg-white rounded-3xl border border-stone-100 p-4 sm:p-5 flex gap-4 sm:gap-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer overflow-hidden relative"
+                      class="group bg-white rounded-3xl border border-stone-100 p-5 flex flex-col justify-between shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden"
                       [class.opacity-50]="!product.available"
                       [class.grayscale]="!product.available"
                     >
-                      <!-- Decorative blur blob -->
-                      <div class="absolute -right-6 -top-6 w-24 h-24 bg-primary-50 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"></div>
+                      <!-- Decorative hover blur blob -->
+                      <div class="absolute -right-8 -top-8 w-28 h-28 bg-primary-100/60 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"></div>
 
-                      <div class="relative z-10 w-24 h-24 sm:w-32 sm:h-32 shrink-0">
-                        @if (product.imageUrl) {
-                          <img [src]="product.imageUrl" [alt]="product.name" class="w-full h-full rounded-2xl object-cover shadow-sm group-hover:scale-105 transition-transform duration-500" />
-                        } @else {
-                          <div class="w-full h-full rounded-2xl bg-stone-100 flex items-center justify-center text-3xl shadow-sm border border-stone-200 text-stone-300">
-                            🍽️
-                          </div>
-                        }
-                      </div>
-
-                      <div class="flex-1 min-w-0 flex flex-col justify-between relative z-10 py-1">
-                        <div>
-                          <h3 class="font-bold text-stone-900 text-base sm:text-lg leading-tight group-hover:text-primary-600 transition-colors">{{ product.name }}</h3>
-                          @if (product.description) {
-                            <p class="text-xs sm:text-sm text-stone-500 mt-1.5 line-clamp-2 leading-snug">{{ product.description }}</p>
-                          }
-                        </div>
-                        
-                        <div class="mt-3 flex items-center justify-between">
-                          <span class="font-extrabold text-stone-900 text-lg tracking-tight">{{ formatCurrency(product.price) }}</span>
-                          
-                          @if (!product.available) {
-                            <span class="inline-flex items-center text-xs font-bold bg-stone-200 text-stone-600 px-2.5 py-1 rounded-lg">
-                              Agotado
-                            </span>
+                      <!-- Top Section: Image + Title & Description -->
+                      <div class="flex gap-4 relative z-10">
+                        <!-- Image Container with Graceful Fallback -->
+                        <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl shrink-0 overflow-hidden bg-stone-100 border border-stone-100 flex items-center justify-center shadow-xs relative">
+                          @if (product.imageUrl) {
+                            <img
+                              [src]="product.imageUrl"
+                              [alt]="product.name"
+                              (error)="onImageError($event)"
+                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
                           } @else {
-                            <div class="w-8 h-8 rounded-full bg-stone-100 flex items-center justify-center text-stone-900 group-hover:bg-primary-600 group-hover:text-white transition-colors">
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                              </svg>
+                            <div class="w-full h-full rounded-2xl bg-stone-100 flex items-center justify-center text-3xl shadow-sm border border-stone-200 text-stone-300 select-none">
+                              🍽️
                             </div>
                           }
                         </div>
+
+                        <!-- Product Text Info (Fully visible) -->
+                        <div class="flex-1 min-w-0">
+                          <h3 class="font-extrabold text-stone-900 text-base sm:text-lg leading-snug group-hover:text-primary-600 transition-colors">
+                            {{ product.name }}
+                          </h3>
+                          @if (product.description) {
+                            <p class="text-xs sm:text-sm text-stone-500 mt-1 leading-relaxed font-normal">
+                              {{ product.description }}
+                            </p>
+                          }
+                        </div>
+                      </div>
+
+                      <!-- Bottom Section: Price + Cart Actions (Dedicated full-width row) -->
+                      <div class="mt-4 pt-3 border-t border-stone-100/80 flex items-center justify-between gap-3 relative z-10">
+                        <span class="font-black text-stone-900 text-lg sm:text-xl tracking-tight">
+                          {{ formatCurrency(product.price) }}
+                        </span>
+                        
+                        @if (!product.available) {
+                          <span class="inline-flex items-center text-xs font-bold bg-stone-100 text-stone-500 px-3 py-1.5 rounded-xl border border-stone-200">
+                            Agotado
+                          </span>
+                        } @else {
+                          @if (getItemQuantity(product.id) === 0) {
+                            <button
+                              (click)="addToCart(product)"
+                              class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-primary-50 text-primary-700 font-bold text-xs hover:bg-primary-600 hover:text-white transition-all shadow-xs border border-primary-100 shrink-0"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                              </svg>
+                              <span>Agregar</span>
+                            </button>
+                          } @else {
+                            <div class="flex items-center gap-2 bg-stone-100 rounded-xl p-1 border border-stone-200 shadow-inner shrink-0">
+                              <button
+                                (click)="removeFromCart(product.id)"
+                                class="w-7 h-7 rounded-lg bg-white text-stone-800 font-bold flex items-center justify-center hover:bg-red-50 hover:text-red-600 shadow-xs transition-colors"
+                              >
+                                -
+                              </button>
+                              <span class="font-black text-stone-900 text-sm px-1.5">{{ getItemQuantity(product.id) }}</span>
+                              <button
+                                (click)="addToCart(product)"
+                                class="w-7 h-7 rounded-lg bg-primary-600 text-white font-bold flex items-center justify-center hover:bg-primary-700 shadow-xs transition-colors"
+                              >
+                                +
+                              </button>
+                            </div>
+                          }
+                        }
                       </div>
                     </article>
                   } @empty {
                     <div class="col-span-full bg-white rounded-3xl border border-stone-100 border-dashed p-12 text-center">
-                      <p class="text-stone-500 font-medium">No hay productos disponibles en esta categoría.</p>
+                      <p class="text-stone-500 font-semibold text-sm">No hay productos disponibles en esta categoría.</p>
                     </div>
                   }
                 </div>
@@ -150,7 +195,7 @@
         </div>
       }
 
-      <!-- Redes y contacto - Footer mejorado -->
+      <!-- Footer: Redes y contacto -->
       <footer class="mt-16 pt-8 pb-8 text-center">
         <div class="inline-flex flex-wrap justify-center gap-3 mb-8">
           @if (menu()!.restaurant.whatsapp) {
@@ -160,9 +205,6 @@
               rel="noopener"
               class="flex items-center gap-2 bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white px-4 py-2 rounded-xl text-sm font-bold transition-colors"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
-                <path d="M11.96 23.95H12c6.6 0 11.96-5.36 11.96-11.96S18.6 0 12 0 0 5.37 0 12c0 2.11.55 4.1 1.52 5.86l-2.07 5.92 6.07-1.95c1.72.9 3.65 1.38 5.67 1.38l.77.74zM12 2.05c5.51 0 10 4.49 10 10s-4.49 10-10 10c-1.78 0-3.48-.48-4.99-1.37l-.36-.21-3.7 1.18 1.19-3.6-.24-.37A9.97 9.97 0 012.05 12c0-5.51 4.49-10 9.95-10zM17.48 15.6c-.3-.15-1.77-.87-2.05-.97-.28-.1-.48-.15-.68.15-.2.3-.77.97-.95 1.17-.17.2-.35.23-.65.08-.3-.15-1.26-.46-2.4-1.48-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.29-.35.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.68-1.64-.93-2.25-.25-.6-.5-.52-.68-.53-.17-.01-.37-.01-.57-.01-.2 0-.52.07-.8.37-.28.3-1.07 1.05-1.07 2.56s1.1 2.97 1.25 3.17c.15.2 2.17 3.31 5.25 4.64.73.31 1.3.5 1.74.64.73.23 1.4.2 1.93.12.6-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.18-1.42-.08-.12-.28-.2-.58-.35z"/>
-              </svg>
               WhatsApp
             </a>
           }
@@ -171,16 +213,8 @@
               Instagram
             </a>
           }
-          @if (menu()!.restaurant.facebook) {
-            <a [href]="'https://facebook.com/' + menu()!.restaurant.facebook" target="_blank" rel="noopener" class="flex items-center gap-2 bg-blue-50 text-blue-600 hover:bg-[#1877F2] hover:text-white px-4 py-2 rounded-xl text-sm font-bold transition-all">
-              Facebook
-            </a>
-          }
           @if (menu()!.restaurant.phone) {
             <a [href]="'tel:' + menu()!.restaurant.phone" class="flex items-center gap-2 bg-stone-100 text-stone-700 hover:bg-stone-200 px-4 py-2 rounded-xl text-sm font-bold transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
-                <path fill-rule="evenodd" d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5H15c-1.149 0-2.263-.15-3.326-.43A13.022 13.022 0 012.43 8.326 13.019 13.019 0 012 5V3.5z" clip-rule="evenodd" />
-              </svg>
               Llamar
             </a>
           }
@@ -192,5 +226,188 @@
         </div>
       </footer>
     </main>
+
+    <!-- Floating Shopping Cart Bar -->
+    @if (cartTotalCount() > 0) {
+      <div class="fixed bottom-4 inset-x-4 max-w-3xl mx-auto z-40 anim-fade-in-up">
+        <button
+          (click)="openCart()"
+          class="w-full bg-gradient-to-r from-stone-900 via-stone-900 to-stone-800 text-white rounded-3xl p-4 shadow-2xl shadow-stone-900/50 flex items-center justify-between border border-stone-700/60 hover:scale-[1.01] active:scale-[0.99] transition-all btn-shine"
+        >
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl bg-primary-500 text-white font-black text-base flex items-center justify-center shadow-md">
+              {{ cartTotalCount() }}
+            </div>
+            <div class="text-left">
+              <p class="text-xs font-bold text-stone-300">Ver pedido</p>
+              <p class="text-xl font-black tracking-tight text-white">{{ formatCurrency(cartTotalAmount()) }}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5 text-sm font-extrabold text-primary-400">
+            <span>Confirmar</span>
+            <span class="text-lg">→</span>
+          </div>
+        </button>
+      </div>
+    }
+
+    <!-- Shopping Cart & Order Modal -->
+    @if (showCartModal()) {
+      <div class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-stone-900/60 backdrop-blur-sm anim-fade-in">
+        <div class="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl border border-stone-100 max-w-lg w-full p-6 space-y-6 max-h-[90vh] overflow-y-auto anim-fade-in-up">
+          <div class="flex items-center justify-between border-b border-stone-100 pb-4">
+            <div>
+              <h2 class="text-xl font-extrabold text-stone-900">Tu Pedido 🛒</h2>
+              <p class="text-xs text-stone-400 mt-0.5">{{ menu()!.restaurant.name }}</p>
+            </div>
+            <button (click)="closeCart()" class="text-stone-400 hover:text-stone-600 text-xl font-bold p-1">✕</button>
+          </div>
+
+          @if (orderErrorMessage()) {
+            <div class="rounded-xl bg-red-50 border border-red-200 text-red-700 p-3.5 text-xs font-semibold">
+              {{ orderErrorMessage() }}
+            </div>
+          }
+
+          <!-- Cart Items List -->
+          <div class="space-y-3 divide-y divide-stone-100">
+            @for (item of cart(); track item.productId) {
+              <div class="pt-3 flex items-center justify-between gap-3">
+                <div class="flex-1 min-w-0">
+                  <h4 class="font-bold text-stone-900 text-sm truncate">{{ item.productName }}</h4>
+                  <p class="text-xs font-semibold text-stone-500">{{ formatCurrency(item.unitPrice) }} c/u</p>
+                </div>
+
+                <div class="flex items-center gap-2 bg-stone-100 rounded-xl p-1 border border-stone-200">
+                  <button
+                    (click)="removeFromCart(item.productId)"
+                    class="w-6 h-6 rounded-lg bg-white text-stone-800 font-bold text-xs flex items-center justify-center hover:bg-red-50 hover:text-red-600 transition-colors"
+                  >
+                    -
+                  </button>
+                  <span class="font-black text-stone-900 text-xs px-1">{{ item.quantity }}</span>
+                  <button
+                    (click)="addToCart({ id: item.productId, name: item.productName, price: item.unitPrice, imageUrl: item.imageUrl })"
+                    class="w-6 h-6 rounded-lg bg-primary-600 text-white font-bold text-xs flex items-center justify-center hover:bg-primary-700 transition-colors"
+                  >
+                    +
+                  </button>
+                </div>
+
+                <span class="font-extrabold text-stone-900 text-sm w-20 text-right">
+                  {{ formatCurrency(item.unitPrice * item.quantity) }}
+                </span>
+              </div>
+            }
+          </div>
+
+          <!-- Total Summary -->
+          <div class="bg-stone-50 rounded-2xl p-4 border border-stone-100 flex items-center justify-between">
+            <span class="font-bold text-stone-600 text-sm">Total del Pedido</span>
+            <span class="text-2xl font-black text-stone-900">{{ formatCurrency(cartTotalAmount()) }}</span>
+          </div>
+
+          <!-- Customer Form -->
+          <form [formGroup]="orderForm" (ngSubmit)="submitOrder()" class="space-y-4 pt-2">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-stone-400 border-b border-stone-100 pb-2">
+              Datos para la Entrega
+            </h3>
+
+            <div>
+              <label class="block text-xs font-semibold text-stone-700 mb-1" for="customerName">Tu nombre *</label>
+              <input
+                id="customerName"
+                type="text"
+                formControlName="customerName"
+                placeholder="Ej: Ana María"
+                class="w-full rounded-xl border border-stone-200 px-3.5 py-2.5 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-primary-400 bg-stone-50/50"
+              />
+              @if (orderForm.get('customerName')?.touched && orderForm.get('customerName')?.invalid) {
+                <p class="text-[11px] text-red-600 mt-1">El nombre es obligatorio</p>
+              }
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-stone-700 mb-1" for="tableNumber">Mesa o Ubicación</label>
+                <input
+                  id="tableNumber"
+                  type="text"
+                  formControlName="tableNumber"
+                  placeholder="Ej: Mesa 4 / Llevar"
+                  class="w-full rounded-xl border border-stone-200 px-3.5 py-2.5 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-primary-400 bg-stone-50/50"
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-stone-700 mb-1" for="customerPhone">Teléfono</label>
+                <input
+                  id="customerPhone"
+                  type="tel"
+                  formControlName="customerPhone"
+                  placeholder="300 123 4567"
+                  class="w-full rounded-xl border border-stone-200 px-3.5 py-2.5 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-primary-400 bg-stone-50/50"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-stone-700 mb-1" for="notes">Notas o indicaciones</label>
+              <textarea
+                id="notes"
+                formControlName="notes"
+                rows="2"
+                placeholder="Sin cebolla, salsa aparte…"
+                class="w-full rounded-xl border border-stone-200 px-3.5 py-2 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-primary-400 bg-stone-50/50"
+              ></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button
+              type="submit"
+              [disabled]="orderForm.invalid || submittingOrder()"
+              class="w-full rounded-2xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-bold py-4 text-base hover:from-primary-700 hover:to-primary-600 disabled:opacity-50 transition-all shadow-lg shadow-primary-500/30 btn-shine"
+            >
+              @if (submittingOrder()) {
+                Enviando pedido…
+              } @else {
+                Enviar Pedido → {{ formatCurrency(cartTotalAmount()) }}
+              }
+            </button>
+          </form>
+        </div>
+      </div>
+    }
+
+    <!-- Order Success Modal -->
+    @if (orderSuccess()) {
+      <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-sm anim-fade-in-scale">
+        <div class="bg-white rounded-3xl shadow-2xl border border-stone-100 max-w-sm w-full p-8 text-center space-y-5">
+          <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mx-auto shadow-md">
+            🎉
+          </div>
+          <div>
+            <h2 class="text-2xl font-black text-stone-900 tracking-tight">¡Pedido Recibido!</h2>
+            <p class="text-stone-500 text-sm mt-1">Tu orden ha sido enviada directamente a la cocina.</p>
+          </div>
+
+          <div class="bg-stone-50 border border-stone-100 rounded-2xl p-4">
+            <span class="text-xs text-stone-400 font-semibold uppercase tracking-wider">Número de Pedido</span>
+            <p class="text-3xl font-black text-primary-600 tracking-tight mt-1">{{ orderSuccess()!.orderNumber }}</p>
+          </div>
+
+          <p class="text-xs text-stone-400 leading-relaxed">
+            Conserva este número para consultar el estado de tu orden con el personal del restaurante.
+          </p>
+
+          <button
+            (click)="closeSuccessModal()"
+            class="w-full py-3.5 rounded-2xl bg-stone-900 text-white font-bold text-sm hover:bg-stone-800 transition-colors shadow-md"
+          >
+            Entendido / Volver al Menú
+          </button>
+        </div>
+      </div>
+    }
   </div>
 }

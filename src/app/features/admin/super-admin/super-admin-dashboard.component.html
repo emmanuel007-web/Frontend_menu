@@ -1,0 +1,142 @@
+<div class="anim-fade-in-up space-y-8">
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold mb-2">
+        <span>👑 Panel Global Super Admin</span>
+      </div>
+      <h1 class="text-3xl font-extrabold text-stone-900 tracking-tight">Bienvenido, {{ user()?.name }}</h1>
+      <p class="text-stone-500 mt-1">Supervisión y control total de la plataforma SaaS.</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <a
+        routerLink="/admin/super-admin/restaurants"
+        class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-bold text-sm hover:from-primary-700 hover:to-primary-600 transition-all shadow-md shadow-primary-500/20 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
+      >
+        <span>🏪 Gestionar Restaurantes</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- KPI Grid -->
+  @if (loading()) {
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+      @for (item of [1,2,3,4,5]; track $index) {
+        <div class="h-28 bg-stone-100 rounded-2xl animate-pulse"></div>
+      }
+    </div>
+  } @else if (stats()) {
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+      <!-- Total Restaurants -->
+      <div class="bg-white rounded-2xl border border-stone-100 p-5 card-hover anim-fade-in-up anim-delay-1 group">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <span class="text-lg">🏢</span>
+          </div>
+          <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full">SaaS</span>
+        </div>
+        <p class="text-xs font-semibold text-stone-400 uppercase tracking-wider">Restaurantes</p>
+        <p class="text-3xl font-extrabold text-stone-900 mt-1">{{ stats()?.totalRestaurants }}</p>
+      </div>
+
+      <!-- Active Restaurants -->
+      <div class="bg-white rounded-2xl border border-stone-100 p-5 card-hover anim-fade-in-up anim-delay-2 group">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <span class="text-lg">✅</span>
+          </div>
+          <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">Activos</span>
+        </div>
+        <p class="text-xs font-semibold text-stone-400 uppercase tracking-wider">Activos</p>
+        <p class="text-3xl font-extrabold text-stone-900 mt-1">{{ stats()?.activeRestaurants }}</p>
+      </div>
+
+      <!-- Total Users -->
+      <div class="bg-white rounded-2xl border border-stone-100 p-5 card-hover anim-fade-in-up anim-delay-3 group">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <span class="text-lg">👥</span>
+          </div>
+          <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">Global</span>
+        </div>
+        <p class="text-xs font-semibold text-stone-400 uppercase tracking-wider">Usuarios</p>
+        <p class="text-3xl font-extrabold text-stone-900 mt-1">{{ stats()?.totalUsers }}</p>
+      </div>
+
+      <!-- Active Subscriptions -->
+      <div class="bg-white rounded-2xl border border-stone-100 p-5 card-hover anim-fade-in-up anim-delay-4 group">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <span class="text-lg">💳</span>
+          </div>
+          <span class="text-xs font-bold text-violet-600 bg-violet-50 px-2.5 py-1 rounded-full">Planes</span>
+        </div>
+        <p class="text-xs font-semibold text-stone-400 uppercase tracking-wider">Suscripciones</p>
+        <p class="text-3xl font-extrabold text-stone-900 mt-1">{{ stats()?.activeSubscriptions }}</p>
+      </div>
+
+      <!-- Total Products -->
+      <div class="bg-white rounded-2xl border border-stone-100 p-5 card-hover anim-fade-in-up anim-delay-5 group col-span-2 lg:col-span-1">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <span class="text-lg">🍔</span>
+          </div>
+          <span class="text-xs font-bold text-rose-600 bg-rose-50 px-2.5 py-1 rounded-full">Platos</span>
+        </div>
+        <p class="text-xs font-semibold text-stone-400 uppercase tracking-wider">Productos Totales</p>
+        <p class="text-3xl font-extrabold text-stone-900 mt-1">{{ stats()?.totalProducts }}</p>
+      </div>
+    </div>
+  }
+
+  <!-- Quick Action Navigation Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <a
+      routerLink="/admin/super-admin/restaurants"
+      class="group relative bg-white border border-stone-100 rounded-3xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
+    >
+      <div class="absolute -right-6 -bottom-6 text-8xl opacity-10 group-hover:scale-110 transition-transform duration-300 pointer-events-none">
+        🏢
+      </div>
+      <div class="flex items-start gap-4">
+        <div class="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center text-2xl group-hover:bg-amber-500 group-hover:text-white transition-all duration-300 shrink-0">
+          🏢
+        </div>
+        <div>
+          <h3 class="text-xl font-bold text-stone-900 group-hover:text-amber-600 transition-colors">Gestión de Restaurantes</h3>
+          <p class="text-stone-500 text-sm mt-1 leading-relaxed">
+            Ver todos los restaurantes registrados, registrar nuevos clientes SaaS, habilitar o suspender cuentas y ver sus usuarios asignados.
+          </p>
+          <div class="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-amber-600 group-hover:translate-x-1 transition-transform">
+            <span>Administrar Restaurantes</span>
+            <span>→</span>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <a
+      routerLink="/admin/super-admin/users"
+      class="group relative bg-white border border-stone-100 rounded-3xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
+    >
+      <div class="absolute -right-6 -bottom-6 text-8xl opacity-10 group-hover:scale-110 transition-transform duration-300 pointer-events-none">
+        👥
+      </div>
+      <div class="flex items-start gap-4">
+        <div class="w-14 h-14 rounded-2xl bg-blue-500/10 text-blue-600 flex items-center justify-center text-2xl group-hover:bg-blue-500 group-hover:text-white transition-all duration-300 shrink-0">
+          👥
+        </div>
+        <div>
+          <h3 class="text-xl font-bold text-stone-900 group-hover:text-blue-600 transition-colors">Usuarios Globales</h3>
+          <p class="text-stone-500 text-sm mt-1 leading-relaxed">
+            Inspeccionar todos los usuarios del sistema, filtrar por rol (Super Admin, Admin Restaurante, Operativo) y gestionar accesos activos.
+          </p>
+          <div class="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-blue-600 group-hover:translate-x-1 transition-transform">
+            <span>Ver Todos los Usuarios</span>
+            <span>→</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>

@@ -1,0 +1,130 @@
+<div class="anim-fade-in-up space-y-6">
+  <!-- Header -->
+  <div>
+    <h1 class="text-3xl font-extrabold text-stone-900 tracking-tight">Usuarios Globales de la Plataforma</h1>
+    <p class="text-stone-500 mt-1">Todos los usuarios registrados en los distintos restaurantes y administradores del sistema.</p>
+  </div>
+
+  <!-- Search Filter -->
+  <div class="bg-white rounded-2xl border border-stone-100 p-4 shadow-sm">
+    <div class="relative">
+      <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+          <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+        </svg>
+      </div>
+      <input
+        type="text"
+        [value]="searchTerm()"
+        (input)="searchTerm.set($any($event.target).value)"
+        placeholder="Buscar por nombre, correo, rol o restaurante…"
+        class="w-full rounded-xl border border-stone-200 pl-10 pr-4 py-2.5 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-primary-400/40 focus:border-primary-400 transition-all bg-stone-50/50 hover:bg-white"
+      />
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="bg-white rounded-3xl border border-stone-100 shadow-sm overflow-hidden">
+    @if (loading()) {
+      <div class="p-8 text-center text-stone-400">Cargando usuarios…</div>
+    } @else if (filteredUsers().length === 0) {
+      <div class="p-12 text-center">
+        <div class="text-5xl mb-3">👥</div>
+        <p class="text-stone-700 font-bold text-lg">No se encontraron usuarios</p>
+      </div>
+    } @else {
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-stone-600">
+          <thead class="bg-stone-50 border-b border-stone-100 text-xs font-bold text-stone-400 uppercase tracking-wider">
+            <tr>
+              <th class="px-6 py-4">Usuario</th>
+              <th class="px-6 py-4">Correo</th>
+              <th class="px-6 py-4">Restaurante</th>
+              <th class="px-6 py-4">Rol</th>
+              <th class="px-6 py-4">Estado</th>
+              <th class="px-6 py-4">Fecha Registro</th>
+              <th class="px-6 py-4 text-right">Acción</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-stone-100">
+            @for (u of filteredUsers(); track u.id) {
+              <tr class="hover:bg-stone-50/60 transition-colors">
+                <!-- Name -->
+                <td class="px-6 py-4 font-bold text-stone-900">
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-blue-500/10 text-blue-600 font-bold text-xs flex items-center justify-center">
+                      {{ u.name.substring(0, 1).toUpperCase() }}
+                    </div>
+                    <span>{{ u.name }}</span>
+                  </div>
+                </td>
+
+                <!-- Email -->
+                <td class="px-6 py-4 text-stone-700 font-medium">
+                  {{ u.email }}
+                </td>
+
+                <!-- Restaurant -->
+                <td class="px-6 py-4">
+                  <span class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg bg-stone-100 text-stone-800">
+                    🏢 {{ u.restaurantName }}
+                  </span>
+                </td>
+
+                <!-- Role -->
+                <td class="px-6 py-4">
+                  @if (u.role === 'SUPER_ADMIN') {
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                      👑 Super Admin
+                    </span>
+                  } @else if (u.role === 'RESTAURANT_ADMIN') {
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                      ⭐ Admin Restaurante
+                    </span>
+                  } @else {
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-stone-100 text-stone-600">
+                      👤 Operativo
+                    </span>
+                  }
+                </td>
+
+                <!-- Status -->
+                <td class="px-6 py-4">
+                  @if (u.active) {
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700">
+                      Activo
+                    </span>
+                  } @else {
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-red-50 text-red-700">
+                      Inactivo
+                    </span>
+                  }
+                </td>
+
+                <!-- Date -->
+                <td class="px-6 py-4 text-stone-400 text-xs">
+                  {{ u.createdAt | date:'mediumDate' }}
+                </td>
+
+                <!-- Action -->
+                <td class="px-6 py-4 text-right">
+                  @if (currentUser()?.id !== u.id) {
+                    <button
+                      (click)="toggleActive(u)"
+                      class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
+                      [class]="u.active ? 'bg-red-50 text-red-600 hover:bg-red-100' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'"
+                    >
+                      {{ u.active ? 'Desactivar' : 'Activar' }}
+                    </button>
+                  } @else {
+                    <span class="text-xs text-stone-300 italic">Tú</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

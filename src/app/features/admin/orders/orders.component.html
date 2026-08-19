@@ -1,0 +1,345 @@
+<div class="anim-fade-in-up space-y-6">
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-3xl font-extrabold text-stone-900 tracking-tight">Pedidos del Restaurante 📋</h1>
+      <p class="text-stone-500 mt-1">Gestiona las órdenes recibidas en tiempo real desde el menú digital.</p>
+    </div>
+    
+    <!-- Real-time badges -->
+    <div class="flex flex-wrap items-center gap-2">
+      @if (pendingCount() > 0) {
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold bg-amber-100 text-amber-800 animate-bounce">
+          🔔 {{ pendingCount() }} Pendientes
+        </span>
+      }
+      @if (preparationCount() > 0) {
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-violet-100 text-violet-800">
+          🔥 {{ preparationCount() }} En cocina
+        </span>
+      }
+      @if (readyCount() > 0) {
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-100 text-emerald-800">
+          ✅ {{ readyCount() }} Listos
+        </span>
+      }
+      <button
+        (click)="loadOrders()"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-white border border-stone-200 text-stone-600 hover:bg-stone-50 shadow-xs"
+      >
+        🔄 Actualizar
+      </button>
+    </div>
+  </div>
+
+  <!-- Status Tabs -->
+  <div class="flex items-center gap-2 overflow-x-auto pb-2 hide-scrollbar">
+    <button
+      (click)="selectedStatus.set('ALL')"
+      [class]="selectedStatus() === 'ALL' ? 'bg-stone-900 text-white font-bold' : 'bg-white text-stone-600 border border-stone-200 hover:bg-stone-50'"
+      class="px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all"
+    >
+      Todos ({{ orders().length }})
+    </button>
+
+    <button
+      (click)="selectedStatus.set('PENDING')"
+      [class]="selectedStatus() === 'PENDING' ? 'bg-amber-500 text-white font-bold' : 'bg-white text-amber-700 border border-amber-200 hover:bg-amber-50'"
+      class="px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all"
+    >
+      Pendientes ({{ pendingCount() }})
+    </button>
+
+    <button
+      (click)="selectedStatus.set('CONFIRMED')"
+      [class]="selectedStatus() === 'CONFIRMED' ? 'bg-blue-600 text-white font-bold' : 'bg-white text-blue-700 border border-blue-200 hover:bg-blue-50'"
+      class="px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all"
+    >
+      Confirmados
+    </button>
+
+    <button
+      (click)="selectedStatus.set('IN_PREPARATION')"
+      [class]="selectedStatus() === 'IN_PREPARATION' ? 'bg-violet-600 text-white font-bold' : 'bg-white text-violet-700 border border-violet-200 hover:bg-violet-50'"
+      class="px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all"
+    >
+      En Preparación ({{ preparationCount() }})
+    </button>
+
+    <button
+      (click)="selectedStatus.set('READY')"
+      [class]="selectedStatus() === 'READY' ? 'bg-emerald-600 text-white font-bold' : 'bg-white text-emerald-700 border border-emerald-200 hover:bg-emerald-50'"
+      class="px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all"
+    >
+      Listos ({{ readyCount() }})
+    </button>
+
+    <button
+      (click)="selectedStatus.set('DELIVERED')"
+      [class]="selectedStatus() === 'DELIVERED' ? 'bg-stone-700 text-white font-bold' : 'bg-white text-stone-600 border border-stone-200 hover:bg-stone-50'"
+      class="px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all"
+    >
+      Entregados
+    </button>
+
+    <button
+      (click)="selectedStatus.set('CANCELLED')"
+      [class]="selectedStatus() === 'CANCELLED' ? 'bg-red-600 text-white font-bold' : 'bg-white text-red-600 border border-red-200 hover:bg-red-50'"
+      class="px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all"
+    >
+      Cancelados
+    </button>
+  </div>
+
+  <!-- Orders Grid -->
+  @if (loading()) {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      @for (item of [1,2,3,4,5,6]; track $index) {
+        <div class="h-48 bg-white border border-stone-100 rounded-3xl animate-pulse"></div>
+      }
+    </div>
+  } @else if (filteredOrders().length === 0) {
+    <div class="bg-white rounded-3xl border border-stone-100 p-12 text-center">
+      <div class="text-5xl mb-3">📋</div>
+      <p class="text-stone-700 font-bold text-lg">No hay pedidos en este estado</p>
+      <p class="text-stone-400 text-sm mt-1">Los nuevos pedidos realizados por los clientes aparecerán automáticamente aquí.</p>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      @for (order of filteredOrders(); track order.id) {
+        <div
+          class="bg-white rounded-3xl border border-stone-100 p-5 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between space-y-4 relative overflow-hidden"
+          [class.border-amber-300]="order.status === 'PENDING'"
+        >
+          <!-- Top info -->
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="font-black text-stone-900 text-lg tracking-tight">{{ order.orderNumber }}</span>
+              <span
+                class="px-3 py-1 rounded-full text-xs font-extrabold border"
+                [class]="colors[order.status].bg + ' ' + colors[order.status].text + ' ' + colors[order.status].border"
+              >
+                {{ labels[order.status] }}
+              </span>
+            </div>
+
+            <!-- Customer & Table -->
+            <div class="space-y-1 text-sm text-stone-600 mb-3">
+              <div class="flex items-center gap-2 font-bold text-stone-900">
+                <span>👤 {{ order.customerName }}</span>
+              </div>
+              @if (order.tableNumber) {
+                <div class="text-xs text-primary-700 font-bold bg-primary-50 px-2.5 py-1 rounded-lg inline-block">
+                  📍 {{ order.tableNumber }}
+                </div>
+              }
+              <div class="text-xs text-stone-400">
+                🕒 {{ order.createdAt | date:'shortTime' }}
+              </div>
+            </div>
+
+            <!-- Items preview -->
+            <div class="bg-stone-50 rounded-2xl p-3 space-y-1 text-xs text-stone-700 border border-stone-100">
+              @for (item of order.items.slice(0, 3); track item.id) {
+                <div class="flex items-center justify-between">
+                  <span class="font-medium truncate max-w-[180px]">{{ item.quantity }}x {{ item.productName }}</span>
+                  <span class="font-bold">{{ formatCurrency(item.subtotal) }}</span>
+                </div>
+              }
+              @if (order.items.length > 3) {
+                <p class="text-[11px] text-stone-400 font-semibold pt-1">+ {{ order.items.length - 3 }} ítems más…</p>
+              }
+            </div>
+          </div>
+
+          <!-- Footer & Action Buttons -->
+          <div class="pt-3 border-t border-stone-100 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-stone-400 font-semibold">Total</span>
+              <span class="text-xl font-black text-stone-900">{{ formatCurrency(order.totalAmount) }}</span>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button
+                (click)="openOrderDetail(order)"
+                class="flex-1 py-2 px-3 rounded-xl border border-stone-200 text-stone-700 font-bold text-xs hover:bg-stone-50 transition-colors"
+              >
+                Ver Detalle
+              </button>
+
+              <!-- State transition buttons -->
+              @if (order.status === 'PENDING') {
+                <button
+                  (click)="changeStatus(order, 'CONFIRMED')"
+                  [disabled]="updatingStatus()"
+                  class="py-2 px-3 rounded-xl bg-blue-600 text-white font-bold text-xs hover:bg-blue-700 transition-colors shadow-sm"
+                >
+                  Confirmar
+                </button>
+              } @else if (order.status === 'CONFIRMED') {
+                <button
+                  (click)="changeStatus(order, 'IN_PREPARATION')"
+                  [disabled]="updatingStatus()"
+                  class="py-2 px-3 rounded-xl bg-violet-600 text-white font-bold text-xs hover:bg-violet-700 transition-colors shadow-sm"
+                >
+                  Cocinar
+                </button>
+              } @else if (order.status === 'IN_PREPARATION') {
+                <button
+                  (click)="changeStatus(order, 'READY')"
+                  [disabled]="updatingStatus()"
+                  class="py-2 px-3 rounded-xl bg-emerald-600 text-white font-bold text-xs hover:bg-emerald-700 transition-colors shadow-sm"
+                >
+                  Listo!
+                </button>
+              } @else if (order.status === 'READY') {
+                <button
+                  (click)="changeStatus(order, 'DELIVERED')"
+                  [disabled]="updatingStatus()"
+                  class="py-2 px-3 rounded-xl bg-stone-800 text-white font-bold text-xs hover:bg-stone-900 transition-colors shadow-sm"
+                >
+                  Entregar
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Order Detail Modal -->
+  @if (selectedOrder()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-sm anim-fade-in-scale">
+      <div class="bg-white rounded-3xl shadow-2xl border border-stone-100 max-w-lg w-full p-6 space-y-6 max-h-[90vh] overflow-y-auto">
+        <!-- Header -->
+        <div class="flex items-center justify-between border-b border-stone-100 pb-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 class="text-2xl font-extrabold text-stone-900">{{ selectedOrder()!.orderNumber }}</h2>
+              <span
+                class="px-2.5 py-0.5 rounded-full text-xs font-extrabold border"
+                [class]="colors[selectedOrder()!.status].bg + ' ' + colors[selectedOrder()!.status].text + ' ' + colors[selectedOrder()!.status].border"
+              >
+                {{ labels[selectedOrder()!.status] }}
+              </span>
+            </div>
+            <p class="text-xs text-stone-400 mt-1">{{ selectedOrder()!.createdAt | date:'medium' }}</p>
+          </div>
+          <button (click)="closeDetail()" class="text-stone-400 hover:text-stone-600 text-xl font-bold p-1">✕</button>
+        </div>
+
+        <!-- Customer info -->
+        <div class="bg-stone-50 rounded-2xl p-4 border border-stone-100 space-y-2 text-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-stone-400 font-semibold text-xs">Cliente</span>
+            <span class="font-bold text-stone-900">{{ selectedOrder()!.customerName }}</span>
+          </div>
+          @if (selectedOrder()!.tableNumber) {
+            <div class="flex items-center justify-between">
+              <span class="text-stone-400 font-semibold text-xs">Ubicación / Mesa</span>
+              <span class="font-bold text-primary-700">{{ selectedOrder()!.tableNumber }}</span>
+            </div>
+          }
+          @if (selectedOrder()!.customerPhone) {
+            <div class="flex items-center justify-between">
+              <span class="text-stone-400 font-semibold text-xs">Teléfono</span>
+              <a
+                [href]="'https://wa.me/' + selectedOrder()!.customerPhone"
+                target="_blank"
+                class="font-bold text-emerald-600 hover:underline flex items-center gap-1"
+              >
+                📲 {{ selectedOrder()!.customerPhone }}
+              </a>
+            </div>
+          }
+          @if (selectedOrder()!.notes) {
+            <div class="pt-2 border-t border-stone-200/60">
+              <span class="text-stone-400 font-semibold text-xs block">Notas del cliente:</span>
+              <p class="text-stone-700 italic text-xs mt-0.5">"{{ selectedOrder()!.notes }}"</p>
+            </div>
+          }
+        </div>
+
+        <!-- Items list -->
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-stone-400 mb-3">Artículos del Pedido</h3>
+          <div class="space-y-3 divide-y divide-stone-100">
+            @for (item of selectedOrder()!.items; track item.id) {
+              <div class="pt-3 flex items-start justify-between gap-3">
+                <div class="flex-1">
+                  <p class="font-bold text-stone-900 text-sm">
+                    <span class="text-primary-600 font-black">{{ item.quantity }}x</span> {{ item.productName }}
+                  </p>
+                  @if (item.notes) {
+                    <p class="text-xs text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md inline-block mt-1">
+                      ✏️ {{ item.notes }}
+                    </p>
+                  }
+                </div>
+                <div class="text-right">
+                  <span class="font-extrabold text-stone-900 text-sm">{{ formatCurrency(item.subtotal) }}</span>
+                  <p class="text-[11px] text-stone-400">{{ formatCurrency(item.unitPrice) }} c/u</p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Total & Actions -->
+        <div class="pt-4 border-t border-stone-100 space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-stone-600 font-bold text-base">Total General</span>
+            <span class="text-2xl font-black text-stone-900">{{ formatCurrency(selectedOrder()!.totalAmount) }}</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            @if (selectedOrder()!.status !== 'CANCELLED' && selectedOrder()!.status !== 'DELIVERED') {
+              <button
+                (click)="changeStatus(selectedOrder()!, 'CANCELLED')"
+                [disabled]="updatingStatus()"
+                class="py-3 rounded-xl border border-red-200 text-red-600 font-bold text-xs hover:bg-red-50 transition-colors"
+              >
+                Cancelar Pedido
+              </button>
+            }
+
+            @if (selectedOrder()!.status === 'PENDING') {
+              <button
+                (click)="changeStatus(selectedOrder()!, 'CONFIRMED')"
+                [disabled]="updatingStatus()"
+                class="py-3 rounded-xl bg-blue-600 text-white font-bold text-xs hover:bg-blue-700 transition-colors"
+              >
+                Confirmar Pedido
+              </button>
+            } @else if (selectedOrder()!.status === 'CONFIRMED') {
+              <button
+                (click)="changeStatus(selectedOrder()!, 'IN_PREPARATION')"
+                [disabled]="updatingStatus()"
+                class="py-3 rounded-xl bg-violet-600 text-white font-bold text-xs hover:bg-violet-700 transition-colors"
+              >
+                Iniciar Preparación
+              </button>
+            } @else if (selectedOrder()!.status === 'IN_PREPARATION') {
+              <button
+                (click)="changeStatus(selectedOrder()!, 'READY')"
+                [disabled]="updatingStatus()"
+                class="py-3 rounded-xl bg-emerald-600 text-white font-bold text-xs hover:bg-emerald-700 transition-colors"
+              >
+                Marcar como Listo
+              </button>
+            } @else if (selectedOrder()!.status === 'READY') {
+              <button
+                (click)="changeStatus(selectedOrder()!, 'DELIVERED')"
+                [disabled]="updatingStatus()"
+                class="py-3 rounded-xl bg-stone-900 text-white font-bold text-xs hover:bg-stone-800 transition-colors"
+              >
+                Entregar a Cliente
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>
