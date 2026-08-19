@@ -1,4 +1,4 @@
-import { Component, inject, input, signal } from '@angular/core';
+import { Component, effect, inject, input, signal } from '@angular/core';
 import { MenuService } from '../../core/services/menu.service';
 import { PublicMenu } from '../../core/models/models';
 
@@ -17,16 +17,26 @@ export class PublicMenuComponent {
   readonly activeCategory = signal<number | null>(null);
 
   constructor() {
-    this.menuService.getPublicMenu(this.slug()).subscribe({
-      next: (menu) => {
-        this.menu.set(menu);
-        this.activeCategory.set(menu.categories.length > 0 ? menu.categories[0]!.id : null);
-        this.loading.set(false);
-      },
-      error: () => {
+    effect(() => {
+      const slug = this.slug().trim();
+      if (!slug) {
         this.errorMessage.set('Este menú no existe o no está disponible');
         this.loading.set(false);
-      },
+        return;
+      }
+      this.loading.set(true);
+      this.errorMessage.set(null);
+      this.menuService.getPublicMenu(slug).subscribe({
+        next: (menu) => {
+          this.menu.set(menu);
+          this.activeCategory.set(menu.categories.length > 0 ? menu.categories[0]!.id : null);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.errorMessage.set('Este menú no existe o no está disponible');
+          this.loading.set(false);
+        },
+      });
     });
   }
 

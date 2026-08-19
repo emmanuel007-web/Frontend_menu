@@ -8,6 +8,6 @@ export class MenuService {
   constructor(private api: ApiService) {}
 
   getPublicMenu(slug: string): Observable<PublicMenu> {
-    return this.api.get<PublicMenu>(`/public/menu/${slug}`);
+    return this.api.get<PublicMenu>(`/public/menu/${encodeURIComponent(slug)}`);
   }
 }

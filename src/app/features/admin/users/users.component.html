@@ -1,50 +1,58 @@
-<div>
+<div class="anim-fade-in-up">
   <div class="flex items-center justify-between">
     <div>
-      <h1 class="text-2xl font-bold text-slate-900">Usuarios</h1>
-      <p class="text-slate-500 mt-1">Invita a tu equipo a administrar el menú.</p>
+      <h1 class="text-3xl font-extrabold text-stone-900 tracking-tight">Usuarios</h1>
+      <p class="text-stone-500 mt-1">Invita a tu equipo a administrar el menú.</p>
     </div>
     @if (!showCreate()) {
-      <button (click)="openCreate()" class="rounded-lg bg-primary-600 text-white font-semibold px-4 py-2 hover:bg-primary-700 transition">
-        + Nuevo usuario
+      <button (click)="openCreate()" class="rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-bold px-5 py-2.5 hover:from-primary-700 hover:to-primary-600 transition-all duration-200 shadow-md shadow-primary-500/20 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 btn-shine flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+          <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+        </svg>
+        Nuevo usuario
       </button>
     }
   </div>
 
   @if (errorMessage()) {
-    <div class="mt-4 rounded-lg bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm">{{ errorMessage() }}</div>
+    <div class="mt-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 px-5 py-4 text-sm flex items-start gap-3 anim-fade-in-scale">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 shrink-0 mt-0.5 text-red-500">
+        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+      </svg>
+      <span>{{ errorMessage() }}</span>
+    </div>
   }
 
   @if (showCreate()) {
-    <form [formGroup]="form" (ngSubmit)="submit()" class="mt-6 bg-white rounded-2xl border border-slate-200 p-6 space-y-4 max-w-xl">
-      <h2 class="font-semibold text-slate-900">Nuevo usuario</h2>
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1">Nombre</label>
-        <input type="text" formControlName="name" class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+    <form [formGroup]="form" (ngSubmit)="submit()" class="mt-6 bg-white rounded-3xl border border-stone-100 shadow-lg shadow-stone-200/50 p-8 space-y-5 max-w-xl anim-fade-in-scale">
+      <h2 class="font-bold text-stone-900 text-lg">👤 Nuevo usuario</h2>
+      <div class="space-y-1.5">
+        <label class="block text-sm font-semibold text-stone-700">Nombre</label>
+        <input type="text" formControlName="name" class="w-full rounded-xl border border-stone-200 px-4 py-3 focus:outline-none input-glow transition-all duration-200 bg-stone-50/50 hover:bg-white placeholder-stone-400" />
       </div>
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1">Correo</label>
-        <input type="email" formControlName="email" class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+      <div class="space-y-1.5">
+        <label class="block text-sm font-semibold text-stone-700">Correo</label>
+        <input type="email" formControlName="email" class="w-full rounded-xl border border-stone-200 px-4 py-3 focus:outline-none input-glow transition-all duration-200 bg-stone-50/50 hover:bg-white placeholder-stone-400" />
       </div>
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1">Contraseña</label>
-        <input type="password" formControlName="password" autocomplete="new-password" class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+      <div class="space-y-1.5">
+        <label class="block text-sm font-semibold text-stone-700">Contraseña</label>
+        <input type="password" formControlName="password" autocomplete="new-password" class="w-full rounded-xl border border-stone-200 px-4 py-3 focus:outline-none input-glow transition-all duration-200 bg-stone-50/50 hover:bg-white placeholder-stone-400" />
         @if (form.get('password')?.touched && form.get('password')?.invalid) {
-          <p class="text-xs text-red-600 mt-1">Mínimo 8 caracteres con mayúscula, minúscula y número</p>
+          <p class="text-xs text-red-600 pl-1 anim-fade-in-scale">Mínimo 8 caracteres con mayúscula, minúscula y número</p>
         }
       </div>
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1">Rol</label>
-        <select formControlName="role" class="w-full rounded-lg border border-slate-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+      <div class="space-y-1.5">
+        <label class="block text-sm font-semibold text-stone-700">Rol</label>
+        <select formControlName="role" class="w-full rounded-xl border border-stone-200 px-4 py-3 focus:outline-none input-glow transition-all duration-200 bg-stone-50/50 hover:bg-white">
           <option value="RESTAURANT_USER">Operativo (edita menú)</option>
           <option value="RESTAURANT_ADMIN">Administrador (gestiona usuarios y restaurante)</option>
         </select>
       </div>
-      <div class="flex gap-2">
-        <button type="submit" [disabled]="form.invalid || saving()" class="rounded-lg bg-primary-600 text-white font-semibold px-5 py-2 hover:bg-primary-700 disabled:opacity-50 transition">
+      <div class="flex gap-3 pt-2">
+        <button type="submit" [disabled]="form.invalid || saving()" class="rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-bold px-6 py-2.5 hover:from-primary-700 hover:to-primary-600 disabled:opacity-50 transition-all duration-200 shadow-md shadow-primary-500/20 btn-shine">
           {{ saving() ? 'Creando…' : 'Crear usuario' }}
         </button>
-        <button type="button" (click)="closeCreate()" class="rounded-lg bg-slate-100 text-slate-700 font-semibold px-5 py-2 hover:bg-slate-200 transition">
+        <button type="button" (click)="closeCreate()" class="rounded-xl bg-stone-100 text-stone-700 font-semibold px-6 py-2.5 hover:bg-stone-200 transition-all duration-200">
           Cancelar
         </button>
       </div>
@@ -52,41 +60,44 @@
   }
 
   @if (loading()) {
-    <p class="text-slate-500 mt-6">Cargando…</p>
+    <div class="flex items-center justify-center py-16">
+      <div class="w-10 h-10 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+    </div>
   } @else if (users().length === 0) {
-    <div class="mt-6 bg-white border border-dashed border-slate-300 rounded-2xl p-10 text-center">
-      <p class="text-4xl mb-2">👥</p>
-      <p class="text-slate-600 font-medium">Aún no tienes usuarios</p>
+    <div class="mt-8 bg-white border-2 border-dashed border-stone-200 rounded-3xl p-14 text-center anim-fade-in-up">
+      <div class="text-5xl mb-4 anim-float">👥</div>
+      <p class="text-stone-800 font-bold text-lg">Aún no tienes usuarios</p>
+      <p class="text-sm text-stone-400 mt-2">Invita a tu equipo para que te ayuden a administrar.</p>
     </div>
   } @else {
-    <div class="mt-6 bg-white rounded-2xl border border-slate-200 divide-y divide-slate-100">
+    <div class="mt-8 bg-white rounded-3xl border border-stone-100 shadow-sm divide-y divide-stone-50">
       @for (user of users(); track user.id) {
-        <div class="p-4 flex items-center gap-4">
-          <div class="w-10 h-10 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold shrink-0">
+        <div class="p-5 flex items-center gap-4 hover:bg-stone-50/70 transition-colors group">
+          <div class="w-11 h-11 rounded-full bg-gradient-to-br from-primary-400 to-amber-400 text-white flex items-center justify-center font-bold shrink-0 shadow-sm group-hover:scale-105 transition-transform duration-200">
             {{ user.name.charAt(0).toUpperCase() }}
           </div>
           <div class="flex-1 min-w-0">
-            <p class="font-medium text-slate-900">
+            <p class="font-bold text-stone-900">
               {{ user.name }}
               @if (user.id === currentUserId) {
-                <span class="text-xs text-slate-400">(tú)</span>
+                <span class="text-xs text-stone-400 font-medium">(tú)</span>
               }
             </p>
-            <p class="text-sm text-slate-500 truncate">{{ user.email }}</p>
+            <p class="text-sm text-stone-400 truncate">{{ user.email }}</p>
           </div>
-          <span class="text-xs px-2 py-1 rounded-full font-medium"
-            [class]="user.role === 'RESTAURANT_ADMIN' ? 'bg-primary-100 text-primary-700' : 'bg-slate-100 text-slate-600'">
+          <span class="text-xs px-3 py-1.5 rounded-lg font-bold"
+            [class]="user.role === 'RESTAURANT_ADMIN' ? 'bg-primary-50 text-primary-600' : 'bg-stone-100 text-stone-500'">
             {{ user.role === 'RESTAURANT_ADMIN' ? 'Administrador' : 'Operativo' }}
           </span>
-          <span class="text-xs px-2 py-1 rounded-full" [class]="user.active ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'">
+          <span class="text-xs px-3 py-1.5 rounded-lg font-bold" [class]="user.active ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-500'">
             {{ user.active ? 'Activo' : 'Inactivo' }}
           </span>
           @if (user.id !== currentUserId) {
-            <div class="flex gap-3 text-sm">
-              <button (click)="toggleActive(user)" class="text-primary-600 hover:underline">
+            <div class="flex gap-1">
+              <button (click)="toggleActive(user)" class="text-sm font-semibold text-primary-600 hover:text-primary-700 hover:bg-primary-50 px-3 py-1.5 rounded-lg transition-all">
                 {{ user.active ? 'Desactivar' : 'Activar' }}
               </button>
-              <button (click)="remove(user)" class="text-red-600 hover:underline">Eliminar</button>
+              <button (click)="remove(user)" class="text-sm font-semibold text-red-500 hover:text-red-600 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-all">Eliminar</button>
             </div>
           }
         </div>

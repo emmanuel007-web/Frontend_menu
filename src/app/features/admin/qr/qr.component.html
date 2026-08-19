@@ -1,30 +1,53 @@
-<div class="max-w-2xl">
-  <h1 class="text-2xl font-bold text-slate-900">Código QR del menú</h1>
-  <p class="text-slate-500 mt-1">Imprime este código y colócalo en tus mesas. Apunta a tu menú público, no a la API.</p>
+<div class="max-w-2xl anim-fade-in-up">
+  <h1 class="text-3xl font-extrabold text-stone-900 tracking-tight">Código QR del menú</h1>
+  <p class="text-stone-500 mt-1">Imprime este código y colócalo en tus mesas. Apunta a tu menú público.</p>
 
   @if (errorMessage()) {
-    <div class="mt-4 rounded-lg bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm">{{ errorMessage() }}</div>
+    <div class="mt-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 px-5 py-4 text-sm flex items-start gap-3 anim-fade-in-scale">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 shrink-0 mt-0.5 text-red-500">
+        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+      </svg>
+      <span>{{ errorMessage() }}</span>
+    </div>
   }
 
   @if (loading()) {
-    <p class="text-slate-500 mt-8">Generando código QR…</p>
+    <div class="flex items-center justify-center py-16">
+      <div class="text-center">
+        <div class="w-10 h-10 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin mx-auto"></div>
+        <p class="text-stone-500 mt-4 font-medium">Generando código QR…</p>
+      </div>
+    </div>
   } @else if (qrDataUrl()) {
-    <div class="mt-8 bg-white rounded-2xl border border-slate-200 p-8 flex flex-col items-center">
-      <img [src]="qrDataUrl()" alt="Código QR del menú" class="w-72 h-72" />
-      <p class="text-sm text-slate-500 mt-4 text-center break-all">{{ menuUrl() }}</p>
-      <div class="flex gap-3 mt-6">
-        <button (click)="downloadPng()" class="rounded-lg bg-primary-600 text-white font-semibold px-5 py-2.5 hover:bg-primary-700 transition">
-          ⬇️ Descargar PNG
+    <div class="mt-8 bg-white rounded-3xl border border-stone-100 shadow-lg shadow-stone-200/50 p-10 flex flex-col items-center anim-fade-in-scale">
+      <div class="bg-white rounded-3xl p-6 shadow-inner border border-stone-100">
+        <img [src]="qrDataUrl()" alt="Código QR del menú" class="w-72 h-72" />
+      </div>
+      <p class="text-sm text-stone-400 mt-6 text-center break-all font-medium">{{ menuUrl() }}</p>
+      <div class="flex gap-3 mt-8">
+        <button (click)="downloadPng()" class="rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-bold px-6 py-3 hover:from-primary-700 hover:to-primary-600 transition-all duration-200 shadow-md shadow-primary-500/20 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 btn-shine flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+            <path d="M10.75 2.75a.75.75 0 00-1.5 0v8.614L6.295 8.235a.75.75 0 10-1.09 1.03l4.25 4.5a.75.75 0 001.09 0l4.25-4.5a.75.75 0 00-1.09-1.03l-2.955 3.129V2.75z" />
+            <path d="M3.5 12.75a.75.75 0 00-1.5 0v2.5A2.75 2.75 0 004.75 18h10.5A2.75 2.75 0 0018 15.25v-2.5a.75.75 0 00-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5z" />
+          </svg>
+          Descargar PNG
         </button>
-        <button (click)="downloadPdf()" class="rounded-lg bg-slate-800 text-white font-semibold px-5 py-2.5 hover:bg-slate-900 transition">
-          ⬇️ Descargar PDF (A4)
+        <button (click)="downloadPdf()" class="rounded-xl bg-stone-900 text-white font-bold px-6 py-3 hover:bg-stone-800 transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+            <path d="M10.75 2.75a.75.75 0 00-1.5 0v8.614L6.295 8.235a.75.75 0 10-1.09 1.03l4.25 4.5a.75.75 0 001.09 0l4.25-4.5a.75.75 0 00-1.09-1.03l-2.955 3.129V2.75z" />
+            <path d="M3.5 12.75a.75.75 0 00-1.5 0v2.5A2.75 2.75 0 004.75 18h10.5A2.75 2.75 0 0018 15.25v-2.5a.75.75 0 00-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5z" />
+          </svg>
+          Descargar PDF (A4)
         </button>
       </div>
     </div>
 
-    <div class="mt-6 bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
-      <strong>Sugerencia:</strong> imprime el QR en material resistente (plástico o vinilo) y colócalo en cada mesa,
-      en la entrada o en la carta física para que tus clientes lo escaneen.
+    <div class="mt-6 bg-amber-50 border border-amber-200 rounded-2xl p-5 text-sm text-amber-800 flex items-start gap-3 anim-fade-in-up anim-delay-2">
+      <span class="text-xl">💡</span>
+      <div>
+        <p class="font-bold">Sugerencia</p>
+        <p class="mt-1">Imprime el QR en material resistente (plástico o vinilo) y colócalo en cada mesa, en la entrada o en la carta física para que tus clientes lo escaneen.</p>
+      </div>
     </div>
   }
 </div>

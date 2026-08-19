@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
-import { Plan, Subscription } from '../models/models';
+import { Plan, SubscribeResult, Subscription } from '../models/models';
 
 @Injectable({ providedIn: 'root' })
 export class SubscriptionService {
@@ -15,7 +15,12 @@ export class SubscriptionService {
     return this.api.get<Subscription>('/subscriptions/me');
   }
 
-  subscribe(planCode: string): Observable<Subscription> {
-    return this.api.post<Subscription>('/subscriptions/subscribe', { planCode });
+  /** Devuelve la suscripción resultante y, si hay pasarela, la URL del checkout. */
+  subscribe(planCode: string): Observable<SubscribeResult> {
+    return this.api.post<SubscribeResult>('/subscriptions/subscribe', { planCode });
+  }
+
+  cancel(): Observable<Subscription> {
+    return this.api.post<Subscription>('/subscriptions/cancel');
   }
 }

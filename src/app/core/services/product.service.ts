@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
-import { Product, ProductRequest } from '../models/models';
+import { Page, Product, ProductRequest } from '../models/models';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
   constructor(private api: ApiService) {}
 
-  list(categoryId?: number): Observable<Product[]> {
-    return this.api.get<Product[]>(`/products${categoryId ? `?categoryId=${categoryId}` : ''}`);
+  list(categoryId?: number, page = 0, size = 50): Observable<Page<Product>> {
+    const params = [`page=${page}`, `size=${size}`];
+    if (categoryId) params.push(`categoryId=${categoryId}`);
+    return this.api.get<Page<Product>>(`/products?${params.join('&')}`);
   }
 
   create(request: ProductRequest): Observable<Product> {

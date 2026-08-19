@@ -24,6 +24,10 @@ export class ProductsComponent implements OnInit {
   readonly errorMessage = signal<string | null>(null);
   readonly editingId = signal<number | null>(null);
   readonly previewUrl = signal<string | null>(null);
+  readonly page = signal(0);
+  readonly totalPages = signal(0);
+  readonly totalElements = signal(0);
+  readonly pageSize = 50;
 
   readonly form: FormGroup = this.fb.group({
     categoryId: [null, Validators.required],
@@ -34,25 +38,36 @@ export class ProductsComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.categoryService.list().subscribe({
-      next: (categories) => {
-        this.categories.set(categories);
-        if (categories.length > 0) this.form.get('categoryId')?.setValue(categories[0]!.id);
+    this.categoryService.list(0, 100).subscribe({
+      next: (result) => {
+        this.categories.set(result.content);
+        if (result.content.length > 0) this.form.get('categoryId')?.setValue(result.content[0]!.id);
         this.reload();
       },
       error: () => this.loading.set(false),
     });
   }
 
-  reload(): void {
+  reload(page = this.page()): void {
     this.loading.set(true);
-    this.productService.list().subscribe({
-      next: (products) => {
-        this.products.set(products);
+    this.productService.list(undefined, page, this.pageSize).subscribe({
+      next: (result) => {
+        this.products.set(result.content);
+        this.page.set(result.number);
+        this.totalPages.set(result.totalPages);
+        this.totalElements.set(result.totalElements);
         this.loading.set(false);
       },
       error: () => this.loading.set(false),
     });
+  }
+
+  previousPage(): void {
+    if (this.page() > 0) this.reload(this.page() - 1);
+  }
+
+  nextPage(): void {
+    if (this.page() + 1 < this.totalPages()) this.reload(this.page() + 1);
   }
 
   startCreate(): void {

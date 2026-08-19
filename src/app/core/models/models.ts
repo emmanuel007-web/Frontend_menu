@@ -13,11 +13,16 @@ export interface TokenUser {
   restaurantId: number | null;
 }
 
-export interface TokenResponse {
-  accessToken: string;
-  refreshToken: string;
-  expiresInSeconds: number;
+export interface AuthResponse {
   user: TokenUser;
+}
+
+export interface Page<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  number: number;
+  size: number;
 }
 
 export interface Restaurant {
@@ -142,8 +147,14 @@ export interface Subscription {
   restaurantId: number;
   plan: Plan;
   status: string;
+  provider?: string | null;
   startsAt: string;
   endsAt: string | null;
+}
+
+export interface SubscribeResult {
+  subscription: Subscription;
+  checkoutUrl: string | null;
 }
 
 export interface MenuSummary {

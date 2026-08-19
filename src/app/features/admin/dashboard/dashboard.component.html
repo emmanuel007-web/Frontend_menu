@@ -1,51 +1,106 @@
-<div>
-  <h1 class="text-2xl font-bold text-slate-900">Hola, {{ user()?.name }} 👋</h1>
-  <p class="text-slate-500 mt-1">Este es el estado de tu menú digital.</p>
-
-  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
-    <div class="bg-white rounded-xl border border-slate-200 p-5">
-      <p class="text-sm text-slate-500">Restaurante</p>
-      <p class="text-lg font-bold text-slate-900 mt-1 truncate">{{ restaurantName() ?? '—' }}</p>
-    </div>
-    <div class="bg-white rounded-xl border border-slate-200 p-5">
-      <p class="text-sm text-slate-500">Categorías</p>
-      <p class="text-lg font-bold text-slate-900 mt-1">{{ categoryCount() }}</p>
-    </div>
-    <div class="bg-white rounded-xl border border-slate-200 p-5">
-      <p class="text-sm text-slate-500">Productos</p>
-      <p class="text-lg font-bold text-slate-900 mt-1">{{ productCount() }}</p>
-      <p class="text-xs text-slate-400 mt-1">{{ availableCount() }} disponibles</p>
-    </div>
-    <div class="bg-white rounded-xl border border-slate-200 p-5">
-      <p class="text-sm text-slate-500">Plan</p>
-      <p class="text-lg font-bold text-slate-900 mt-1">{{ planName() ?? '—' }}</p>
+<div class="anim-fade-in-up">
+  <!-- Greeting -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-extrabold text-stone-900 tracking-tight">Hola, {{ user()?.name }} 👋</h1>
+      <p class="text-stone-500 mt-1">Este es el estado de tu menú digital.</p>
     </div>
   </div>
 
-  <div class="mt-8 bg-primary-50 border border-primary-200 rounded-xl p-6">
-    <h2 class="font-semibold text-primary-900">Tu menú público</h2>
-    <p class="text-sm text-primary-800 mt-1">
-      Comparte este enlace o imprime el código QR para que tus clientes lo escaneen.
-    </p>
-    @if (menuSlug()) {
-      <a
-        [href]="'/menu/' + menuSlug()"
-        target="_blank"
-        class="inline-block mt-3 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg px-4 py-2 transition"
-      >
-        Ver menú público → /menu/{{ menuSlug() }}
-      </a>
-    }
+  <!-- Stats Grid -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+    <div class="bg-white rounded-2xl border border-stone-100 p-5 card-hover anim-fade-in-up anim-delay-1 group">
+      <div class="flex items-center justify-between mb-3">
+        <div class="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+          <span class="text-lg">🏪</span>
+        </div>
+      </div>
+      <p class="text-xs font-semibold text-stone-400 uppercase tracking-wider">Restaurante</p>
+      <p class="text-lg font-extrabold text-stone-900 mt-1 truncate">{{ restaurantName() ?? '—' }}</p>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-stone-100 p-5 card-hover anim-fade-in-up anim-delay-2 group">
+      <div class="flex items-center justify-between mb-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+          <span class="text-lg">🗂️</span>
+        </div>
+      </div>
+      <p class="text-xs font-semibold text-stone-400 uppercase tracking-wider">Categorías</p>
+      <p class="text-3xl font-extrabold text-stone-900 mt-1">{{ categoryCount() }}</p>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-stone-100 p-5 card-hover anim-fade-in-up anim-delay-3 group">
+      <div class="flex items-center justify-between mb-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+          <span class="text-lg">🍔</span>
+        </div>
+      </div>
+      <p class="text-xs font-semibold text-stone-400 uppercase tracking-wider">Productos</p>
+      <p class="text-3xl font-extrabold text-stone-900 mt-1">{{ productCount() }}</p>
+      <p class="text-xs text-emerald-600 font-semibold mt-1">{{ availableCount() }} disponibles</p>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-stone-100 p-5 card-hover anim-fade-in-up anim-delay-4 group">
+      <div class="flex items-center justify-between mb-3">
+        <div class="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+          <span class="text-lg">💳</span>
+        </div>
+      </div>
+      <p class="text-xs font-semibold text-stone-400 uppercase tracking-wider">Plan</p>
+      <p class="text-lg font-extrabold text-stone-900 mt-1">{{ planName() ?? '—' }}</p>
+    </div>
   </div>
 
+  <!-- Public Menu CTA -->
+  <div class="mt-8 bg-gradient-to-br from-primary-500 to-amber-500 rounded-3xl p-8 relative overflow-hidden anim-fade-in-up anim-delay-3">
+    <!-- Decorative elements -->
+    <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+    <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
+    <div class="absolute inset-0 opacity-[0.06]" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 20px 20px;"></div>
+
+    <div class="relative z-10">
+      <h2 class="font-extrabold text-white text-xl">Tu menú público 🔗</h2>
+      <p class="text-primary-100 mt-2 text-sm max-w-lg">
+        Comparte este enlace o imprime el código QR para que tus clientes lo escaneen.
+      </p>
+      @if (menuSlug()) {
+        <a
+          [href]="'/menu/' + menuSlug()"
+          target="_blank"
+          class="inline-flex items-center gap-2 mt-5 text-sm font-bold text-primary-700 bg-white hover:bg-primary-50 rounded-xl px-5 py-3 transition-all duration-200 shadow-lg shadow-primary-600/20 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+            <path fill-rule="evenodd" d="M4.25 5.5a.75.75 0 00-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 00.75-.75v-4a.75.75 0 011.5 0v4A2.25 2.25 0 0112.75 17h-8.5A2.25 2.25 0 012 14.75v-8.5A2.25 2.25 0 014.25 4h5a.75.75 0 010 1.5h-5zm7.56-.187a.75.75 0 00-.078 1.06.75.75 0 001.06.078l2.21-1.97v3.769a.75.75 0 001.5 0V4.75a.75.75 0 00-.75-.75h-3.5a.75.75 0 000 1.5h1.767l-2.21 1.813z" clip-rule="evenodd" />
+          </svg>
+          Ver menú → /menu/{{ menuSlug() }}
+        </a>
+      }
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
-    <a routerLink="/admin/categories" class="bg-white border border-slate-200 rounded-xl p-5 hover:border-primary-400 hover:shadow-sm transition">
-      <h3 class="font-semibold text-slate-900">🗂️ Categorías</h3>
-      <p class="text-sm text-slate-500 mt-1">Organiza tu menú (Hamburguesas, Combos, Bebidas…)</p>
+    <a routerLink="/admin/categories" class="group bg-white border border-stone-100 rounded-2xl p-6 card-hover anim-fade-in-up anim-delay-4">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-xl group-hover:scale-110 transition-transform duration-300">
+          🗂️
+        </div>
+        <div>
+          <h3 class="font-bold text-stone-900 group-hover:text-primary-600 transition-colors">Categorías</h3>
+          <p class="text-sm text-stone-500 mt-0.5">Organiza tu menú (Hamburguesas, Combos, Bebidas…)</p>
+        </div>
+      </div>
     </a>
-    <a routerLink="/admin/products" class="bg-white border border-slate-200 rounded-xl p-5 hover:border-primary-400 hover:shadow-sm transition">
-      <h3 class="font-semibold text-slate-900">🍔 Productos</h3>
-      <p class="text-sm text-slate-500 mt-1">Agrega productos, precios e imágenes</p>
+    <a routerLink="/admin/products" class="group bg-white border border-stone-100 rounded-2xl p-6 card-hover anim-fade-in-up anim-delay-5">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-xl group-hover:scale-110 transition-transform duration-300">
+          🍔
+        </div>
+        <div>
+          <h3 class="font-bold text-stone-900 group-hover:text-primary-600 transition-colors">Productos</h3>
+          <p class="text-sm text-stone-500 mt-0.5">Agrega productos, precios e imágenes</p>
+        </div>
+      </div>
     </a>
   </div>
 </div>

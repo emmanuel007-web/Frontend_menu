@@ -1,9 +1,11 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
+import { catchError, map, of } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
 /**
- * Solo usuarios autenticados. Redirige a /login.
+ * Solo usuarios autenticados. Si no hay usuario en memoria (recarga de
+ * página), intenta restaurar la sesión con las cookies antes de redirigir.
  */
 export const authGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
@@ -12,5 +14,8 @@ export const authGuard: CanActivateFn = () => {
   if (auth.isAuthenticated()) {
     return true;
   }
-  return router.createUrlTree(['/login']);
+  return auth.restoreSession().pipe(
+    map((user) => (user != null ? true : router.createUrlTree(['/login']))),
+    catchError(() => of(router.createUrlTree(['/login']))),
+  );
 };

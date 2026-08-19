@@ -17,6 +17,10 @@ export class CategoriesComponent implements OnInit {
   readonly saving = signal(false);
   readonly errorMessage = signal<string | null>(null);
   readonly editingId = signal<number | null>(null);
+  readonly page = signal(0);
+  readonly totalPages = signal(0);
+  readonly totalElements = signal(0);
+  readonly pageSize = 50;
 
   readonly form: FormGroup = this.fb.group({
     name: ['', [Validators.required, Validators.maxLength(120)]],
@@ -30,18 +34,29 @@ export class CategoriesComponent implements OnInit {
 
   startCreate(): void {
     this.editingId.set(-1);
-    this.form.reset({ name: '', description: '', position: this.categories().length + 1 });
+    this.form.reset({ name: '', description: '', position: this.totalElements() + 1 });
   }
 
-  reload(): void {
+  reload(page = this.page()): void {
     this.loading.set(true);
-    this.categoryService.list().subscribe({
-      next: (categories) => {
-        this.categories.set(categories);
+    this.categoryService.list(page, this.pageSize).subscribe({
+      next: (result) => {
+        this.categories.set(result.content);
+        this.page.set(result.number);
+        this.totalPages.set(result.totalPages);
+        this.totalElements.set(result.totalElements);
         this.loading.set(false);
       },
       error: () => this.loading.set(false),
     });
+  }
+
+  previousPage(): void {
+    if (this.page() > 0) this.reload(this.page() - 1);
+  }
+
+  nextPage(): void {
+    if (this.page() + 1 < this.totalPages()) this.reload(this.page() + 1);
   }
 
   startEdit(category: Category): void {

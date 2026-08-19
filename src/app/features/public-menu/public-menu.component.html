@@ -1,134 +1,195 @@
 @if (loading()) {
-  <div class="min-h-screen flex items-center justify-center">
+  <div class="min-h-screen flex items-center justify-center bg-stone-50">
     <div class="text-center">
-      <div class="w-10 h-10 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin mx-auto"></div>
-      <p class="text-slate-500 mt-4 text-sm">Cargando menú…</p>
+      <div class="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin mx-auto shadow-md"></div>
+      <p class="text-stone-500 mt-4 font-medium animate-pulse">Preparando el menú…</p>
     </div>
   </div>
 } @else if (errorMessage()) {
-  <div class="min-h-screen flex items-center justify-center px-4">
-    <div class="text-center">
-      <div class="text-5xl mb-4">🍽️</div>
-      <h1 class="text-xl font-semibold text-slate-900">{{ errorMessage() }}</h1>
-      <p class="text-slate-500 mt-2 text-sm">Verifica el enlace o escanea el código QR nuevamente.</p>
+  <div class="min-h-screen flex items-center justify-center px-4 bg-stone-50">
+    <div class="text-center bg-white p-8 rounded-3xl shadow-xl max-w-sm w-full border border-stone-100">
+      <div class="text-6xl mb-6">🍽️</div>
+      <h1 class="text-2xl font-bold text-stone-900 mb-2">{{ errorMessage() }}</h1>
+      <p class="text-stone-500">Verifica el enlace o escanea el código QR nuevamente.</p>
     </div>
   </div>
 } @else if (menu()) {
-  <div class="min-h-screen bg-slate-50">
-    <!-- Header -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
-      <div class="max-w-md mx-auto px-4 py-4 flex items-center gap-3">
-        @if (menu()!.restaurant.logoUrl) {
-          <img [src]="menu()!.restaurant.logoUrl" alt="Logo" class="w-12 h-12 rounded-full object-cover" />
-        } @else {
-          <div class="w-12 h-12 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold text-lg">
-            {{ menu()!.restaurant.name.charAt(0) }}
-          </div>
-        }
-        <div>
-          <h1 class="font-bold text-lg text-slate-900 leading-tight">{{ menu()!.restaurant.name }}</h1>
-          @if (menu()!.restaurant.address) {
-            <p class="text-xs text-slate-500">{{ menu()!.restaurant.address }}</p>
+  <div class="min-h-screen bg-stone-50 font-sans selection:bg-primary-200 selection:text-primary-900 pb-20">
+    
+    <!-- Hero / Header Section -->
+    <div class="relative w-full h-40 bg-primary-600 overflow-hidden">
+      <!-- Decoración de fondo (patrón simple) -->
+      <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 20px 20px;"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+    </div>
+
+    <!-- Info del Restaurante superpuesta -->
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 relative -mt-16 z-10">
+      <div class="bg-white rounded-3xl shadow-xl border border-stone-100 p-6 text-center transform transition-all hover:shadow-2xl">
+        <div class="relative inline-block">
+          @if (menu()!.restaurant.logoUrl) {
+            <img [src]="menu()!.restaurant.logoUrl" alt="Logo" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg mx-auto bg-white -mt-16" />
+          } @else {
+            <div class="w-24 h-24 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold text-4xl border-4 border-white shadow-lg mx-auto -mt-16">
+              {{ menu()!.restaurant.name.charAt(0) }}
+            </div>
           }
         </div>
+        
+        <h1 class="font-extrabold text-3xl text-stone-900 mt-4 tracking-tight">{{ menu()!.restaurant.name }}</h1>
+        @if (menu()!.restaurant.address) {
+          <div class="flex items-center justify-center gap-1.5 text-stone-500 mt-2 text-sm font-medium">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-primary-500">
+              <path fill-rule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.976.544l.062.029.018.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" clip-rule="evenodd" />
+            </svg>
+            <span>{{ menu()!.restaurant.address }}</span>
+          </div>
+        }
+        @if (menu()!.restaurant.description) {
+          <p class="text-stone-600 mt-3 text-sm leading-relaxed max-w-md mx-auto">{{ menu()!.restaurant.description }}</p>
+        }
       </div>
-    </header>
+    </div>
 
-    <main class="max-w-md mx-auto px-4 pb-16">
-      @if (menu()!.restaurant.description) {
-        <p class="text-sm text-slate-600 mt-4">{{ menu()!.restaurant.description }}</p>
-      }
-
-      @if (menu()!.categories.length === 0) {
-        <div class="text-center py-16">
-          <p class="text-slate-500">El menú aún no tiene categorías.</p>
-        </div>
-      } @else {
-        <!-- Categorías -->
-        <nav class="flex gap-2 overflow-x-auto py-4 -mx-4 px-4">
+    <!-- Navegación Sticky Glassmorphism -->
+    <div class="sticky top-0 z-40 mt-6 backdrop-blur-xl bg-white/70 border-y border-stone-200/50 shadow-sm transition-all">
+      <div class="max-w-2xl mx-auto">
+        <nav class="flex gap-3 overflow-x-auto py-3 px-4 sm:px-6 hide-scrollbar items-center">
           @for (category of menu()!.categories; track category.id) {
             <button
               (click)="selectCategory(category.id)"
               [class]="
                 activeCategory() === category.id
-                  ? 'bg-primary-600 text-white'
-                  : 'bg-white text-slate-700 border border-slate-200'
+                  ? 'bg-stone-900 text-white shadow-md scale-105'
+                  : 'bg-white text-stone-600 hover:bg-stone-100 border border-stone-200 hover:border-stone-300'
               "
-              class="px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition"
+              class="px-5 py-2.5 rounded-2xl text-sm font-semibold whitespace-nowrap transition-all duration-300 ease-out flex-shrink-0"
             >
               {{ category.name }}
             </button>
           }
         </nav>
+      </div>
+    </div>
 
+    <main class="max-w-2xl mx-auto px-4 sm:px-6 pt-8">
+      @if (menu()!.categories.length === 0) {
+        <div class="text-center py-24 bg-white rounded-3xl border border-stone-100 shadow-sm mt-6">
+          <div class="text-4xl mb-3 opacity-50">📋</div>
+          <p class="text-stone-500 font-medium text-lg">El menú aún no tiene categorías.</p>
+        </div>
+      } @else {
         <!-- Productos de la categoría activa -->
-        @for (category of menu()!.categories; track category.id) {
-          @if (category.id === activeCategory()) {
-            <section>
-              @if (category.description) {
-                <p class="text-xs text-slate-500 mb-3">{{ category.description }}</p>
-              }
-              <div class="space-y-3">
-                @for (product of category.products; track product.id) {
-                  <article
-                    class="bg-white rounded-xl border border-slate-200 p-4 flex gap-4"
-                    [class.opacity-60]="!product.available"
-                  >
-                    @if (product.imageUrl) {
-                      <img [src]="product.imageUrl" [alt]="product.name" class="w-20 h-20 rounded-lg object-cover shrink-0" />
-                    } @else {
-                      <div class="w-20 h-20 rounded-lg bg-slate-100 flex items-center justify-center text-2xl shrink-0">
-                        🍽️
-                      </div>
-                    }
-                    <div class="flex-1 min-w-0">
-                      <div class="flex items-start justify-between gap-2">
-                        <h3 class="font-semibold text-slate-900">{{ product.name }}</h3>
-                        <span class="font-bold text-primary-700 whitespace-nowrap">{{ formatCurrency(product.price) }}</span>
-                      </div>
-                      @if (product.description) {
-                        <p class="text-sm text-slate-500 mt-1">{{ product.description }}</p>
-                      }
-                      @if (!product.available) {
-                        <span class="inline-block mt-2 text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">
-                          Agotado
-                        </span>
-                      }
-                    </div>
-                  </article>
-                } @empty {
-                  <p class="text-sm text-slate-500 text-center py-8">Sin productos en esta categoría.</p>
-                }
-              </div>
-            </section>
-          }
-        }
-      }
+        <div class="space-y-8 fade-in">
+          @for (category of menu()!.categories; track category.id) {
+            @if (category.id === activeCategory()) {
+              <section class="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div class="mb-6 flex items-center justify-between">
+                  <h2 class="text-2xl font-bold text-stone-900">{{ category.name }}</h2>
+                  @if (category.description) {
+                    <span class="text-sm font-medium text-primary-600 bg-primary-50 px-3 py-1 rounded-full">
+                      {{ category.description }}
+                    </span>
+                  }
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                  @for (product of category.products; track product.id) {
+                    <article
+                      class="group bg-white rounded-3xl border border-stone-100 p-4 sm:p-5 flex gap-4 sm:gap-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer overflow-hidden relative"
+                      [class.opacity-50]="!product.available"
+                      [class.grayscale]="!product.available"
+                    >
+                      <!-- Decorative blur blob -->
+                      <div class="absolute -right-6 -top-6 w-24 h-24 bg-primary-50 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"></div>
 
-      <!-- Redes y contacto -->
-      <footer class="mt-10 pt-6 border-t border-slate-200 text-center space-y-1">
-        @if (menu()!.restaurant.whatsapp) {
-          <a
-            [href]="'https://wa.me/' + menu()!.restaurant.whatsapp"
-            target="_blank"
-            rel="noopener"
-            class="block text-sm text-primary-600 font-medium hover:underline"
-          >
-            💬 Escríbenos por WhatsApp
-          </a>
-        }
-        <div class="flex justify-center gap-4 text-sm text-slate-500">
-          @if (menu()!.restaurant.instagram) {
-            <a [href]="'https://instagram.com/' + menu()!.restaurant.instagram" target="_blank" rel="noopener" class="hover:text-primary-600">Instagram</a>
-          }
-          @if (menu()!.restaurant.facebook) {
-            <a [href]="'https://facebook.com/' + menu()!.restaurant.facebook" target="_blank" rel="noopener" class="hover:text-primary-600">Facebook</a>
-          }
-          @if (menu()!.restaurant.phone) {
-            <a [href]="'tel:' + menu()!.restaurant.phone" class="hover:text-primary-600">{{ menu()!.restaurant.phone }}</a>
+                      <div class="relative z-10 w-24 h-24 sm:w-32 sm:h-32 shrink-0">
+                        @if (product.imageUrl) {
+                          <img [src]="product.imageUrl" [alt]="product.name" class="w-full h-full rounded-2xl object-cover shadow-sm group-hover:scale-105 transition-transform duration-500" />
+                        } @else {
+                          <div class="w-full h-full rounded-2xl bg-stone-100 flex items-center justify-center text-3xl shadow-sm border border-stone-200 text-stone-300">
+                            🍽️
+                          </div>
+                        }
+                      </div>
+
+                      <div class="flex-1 min-w-0 flex flex-col justify-between relative z-10 py-1">
+                        <div>
+                          <h3 class="font-bold text-stone-900 text-base sm:text-lg leading-tight group-hover:text-primary-600 transition-colors">{{ product.name }}</h3>
+                          @if (product.description) {
+                            <p class="text-xs sm:text-sm text-stone-500 mt-1.5 line-clamp-2 leading-snug">{{ product.description }}</p>
+                          }
+                        </div>
+                        
+                        <div class="mt-3 flex items-center justify-between">
+                          <span class="font-extrabold text-stone-900 text-lg tracking-tight">{{ formatCurrency(product.price) }}</span>
+                          
+                          @if (!product.available) {
+                            <span class="inline-flex items-center text-xs font-bold bg-stone-200 text-stone-600 px-2.5 py-1 rounded-lg">
+                              Agotado
+                            </span>
+                          } @else {
+                            <div class="w-8 h-8 rounded-full bg-stone-100 flex items-center justify-center text-stone-900 group-hover:bg-primary-600 group-hover:text-white transition-colors">
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                              </svg>
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    </article>
+                  } @empty {
+                    <div class="col-span-full bg-white rounded-3xl border border-stone-100 border-dashed p-12 text-center">
+                      <p class="text-stone-500 font-medium">No hay productos disponibles en esta categoría.</p>
+                    </div>
+                  }
+                </div>
+              </section>
+            }
           }
         </div>
-        <p class="text-xs text-slate-400 pt-2">Powered by Menu SaaS</p>
+      }
+
+      <!-- Redes y contacto - Footer mejorado -->
+      <footer class="mt-16 pt-8 pb-8 text-center">
+        <div class="inline-flex flex-wrap justify-center gap-3 mb-8">
+          @if (menu()!.restaurant.whatsapp) {
+            <a
+              [href]="'https://wa.me/' + menu()!.restaurant.whatsapp"
+              target="_blank"
+              rel="noopener"
+              class="flex items-center gap-2 bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white px-4 py-2 rounded-xl text-sm font-bold transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                <path d="M11.96 23.95H12c6.6 0 11.96-5.36 11.96-11.96S18.6 0 12 0 0 5.37 0 12c0 2.11.55 4.1 1.52 5.86l-2.07 5.92 6.07-1.95c1.72.9 3.65 1.38 5.67 1.38l.77.74zM12 2.05c5.51 0 10 4.49 10 10s-4.49 10-10 10c-1.78 0-3.48-.48-4.99-1.37l-.36-.21-3.7 1.18 1.19-3.6-.24-.37A9.97 9.97 0 012.05 12c0-5.51 4.49-10 9.95-10zM17.48 15.6c-.3-.15-1.77-.87-2.05-.97-.28-.1-.48-.15-.68.15-.2.3-.77.97-.95 1.17-.17.2-.35.23-.65.08-.3-.15-1.26-.46-2.4-1.48-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.29-.35.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.68-1.64-.93-2.25-.25-.6-.5-.52-.68-.53-.17-.01-.37-.01-.57-.01-.2 0-.52.07-.8.37-.28.3-1.07 1.05-1.07 2.56s1.1 2.97 1.25 3.17c.15.2 2.17 3.31 5.25 4.64.73.31 1.3.5 1.74.64.73.23 1.4.2 1.93.12.6-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.18-1.42-.08-.12-.28-.2-.58-.35z"/>
+              </svg>
+              WhatsApp
+            </a>
+          }
+          @if (menu()!.restaurant.instagram) {
+            <a [href]="'https://instagram.com/' + menu()!.restaurant.instagram" target="_blank" rel="noopener" class="flex items-center gap-2 bg-pink-50 text-pink-600 hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 hover:text-white px-4 py-2 rounded-xl text-sm font-bold transition-all">
+              Instagram
+            </a>
+          }
+          @if (menu()!.restaurant.facebook) {
+            <a [href]="'https://facebook.com/' + menu()!.restaurant.facebook" target="_blank" rel="noopener" class="flex items-center gap-2 bg-blue-50 text-blue-600 hover:bg-[#1877F2] hover:text-white px-4 py-2 rounded-xl text-sm font-bold transition-all">
+              Facebook
+            </a>
+          }
+          @if (menu()!.restaurant.phone) {
+            <a [href]="'tel:' + menu()!.restaurant.phone" class="flex items-center gap-2 bg-stone-100 text-stone-700 hover:bg-stone-200 px-4 py-2 rounded-xl text-sm font-bold transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+                <path fill-rule="evenodd" d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5H15c-1.149 0-2.263-.15-3.326-.43A13.022 13.022 0 012.43 8.326 13.019 13.019 0 012 5V3.5z" clip-rule="evenodd" />
+              </svg>
+              Llamar
+            </a>
+          }
+        </div>
+        
+        <div class="flex flex-col items-center justify-center opacity-50">
+          <p class="text-xs font-semibold text-stone-400">Desarrollado por</p>
+          <div class="text-sm font-black tracking-widest text-stone-500 mt-0.5">MENU SAAS</div>
+        </div>
       </footer>
     </main>
   </div>

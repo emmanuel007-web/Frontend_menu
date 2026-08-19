@@ -35,14 +35,14 @@ export class DashboardComponent implements OnInit {
       },
     });
 
-    this.categoryService.list().subscribe({
-      next: (categories) => this.categoryCount.set(categories.length),
+    this.categoryService.list(0, 100).subscribe({
+      next: (categories) => this.categoryCount.set(categories.totalElements),
     });
 
-    this.productService.list().subscribe({
+    this.productService.list(undefined, 0, 100).subscribe({
       next: (products) => {
-        this.productCount.set(products.length);
-        this.availableCount.set(products.filter((p) => p.available).length);
+        this.productCount.set(products.totalElements);
+        this.availableCount.set(products.content.filter((p) => p.available).length);
       },
     });
 

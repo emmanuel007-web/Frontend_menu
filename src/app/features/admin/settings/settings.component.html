@@ -1,66 +1,100 @@
-<div>
-  <h1 class="text-2xl font-bold text-slate-900">Plan y suscripción</h1>
-  <p class="text-slate-500 mt-1">Elige el plan que se ajusta a tu restaurante.</p>
+<div class="anim-fade-in-up">
+  <h1 class="text-3xl font-extrabold text-stone-900 tracking-tight">Plan y suscripción</h1>
+  <p class="text-stone-500 mt-1">Elige el plan que se ajusta a tu restaurante.</p>
 
   @if (message()) {
     <div
       [class]="message()!.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-red-50 border-red-200 text-red-700'"
-      class="mt-4 rounded-lg border px-4 py-3 text-sm"
+      class="mt-4 rounded-2xl border px-5 py-4 text-sm flex items-start gap-3 anim-fade-in-scale"
     >
-      {{ message()!.text }}
+      <span class="text-lg">{{ message()!.type === 'success' ? '✅' : '⚠️' }}</span>
+      <span>{{ message()!.text }}</span>
     </div>
   }
 
   @if (subscription()) {
-    <div class="mt-6 bg-emerald-50 border border-emerald-200 rounded-xl p-5 flex items-center gap-3">
-      <span class="text-2xl">✅</span>
-      <div>
-        <p class="font-semibold text-emerald-800">Plan {{ subscription()!.plan.name }} activo</p>
-        <p class="text-sm text-emerald-700">
+    <div
+      [class]="subscription()!.status === 'ACTIVE'
+        ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-emerald-500/20'
+        : 'bg-stone-100 text-stone-700'"
+      class="mt-6 rounded-2xl p-6 flex items-center gap-4 shadow-lg anim-fade-in-scale"
+    >
+      <div
+        class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
+        [class]="subscription()!.status === 'ACTIVE' ? 'bg-white/20' : 'bg-white/60'"
+      >
+        {{ subscription()!.status === 'ACTIVE' ? '✅' : '⏸️' }}
+      </div>
+      <div class="flex-1">
+        <p class="font-extrabold text-lg">
+          {{ subscription()!.status === 'ACTIVE' ? 'Plan ' + subscription()!.plan.name + ' activo' : 'Suscripción ' + subscription()!.status }}
+        </p>
+        <p class="text-sm opacity-80">
           Desde {{ subscription()!.startsAt | date: 'mediumDate' }}
           @if (subscription()!.endsAt) {
             · hasta {{ subscription()!.endsAt | date: 'mediumDate' }}
           }
         </p>
       </div>
+      @if (subscription()!.status === 'ACTIVE') {
+        <button
+          (click)="cancel()"
+          [disabled]="subscribing()"
+          class="rounded-xl px-4 py-2.5 text-sm font-bold transition-all bg-white/20 hover:bg-white/30 disabled:opacity-50"
+        >
+          {{ subscribing() ? 'Cancelando…' : 'Cancelar suscripción' }}
+        </button>
+      }
     </div>
   }
 
   @if (loading()) {
-    <p class="text-slate-500 mt-6">Cargando planes…</p>
+    <div class="flex items-center justify-center py-16">
+      <div class="w-10 h-10 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+    </div>
   } @else {
-    <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
       @for (plan of plans(); track plan.id) {
         <div
-          class="bg-white rounded-2xl border p-6 flex flex-col"
-          [class]="subscription()?.plan?.id === plan.id ? 'border-primary-500 ring-2 ring-primary-100' : 'border-slate-200'"
+          class="bg-white rounded-3xl border-2 p-7 flex flex-col card-hover relative overflow-hidden group"
+          [class]="subscription()?.plan?.id === plan.id ? 'border-primary-500 shadow-lg shadow-primary-500/10' : 'border-stone-100'"
         >
-          <h3 class="font-semibold text-slate-900">{{ plan.name }}</h3>
+          <!-- Active indicator -->
+          @if (subscription()?.plan?.id === plan.id) {
+            <div class="absolute top-4 right-4">
+              <span class="flex h-3 w-3">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-primary-500"></span>
+              </span>
+            </div>
+          }
+
+          <h3 class="font-extrabold text-stone-900 text-lg">{{ plan.name }}</h3>
           @if (plan.description) {
-            <p class="text-sm text-slate-500 mt-1 flex-1">{{ plan.description }}</p>
+            <p class="text-sm text-stone-400 mt-2 flex-1 leading-relaxed">{{ plan.description }}</p>
           } @else {
             <div class="flex-1"></div>
           }
-          <p class="mt-4 text-2xl font-bold text-slate-900">
+          <p class="mt-5 text-3xl font-black text-stone-900 tracking-tight">
             {{ formatCurrency(plan.priceMonthly) }}
-            <span class="text-sm font-normal text-slate-400">/mes</span>
+            <span class="text-sm font-medium text-stone-400">/mes</span>
           </p>
           <button
             (click)="subscribe(plan.code)"
             [disabled]="subscribing() || subscription()?.plan?.id === plan.id"
-            class="mt-4 rounded-lg py-2 text-sm font-semibold transition"
+            class="mt-5 rounded-xl py-3 text-sm font-bold transition-all duration-200"
             [class]="subscription()?.plan?.id === plan.id
-              ? 'bg-emerald-100 text-emerald-700 cursor-default'
-              : 'bg-primary-600 text-white hover:bg-primary-700 disabled:opacity-50'"
+              ? 'bg-emerald-50 text-emerald-600 cursor-default'
+              : 'bg-gradient-to-r from-primary-600 to-primary-500 text-white hover:from-primary-700 hover:to-primary-600 shadow-md shadow-primary-500/20 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 btn-shine disabled:opacity-50'"
           >
-            {{ subscription()?.plan?.id === plan.id ? 'Plan actual' : (subscribing() ? 'Activando…' : 'Activar') }}
+            {{ subscription()?.plan?.id === plan.id ? '✓ Plan actual' : (subscribing() ? 'Activando…' : 'Activar plan') }}
           </button>
         </div>
       }
     </div>
 
-    <p class="text-xs text-slate-400 mt-6">
-      En esta etapa la activación de planes es manual. Próximamente podrás pagar en línea.
+    <p class="text-xs text-stone-400 mt-8 text-center">
+      En modo dev la activación es manual; con STRIPE_SECRET_KEY configurado se abre el checkout de Stripe.
     </p>
   }
 </div>

@@ -41,20 +41,14 @@ export class QrComponent implements OnInit {
   }
 
   downloadPng(): void {
-    const token = localStorage.getItem('menu_saas_access');
-    fetch(`${environment.apiUrl}/qr/png`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    fetch(`${environment.apiUrl}/qr/png`, { credentials: 'include' })
       .then((res) => res.blob())
       .then((blob) => this.saveBlob(blob, 'qr-menu.png'))
       .catch(() => this.errorMessage.set('No se pudo descargar el PNG'));
   }
 
   downloadPdf(): void {
-    const token = localStorage.getItem('menu_saas_access');
-    fetch(`${environment.apiUrl}/qr/pdf`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    fetch(`${environment.apiUrl}/qr/pdf`, { credentials: 'include' })
       .then((res) => res.blob())
       .then((blob) => this.saveBlob(blob, 'qr-menu.pdf'))
       .catch(() => this.errorMessage.set('No se pudo descargar el PDF'));

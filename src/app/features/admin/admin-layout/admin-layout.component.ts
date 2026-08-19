@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 
@@ -10,6 +10,7 @@ import { AuthService } from '../../../core/services/auth.service';
 export class AdminLayoutComponent {
   private readonly auth = inject(AuthService);
   readonly user = this.auth.user;
+  readonly mobileMenuOpen = signal(false);
 
   readonly navItems = [
     { path: '/admin/dashboard', label: 'Dashboard', icon: '📊' },
@@ -21,7 +22,15 @@ export class AdminLayoutComponent {
     { path: '/admin/settings', label: 'Plan y suscripción', icon: '💳' },
   ];
 
+  toggleMobileMenu(): void {
+    this.mobileMenuOpen.update((v) => !v);
+  }
+
+  closeMobileMenu(): void {
+    this.mobileMenuOpen.set(false);
+  }
+
   logout(): void {
-    this.auth.logout();
+    this.auth.forceLogout();
   }
 }
