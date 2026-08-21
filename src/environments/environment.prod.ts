@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: '${API_URL}',
-  appBaseUrl: '${APP_BASE_URL}',
+  apiUrl: '/api',
+  appBaseUrl: typeof window !== 'undefined' ? window.location.origin : '',
 };
