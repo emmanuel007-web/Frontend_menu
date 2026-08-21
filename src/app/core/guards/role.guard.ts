@@ -12,20 +12,14 @@ export const roleGuard = (...allowedRoles: string[]): CanActivateFn => {
     const auth = inject(AuthService);
     const router = inject(Router);
 
-    const checkRole = (role?: string) => {
+    if (auth.isAuthenticated()) {
+      const role = auth.user()?.role;
       if (role && allowedRoles.includes(role)) {
         return true;
       }
       return router.createUrlTree(['/admin/dashboard']);
-    };
-
-    if (auth.isAuthenticated()) {
-      return checkRole(auth.user()?.role);
     }
 
-    return auth.restoreSession().pipe(
-      map((user) => (user != null ? checkRole(user.role) : router.createUrlTree(['/login']))),
-      catchError(() => of(router.createUrlTree(['/login']))),
-    );
+    return router.createUrlTree(['/login']);
   };
 };

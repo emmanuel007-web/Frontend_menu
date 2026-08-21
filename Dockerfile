@@ -20,8 +20,12 @@ RUN npm run build -- --configuration production
 
 # --- Runtime stage ---
 FROM nginx:1.27-alpine
+# BACKEND_ORIGIN: origen del backend (ej. https://mi-backend.onrender.com).
+# PORT: puerto donde escucha nginx (Render inyecta PORT automaticamente).
+ARG BACKEND_ORIGIN=http://backend:8080
+ENV BACKEND_ORIGIN=${BACKEND_ORIGIN} PORT=80
 COPY --from=build /app/dist/frontend-app/browser /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
-  CMD wget -q -O /dev/null http://localhost/ || exit 1
+  CMD wget -q -O /dev/null "http://localhost:${PORT}/" || exit 1

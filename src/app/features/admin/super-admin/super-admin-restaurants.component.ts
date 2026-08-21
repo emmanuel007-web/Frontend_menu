@@ -36,7 +36,7 @@ export class SuperAdminRestaurantsComponent implements OnInit {
         Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/),
       ],
     ],
-    planCode: ['PRO', Validators.required],
+    planCode: ['NEGOCODE', Validators.required],
   });
 
   readonly filteredRestaurants = computed(() => {
@@ -78,7 +78,7 @@ export class SuperAdminRestaurantsComponent implements OnInit {
   }
 
   openCreateModal(): void {
-    this.form.reset({ planCode: 'PRO' });
+    this.form.reset({ planCode: 'NEGOCODE' });
     this.errorMessage.set(null);
     this.showModal.set(true);
   }

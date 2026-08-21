@@ -1,5 +1,5 @@
 server {
-    listen 80;
+    listen ${PORT};
     server_name _;
     root /usr/share/nginx/html;
     index index.html;
@@ -9,9 +9,9 @@ server {
         try_files $uri $uri/ /index.html;
     }
 
-    # Proxy a la API de Spring Boot
+    # Proxy a la API de Spring Boot (BACKEND_ORIGIN via env al arrancar)
     location /api/ {
-        proxy_pass http://backend:8080;
+        proxy_pass ${BACKEND_ORIGIN};
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -20,7 +20,7 @@ server {
 
     # Imágenes subidas por el backend
     location /uploads/ {
-        proxy_pass http://backend:8080;
+        proxy_pass ${BACKEND_ORIGIN};
         proxy_set_header Host $host;
     }
 

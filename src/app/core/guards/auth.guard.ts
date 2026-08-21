@@ -14,8 +14,5 @@ export const authGuard: CanActivateFn = () => {
   if (auth.isAuthenticated()) {
     return true;
   }
-  return auth.restoreSession().pipe(
-    map((user) => (user != null ? true : router.createUrlTree(['/login']))),
-    catchError(() => of(router.createUrlTree(['/login']))),
-  );
+  return router.createUrlTree(['/login']);
 };

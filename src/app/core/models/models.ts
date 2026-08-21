@@ -154,7 +154,7 @@ export interface Subscription {
 
 export interface SubscribeResult {
   subscription: Subscription;
-  checkoutUrl: string | null;
+  checkoutSessionId: string | null;
 }
 
 export interface MenuSummary {

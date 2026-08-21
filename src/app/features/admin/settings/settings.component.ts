@@ -1,7 +1,9 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { Component, inject, signal, OnInit, PLATFORM_ID } from '@angular/core';
+import { DatePipe, isPlatformBrowser } from '@angular/common';
 import { SubscriptionService } from '../../../core/services/subscription.service';
 import { Plan, Subscription } from '../../../core/models/models';
+
+declare const ePayco: any;
 
 @Component({
   selector: 'app-settings',
@@ -10,6 +12,7 @@ import { Plan, Subscription } from '../../../core/models/models';
 })
 export class SettingsComponent implements OnInit {
   private readonly subscriptionService = inject(SubscriptionService);
+  private readonly platformId = inject(PLATFORM_ID);
 
   readonly plans = signal<Plan[]>([]);
   readonly subscription = signal<Subscription | null>(null);
@@ -40,13 +43,11 @@ export class SettingsComponent implements OnInit {
     this.subscriptionService.subscribe(code).subscribe({
       next: (result) => {
         this.subscription.set(result.subscription);
-        this.subscribing.set(false);
-        if (result.checkoutUrl) {
-          // Pasarela configurada: se redirige a Stripe para el pago.
-          this.message.set({ type: 'success', text: 'Te estamos redirigiendo al pago...' });
-          window.location.href = result.checkoutUrl;
+        if (result.checkoutSessionId) {
+          this.openEpaycoCheckout(result.checkoutSessionId);
           return;
         }
+        this.subscribing.set(false);
         this.message.set({ type: 'success', text: 'Plan activado correctamente' });
       },
       error: (err) => {
@@ -54,6 +55,41 @@ export class SettingsComponent implements OnInit {
         this.message.set({ type: 'error', text: err.error?.message ?? 'No se pudo activar el plan' });
       },
     });
+  }
+
+  private openEpaycoCheckout(sessionId: string): void {
+    if (!isPlatformBrowser(this.platformId) || typeof ePayco === 'undefined') {
+      this.subscribing.set(false);
+      this.message.set({ type: 'error', text: 'No se pudo cargar el checkout de pagos' });
+      return;
+    }
+
+    const checkout = ePayco.checkout.configure({
+      sessionId,
+      type: 'onpage',
+      test: true,
+    });
+
+    checkout.setHooks({
+      onCreated: (_data: any) => {
+        this.message.set({ type: 'success', text: 'Checkout de pago abierto' });
+      },
+      onResponse: (_response: any) => {
+        this.message.set({ type: 'success', text: 'Pago procesado correctamente' });
+      },
+      onErrors: (_error: any) => {
+        this.message.set({ type: 'error', text: 'Error al procesar el pago' });
+      },
+      onClosed: (_errors: any) => {
+        this.subscribing.set(false);
+        this.subscriptionService.getMine().subscribe({
+          next: (subscription) => this.subscription.set(subscription),
+          error: () => undefined,
+        });
+      },
+    });
+
+    checkout.open();
   }
 
   cancel(): void {
