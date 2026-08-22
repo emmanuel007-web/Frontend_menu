@@ -1,7 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap, timeout } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { AuthResponse, TokenUser } from '../models/models';
 
@@ -24,11 +24,12 @@ export class AuthService {
 
   /**
    * Bootstrap al arrancar la app: establece la cookie CSRF y, si hay sesión
-   * activa en cookies, restaura el usuario. Nunca falla el arranque.
+   * activa en cookies, restaura el usuario. Nunca falla ni frena indefinidamente el arranque.
    */
   initialize(): Observable<null> {
     return this.bootstrapCsrf().pipe(
       switchMap(() => this.restoreSession()),
+      timeout(3000),
       catchError(() => of(null)),
       map(() => null),
     );
