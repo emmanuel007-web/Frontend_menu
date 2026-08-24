@@ -96,8 +96,9 @@
       </div>
 
       <!-- CATEGORY CHIPS SCROLLER -->
-      <div class="mt-6 flex items-center justify-start sm:justify-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-        @for (cat of categories(); track cat.id) {
+      @if (categories().length > 1) {
+        <div class="mt-6 flex items-center justify-start sm:justify-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+          @for (cat of categories(); track cat.id) {
           <button
             type="button"
             (click)="onSelectCategory(cat.id)"
@@ -115,7 +116,8 @@
             <span>{{ cat.name }}</span>
           </button>
         }
-      </div>
+        </div>
+      }
     </div>
   </section>
 
@@ -165,8 +167,40 @@
       </div>
     </div>
 
+    <!-- CARGANDO -->
+    @if (loading()) {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8">
+        @for (i of [1, 2, 3]; track i) {
+          <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-xs animate-pulse">
+            <div class="h-48 sm:h-52 bg-stone-200"></div>
+            <div class="p-5 space-y-3">
+              <div class="h-5 bg-stone-200 rounded w-2/3"></div>
+              <div class="h-3 bg-stone-100 rounded w-full"></div>
+              <div class="h-3 bg-stone-100 rounded w-4/5"></div>
+              <div class="h-9 bg-stone-200 rounded-xl w-full mt-4"></div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- ERROR DE CARGA -->
+    @if (!loading() && loadError(); as error) {
+      <div class="mt-8 flex flex-col items-center gap-4 text-center bg-red-50 border border-red-200 rounded-3xl p-8">
+        <span class="text-4xl">📡</span>
+        <p class="text-sm font-semibold text-red-700">{{ error }}</p>
+        <button
+          type="button"
+          (click)="retryLoad()"
+          class="px-5 py-2.5 rounded-xl bg-red-600 text-white text-sm font-bold hover:bg-red-700 transition-colors"
+        >
+          Reintentar
+        </button>
+      </div>
+    }
+
     <!-- RESTAURANTS GRID -->
-    @if (restaurants().length > 0) {
+    @if (!loading() && !loadError() && restaurants().length > 0) {
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8">
         @for (r of restaurants(); track r.id) {
           <article
@@ -174,12 +208,18 @@
           >
             <!-- COVER IMAGE & BADGES -->
             <div class="relative h-48 sm:h-52 w-full overflow-hidden bg-stone-100 cursor-pointer" (click)="openMenu(r.slug)">
-              <img
-                [src]="r.coverUrl"
-                [alt]="r.name"
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                loading="lazy"
-              />
+              @if (r.coverUrl) {
+                <img
+                  [src]="r.coverUrl"
+                  [alt]="r.name"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                  loading="lazy"
+                />
+              } @else {
+                <div class="w-full h-full bg-gradient-to-br from-stone-200 via-stone-100 to-stone-300 flex items-center justify-center text-6xl opacity-60 group-hover:scale-105 transition-transform duration-500">
+                  🍽️
+                </div>
+              }
               <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
 
               <!-- Top Left: Open / Closed Badge -->
@@ -198,35 +238,49 @@
 
               <!-- Top Right: Rating & Price -->
               <div class="absolute top-3 right-3 flex items-center gap-1.5">
-                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/95 backdrop-blur-md text-stone-900 text-xs font-black shadow-sm">
-                  <span class="text-amber-500">★</span>
-                  <span>{{ r.rating }}</span>
-                  <span class="text-[10px] text-stone-400 font-semibold">({{ r.reviewCount }})</span>
-                </span>
-                <span class="px-2 py-1 rounded-lg bg-stone-900/80 backdrop-blur-md text-white text-[11px] font-bold">
-                  {{ r.priceLevel }}
-                </span>
+                @if (r.rating != null) {
+                  <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/95 backdrop-blur-md text-stone-900 text-xs font-black shadow-sm">
+                    <span class="text-amber-500">★</span>
+                    <span>{{ r.rating }}</span>
+                    <span class="text-[10px] text-stone-400 font-semibold">({{ r.reviewCount }})</span>
+                  </span>
+                }
+                @if (r.productCount > 0) {
+                  <span class="px-2 py-1 rounded-lg bg-stone-900/80 backdrop-blur-md text-white text-[11px] font-bold">
+                    {{ r.productCount }} {{ r.productCount === 1 ? 'plato' : 'platos' }}
+                  </span>
+                }
               </div>
 
               <!-- Bottom Content Overlay: Logo & City -->
               <div class="absolute bottom-3 left-3 right-3 flex items-end justify-between">
                 <div class="flex items-center gap-2.5">
-                  <img
-                    [src]="r.logoUrl"
-                    [alt]="r.name"
-                    class="w-11 h-11 rounded-xl object-cover border-2 border-white shadow-md bg-white shrink-0"
-                  />
+                  @if (r.logoUrl) {
+                    <img
+                      [src]="r.logoUrl"
+                      [alt]="r.name"
+                      class="w-11 h-11 rounded-xl object-cover border-2 border-white shadow-md bg-white shrink-0"
+                    />
+                  } @else {
+                    <span class="w-11 h-11 rounded-xl object-cover border-2 border-white shadow-md bg-white shrink-0 flex items-center justify-center text-xl">🍽️</span>
+                  }
                   <div class="text-white drop-shadow-sm truncate">
-                    <span class="text-xs font-bold text-amber-300 block leading-tight">{{ r.cuisine }}</span>
-                    <span class="text-[11px] text-stone-200 flex items-center gap-1">
-                      <span>📍</span> {{ r.city }}
-                    </span>
+                    @if (r.cuisine) {
+                      <span class="text-xs font-bold text-amber-300 block leading-tight">{{ r.cuisine }}</span>
+                    }
+                    @if (r.city) {
+                      <span class="text-[11px] text-stone-200 flex items-center gap-1">
+                        <span>📍</span> {{ r.city }}
+                      </span>
+                    }
                   </div>
                 </div>
 
-                <span class="text-[11px] font-bold text-white/90 bg-black/40 backdrop-blur-xs px-2 py-0.5 rounded-md shrink-0">
-                  ⏱️ {{ r.deliveryTime }}
-                </span>
+                @if (r.deliveryTime) {
+                  <span class="text-[11px] font-bold text-white/90 bg-black/40 backdrop-blur-xs px-2 py-0.5 rounded-md shrink-0">
+                    ⏱️ {{ r.deliveryTime }}
+                  </span>
+                }
               </div>
             </div>
 
@@ -247,22 +301,26 @@
                 </p>
 
                 <!-- Featured Dish Highlight -->
-                <div class="mt-3.5 bg-amber-50/70 border border-amber-200/80 rounded-xl p-2.5 flex items-start gap-2">
-                  <span class="text-sm">✨</span>
-                  <div class="text-xs">
-                    <span class="font-bold text-amber-900 block leading-tight">Plato Recomendado:</span>
-                    <span class="text-amber-800 font-medium leading-tight line-clamp-1">{{ r.featuredDish }}</span>
+                @if (r.featuredDish) {
+                  <div class="mt-3.5 bg-amber-50/70 border border-amber-200/80 rounded-xl p-2.5 flex items-start gap-2">
+                    <span class="text-sm">✨</span>
+                    <div class="text-xs">
+                      <span class="font-bold text-amber-900 block leading-tight">Plato Recomendado:</span>
+                      <span class="text-amber-800 font-medium leading-tight line-clamp-1">{{ r.featuredDish }}</span>
+                    </div>
                   </div>
-                </div>
+                }
 
                 <!-- Tags -->
-                <div class="mt-3.5 flex flex-wrap gap-1.5">
-                  @for (tag of r.tags; track tag) {
-                    <span class="text-[10px] font-semibold bg-stone-100 text-stone-600 px-2 py-0.5 rounded-md">
-                      #{{ tag }}
-                    </span>
-                  }
-                </div>
+                @if (r.tags?.length) {
+                  <div class="mt-3.5 flex flex-wrap gap-1.5">
+                    @for (tag of r.tags; track tag) {
+                      <span class="text-[10px] font-semibold bg-stone-100 text-stone-600 px-2 py-0.5 rounded-md">
+                        #{{ tag }}
+                      </span>
+                    }
+                  </div>
+                }
               </div>
 
               <!-- ACTION BUTTONS -->
@@ -279,22 +337,24 @@
                 </button>
 
                 <!-- WhatsApp Quick Contact -->
-                <button
-                  type="button"
-                  (click)="openWhatsApp(r.whatsapp, r.name)"
-                  title="Contactar o consultar por WhatsApp"
-                  class="p-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-xl transition-colors shrink-0"
-                >
-                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
-                  </svg>
-                </button>
+                @if (r.whatsapp) {
+                  <button
+                    type="button"
+                    (click)="openWhatsApp(r.whatsapp, r.name)"
+                    title="Contactar o consultar por WhatsApp"
+                    class="p-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-xl transition-colors shrink-0"
+                  >
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
+                    </svg>
+                  </button>
+                }
               </div>
             </div>
           </article>
         }
       </div>
-    } @else {
+    } @else if (!loading() && !loadError()) {
       <!-- EMPTY STATE -->
       <div class="bg-white rounded-3xl border border-stone-200 p-12 text-center max-w-lg mx-auto my-12 shadow-xs">
         <div class="w-16 h-16 bg-stone-100 text-stone-400 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl">

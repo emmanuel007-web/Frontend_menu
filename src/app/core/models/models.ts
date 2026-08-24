@@ -45,24 +45,25 @@ export interface DirectoryRestaurant {
   id: number;
   name: string;
   slug: string;
-  tagline: string;
   description: string;
-  cuisine: string;
-  cuisineCategory: string; // 'burgers' | 'pizza' | 'grill' | 'sushi' | 'cafe' | 'mexican' | 'healthy' | 'italian'
-  city: string;
-  address: string;
-  phone: string;
-  whatsapp: string;
-  coverUrl: string;
-  logoUrl: string;
-  rating: number;
-  reviewCount: number;
-  priceLevel: '$' | '$$' | '$$$' | '$$$$';
-  deliveryTime: string;
-  isOpen: boolean;
-  featuredDish: string;
-  tags: string[];
+  logoUrl: string | null;
+  phone: string | null;
+  whatsapp: string | null;
+  address: string | null;
   productCount: number;
+  // Campos enriquecidos opcionales (aun sin datos reales en BD)
+  tagline?: string;
+  cuisine?: string;
+  cuisineCategory?: string;
+  city?: string;
+  coverUrl?: string | null;
+  rating?: number;
+  reviewCount?: number;
+  priceLevel?: '$' | '$$' | '$$$' | '$$$$';
+  deliveryTime?: string;
+  isOpen?: boolean;
+  featuredDish?: string;
+  tags?: string[];
 }
 
 export interface DirectoryFilter {

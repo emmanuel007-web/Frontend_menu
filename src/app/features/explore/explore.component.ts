@@ -25,6 +25,8 @@ export class ExploreComponent {
   readonly filter = this.directoryService.filter;
   readonly totalCount = this.directoryService.totalRestaurantsCount;
   readonly activeCount = this.directoryService.activeResultsCount;
+  readonly loading = this.directoryService.loading;
+  readonly loadError = this.directoryService.loadError;
 
   constructor() {
     this.searchControl.valueChanges.subscribe((val) => {
@@ -54,6 +56,10 @@ export class ExploreComponent {
     this.searchControl.setValue('');
     this.selectedCity.set('Todas las ciudades');
     this.directoryService.resetFilters();
+  }
+
+  retryLoad(): void {
+    this.directoryService.load();
   }
 
   openMenu(slug: string): void {
