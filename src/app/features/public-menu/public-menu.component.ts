@@ -1,6 +1,6 @@
 import { Component, effect, inject, input, signal, computed } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MenuService } from '../../core/services/menu.service';
 import { OrderService } from '../../core/services/order.service';
 import { CartItem, Order, OrderType, PublicMenu } from '../../core/models/models';
@@ -16,7 +16,7 @@ interface DishModalItem {
 
 @Component({
   selector: 'app-public-menu',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './public-menu.component.html',
 })
 export class PublicMenuComponent {
