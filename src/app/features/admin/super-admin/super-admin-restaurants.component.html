@@ -2,6 +2,12 @@
   <!-- Header -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div>
+      <a
+        routerLink="/admin/super-admin/dashboard"
+        class="inline-flex items-center gap-1.5 text-sm font-semibold text-stone-500 hover:text-primary-600 transition-colors mb-2"
+      >
+        ← Volver al Panel Super Admin
+      </a>
       <h1 class="text-3xl font-extrabold text-stone-900 tracking-tight">Restaurantes del Sistema</h1>
       <p class="text-stone-500 mt-1">Administra todos los restaurantes registrados en la plataforma.</p>
     </div>
@@ -33,6 +39,19 @@
       />
     </div>
   </div>
+
+  <!-- Error de carga -->
+  @if (loadError(); as error) {
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-red-50 border border-red-200 rounded-2xl p-4">
+      <p class="text-sm font-semibold text-red-700">{{ error }}</p>
+      <button
+        (click)="loadRestaurants()"
+        class="px-4 py-2 rounded-xl bg-red-600 text-white text-sm font-bold hover:bg-red-700 transition-colors shrink-0"
+      >
+        Reintentar
+      </button>
+    </div>
+  }
 
   <!-- Table Card -->
   <div class="bg-white rounded-3xl border border-stone-100 shadow-sm overflow-hidden">

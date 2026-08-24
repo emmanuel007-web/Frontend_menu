@@ -1,12 +1,13 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { AdminService } from '../../../core/services/admin.service';
 import { AdminRestaurant } from '../../../core/models/models';
 
 @Component({
   selector: 'app-super-admin-restaurants',
-  imports: [ReactiveFormsModule, DatePipe],
+  imports: [ReactiveFormsModule, DatePipe, RouterLink],
   templateUrl: './super-admin-restaurants.component.html',
 })
 export class SuperAdminRestaurantsComponent implements OnInit {
@@ -19,6 +20,7 @@ export class SuperAdminRestaurantsComponent implements OnInit {
   readonly showModal = signal(false);
   readonly submitting = signal(false);
   readonly errorMessage = signal<string | null>(null);
+  readonly loadError = signal<string | null>(null);
 
   readonly form: FormGroup = this.fb.group({
     restaurantName: ['', [Validators.required, Validators.maxLength(120)]],
@@ -57,12 +59,20 @@ export class SuperAdminRestaurantsComponent implements OnInit {
 
   loadRestaurants(): void {
     this.loading.set(true);
+    this.loadError.set(null);
     this.adminService.listRestaurants().subscribe({
       next: (list) => {
         this.restaurants.set(list);
         this.loading.set(false);
       },
-      error: () => this.loading.set(false),
+      error: (err) => {
+        this.loading.set(false);
+        this.loadError.set(
+          err.status === 401 || err.status === 403
+            ? 'Tu sesión no tiene permisos de Super Admin. Vuelve a iniciar sesión con la cuenta correcta.'
+            : 'No se pudieron cargar los restaurantes. Verifica tu conexión e inténtalo de nuevo.'
+        );
+      },
     });
   }
 
