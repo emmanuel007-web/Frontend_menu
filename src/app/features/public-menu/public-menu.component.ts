@@ -324,7 +324,7 @@ export class PublicMenuComponent {
     });
 
     message += `\n💰 *Total a Pagar:* *${this.formatCurrency(this.cartTotalAmount())}*\n\n`;
-    message += `_Enviado desde el Menú Digital NegoCode_ 🚀`;
+    message += `_Enviado desde el Menú Digital Tavita_ 🚀`;
 
     const cleanPhone = phone.replace(/\D/g, '');
     const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;

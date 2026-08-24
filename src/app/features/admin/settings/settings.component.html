@@ -2,7 +2,7 @@
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div>
       <h1 class="text-3xl font-extrabold text-stone-900 tracking-tight">Plan y Suscripción</h1>
-      <p class="text-stone-500 mt-1">Acceso total a la plataforma NegoCode para tu restaurante.</p>
+      <p class="text-stone-500 mt-1">Acceso total a la plataforma Tavita para tu restaurante.</p>
     </div>
     <span class="inline-flex items-center gap-1.5 bg-amber-50 text-amber-800 text-xs font-bold px-3 py-1.5 rounded-full border border-amber-200 shadow-xs self-start sm:self-auto">
       ⭐ Suscripción Única Todo Incluido
@@ -35,7 +35,7 @@
       <div class="flex-1">
         <div class="flex items-center gap-2">
           <p class="font-extrabold text-lg">
-            {{ subscription()!.status === 'ACTIVE' ? 'Suscripción NegoCode Activa' : 'Suscripción ' + subscription()!.status }}
+            {{ subscription()!.status === 'ACTIVE' ? 'Suscripción Tavita Activa' : 'Suscripción ' + subscription()!.status }}
           </p>
           <span class="bg-white/20 backdrop-blur-sm text-white text-[11px] font-black uppercase px-2.5 py-0.5 rounded-md">
             {{ subscription()!.plan.name }}

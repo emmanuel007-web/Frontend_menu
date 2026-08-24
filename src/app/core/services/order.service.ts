@@ -5,7 +5,7 @@ import { ApiService } from './api.service';
 import { CreateOrderRequest, Order, OrderStatus } from '../models/models';
 import { INITIAL_SAMPLE_ORDERS, DEMO_PUBLIC_MENU } from '../data/demo-menu.data';
 
-const ORDERS_STORAGE_KEY = 'negocode_orders_cache';
+const ORDERS_STORAGE_KEY = 'tavita_orders_cache';
 
 @Injectable({ providedIn: 'root' })
 export class OrderService {

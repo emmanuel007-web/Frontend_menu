@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- Vibrant gastronomic gradient -->
+    <linearGradient id="tavitaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF5722" />
+      <stop offset="50%" stop-color="#FF7043" />
+      <stop offset="100%" stop-color="#FFA726" />
+    </linearGradient>
+
+    <linearGradient id="tavitaAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#FF5722" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <!-- ISOTYPE / EMBLEM (T + Cloche + Table Monogram) -->
+  <g transform="translate(0, -10)">
+    <!-- Plate / Cloche Dome Arch (T Top bar) -->
+    <path 
+      d="M 125 140 
+         C 125 140 180 85 250 85 
+         C 320 85 375 140 375 140 
+         C 382 146 378 156 368 156 
+         L 132 156 
+         C 122 156 118 146 125 140 Z" 
+      fill="url(#tavitaGrad)" 
+      filter="url(#shadow)"
+    />
+
+    <!-- Cloche handle dot -->
+    <circle cx="250" cy="72" r="14" fill="#FF5722" />
+
+    <!-- T Stem (Modern organic pillar) -->
+    <path 
+      d="M 232 175 
+         C 232 168 238 162 245 162 
+         L 255 162 
+         C 262 162 268 168 268 175 
+         L 268 255 
+         C 268 268 258 278 245 278 
+         L 235 278 
+         C 220 278 210 265 210 250 
+         C 210 240 218 232 228 232 
+         L 232 232 
+         Z" 
+      fill="#1C1917" 
+    />
+
+    <!-- Leaf / Flavor Spark Accent -->
+    <path 
+      d="M 285 170 
+         C 305 170 322 184 325 204 
+         C 305 204 288 190 285 170 Z" 
+      fill="url(#tavitaAccent)" 
+    />
+  </g>
+
+  <!-- BRAND NAME: Tavita -->
+  <g transform="translate(250, 360)" text-anchor="middle">
+    <text 
+      font-family="system-ui, -apple-system, 'Plus Jakarta Sans', 'Montserrat', sans-serif" 
+      font-weight="900" 
+      font-size="82" 
+      letter-spacing="-1.5" 
+      fill="#1C1917">
+      Tavita
+    </text>
+  </g>
+
+  <!-- SLOGAN / SUBTITLE -->
+  <g transform="translate(250, 420)" text-anchor="middle">
+    <text 
+      font-family="system-ui, -apple-system, 'Plus Jakarta Sans', 'Montserrat', sans-serif" 
+      font-weight="800" 
+      font-size="19" 
+      letter-spacing="6" 
+      fill="#FF5722">
+      MENÚ DIGITAL &amp; PEDIDOS
+    </text>
+  </g>
+</svg>
