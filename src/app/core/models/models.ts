@@ -69,11 +69,40 @@ export interface DirectoryRestaurant {
   tags?: string[];
 }
 
+export interface DirectoryDish {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+  restaurantName: string;
+  restaurantSlug: string;
+  restaurantLogo: string;
+  cuisineCategory: string;
+  tags: string[];
+}
+
+export interface DishOption {
+  id: string;
+  name: string;
+  price: number;
+}
+
+export interface DishCustomization {
+  selectedTerm?: string;
+  selectedOptions: DishOption[];
+  notes?: string;
+  extraCost: number;
+}
+
 export interface DirectoryFilter {
   query?: string;
   cuisineCategory?: string;
   city?: string;
   onlyOpen?: boolean;
+  priceLevel?: string;
+  onlyFavorites?: boolean;
+  viewMode?: 'restaurants' | 'dishes';
 }
 
 export interface RestaurantRequest {

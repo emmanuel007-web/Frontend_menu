@@ -107,12 +107,17 @@ export class PublicMenuComponent {
   });
 
   constructor() {
-    // Check query params for table / mesa preset
+    // Check query params for table / mesa preset and search dish
     this.route.queryParamMap.subscribe((params) => {
       const mesa = params.get('mesa') || params.get('table') || params.get('m');
       if (mesa) {
         this.selectedTablePreset.set(mesa);
         this.orderForm.patchValue({ tableNumber: `Mesa ${mesa}` });
+      }
+
+      const q = params.get('q');
+      if (q) {
+        this.searchQuery.set(q);
       }
     });
 

@@ -199,7 +199,117 @@ export const DIRECTORY_CATEGORIES = [
   { id: 'italian', name: 'Pastas & Italiana', icon: '🍝', count: 1 },
 ];
 
-export const DIRECTORY_CITIES = ['Todas las ciudades', 'Bogotá', 'Medellín', 'Cali', 'Barranquilla', 'Bucaramanga'];
+export const DIRECTORY_CITIES = ['La Tebaida, Quindío'];
+
+export const DIRECTORY_DISHES: Array<{
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+  restaurantName: string;
+  restaurantSlug: string;
+  restaurantLogo: string;
+  cuisineCategory: string;
+  tags: string[];
+}> = [
+  {
+    id: 101,
+    name: 'Bife de Chorizo Premium (400g)',
+    description: 'Corte grueso de lomo ancho madurado 28 días, sellado a la brasa de quebracho con chimichurri rústico y papas criollas al romero.',
+    price: 49500,
+    imageUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80',
+    restaurantName: 'NegoBistro & Parrilla Gourmet',
+    restaurantSlug: 'negobistro-gourmet',
+    restaurantLogo: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80',
+    cuisineCategory: 'grill',
+    tags: ['Cortes Angus', 'Parrilla', 'Recomendado'],
+  },
+  {
+    id: 102,
+    name: 'La Trufada Monster Burger',
+    description: 'Doble carne angus (150g c/u), queso gouda ahumado, tocineta confitada en panela, cebolla crispy y mayonesa de trufa negra.',
+    price: 36900,
+    imageUrl: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80',
+    restaurantName: 'NegoBistro & Parrilla Gourmet',
+    restaurantSlug: 'negobistro-gourmet',
+    restaurantLogo: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80',
+    cuisineCategory: 'burgers',
+    tags: ['Burger Gourmet', 'Tocineta', 'Trufa'],
+  },
+  {
+    id: 103,
+    name: 'Pizza Margherita DOC Napolitana',
+    description: 'Tomate San Marzano, mozzarella fior di latte fresca, albahaca genovesa y aceite de oliva virgen extra en horno de leña a 450°C.',
+    price: 36000,
+    imageUrl: 'https://images.unsplash.com/photo-1604382355076-af4b0eb60143?auto=format&fit=crop&w=600&q=80',
+    restaurantName: 'Bella Napoli Forno & Pizzería',
+    restaurantSlug: 'bella-napoli-pizzeria',
+    restaurantLogo: 'https://images.unsplash.com/photo-1590846406792-0adc7f938f1d?auto=format&fit=crop&w=200&q=80',
+    cuisineCategory: 'pizza',
+    tags: ['Horno de Leña', 'Masa Madre', 'Vegetariana'],
+  },
+  {
+    id: 104,
+    name: 'Classic Double Smash Cheese',
+    description: 'Dos carnes smash (90g c/u) con costra crocante, doble queso cheddar fundido, pepinillos dulces y salsa especial en pan de papa.',
+    price: 24900,
+    imageUrl: 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=600&q=80',
+    restaurantName: 'Smash Bros Artisan Burgers',
+    restaurantSlug: 'smash-bros-burgers',
+    restaurantLogo: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=200&q=80',
+    cuisineCategory: 'burgers',
+    tags: ['Smash', 'Fast Gourmet', 'Cheddar'],
+  },
+  {
+    id: 105,
+    name: 'Acevichado Roll Imperial (10 bocados)',
+    description: 'Langostino furai crocante y aguacate, cubierto con láminas finas de atún fresco y bañado en salsa acevichada cremosa al ají amarillo.',
+    price: 39500,
+    imageUrl: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=600&q=80',
+    restaurantName: 'Omakase Nikkei & Sushi Lounge',
+    restaurantSlug: 'omakase-nikkei-sushi',
+    restaurantLogo: 'https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=200&q=80',
+    cuisineCategory: 'sushi',
+    tags: ['Sushi Fusión', 'Nikkei', 'Mariscos'],
+  },
+  {
+    id: 106,
+    name: 'Tostada Nórdica de Salmón & Huevo Poché',
+    description: 'Pan de masa madre tostado, queso crema a las finas hierbas, aguacate hass laminado, salmón ahumado y huevo poché con eneldo.',
+    price: 28500,
+    imageUrl: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=600&q=80',
+    restaurantName: 'Origen Café & Brunch de Especialidad',
+    restaurantSlug: 'origen-cafe-brunch',
+    restaurantLogo: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=200&q=80',
+    cuisineCategory: 'cafe',
+    tags: ['Brunch', 'Masa Madre', 'Salmón'],
+  },
+  {
+    id: 107,
+    name: 'Tacos de Birria Tapatía con Consomé',
+    description: '3 tacos de carne de res estofada en adobo de chiles secos, queso mozzarella gratinado, cebolla, cilantro y taza de consomé caliente.',
+    price: 26000,
+    imageUrl: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=600&q=80',
+    restaurantName: 'Taquería La Chingada Cantina',
+    restaurantSlug: 'taqueria-la-chingada',
+    restaurantLogo: 'https://images.unsplash.com/photo-1552332386-f8dd00dc2f85?auto=format&fit=crop&w=200&q=80',
+    cuisineCategory: 'mexican',
+    tags: ['Tacos', 'Birria', 'Tradicional'],
+  },
+  {
+    id: 108,
+    name: 'Poké Bowl de Salmón & Aguacate',
+    description: 'Base de arroz sushi, cubos de salmón fresco marinados en sésamo y soya, edamames, mango en cubos, repollo morado y mayo sriracha.',
+    price: 32000,
+    imageUrl: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80',
+    restaurantName: 'Verde & Vida Healthy Bowls',
+    restaurantSlug: 'verde-vida-bowls',
+    restaurantLogo: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=200&q=80',
+    cuisineCategory: 'healthy',
+    tags: ['Healthy', 'Sin Gluten', 'Omega 3'],
+  },
+];
 
 // Map of slug to specific menus for high fidelity exploration
 export const MULTI_RESTAURANT_MENUS: Record<string, PublicMenu> = {
