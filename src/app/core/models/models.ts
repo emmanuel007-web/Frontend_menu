@@ -41,6 +41,37 @@ export interface Restaurant {
   updatedAt: string;
 }
 
+export interface DirectoryRestaurant {
+  id: number;
+  name: string;
+  slug: string;
+  tagline: string;
+  description: string;
+  cuisine: string;
+  cuisineCategory: string; // 'burgers' | 'pizza' | 'grill' | 'sushi' | 'cafe' | 'mexican' | 'healthy' | 'italian'
+  city: string;
+  address: string;
+  phone: string;
+  whatsapp: string;
+  coverUrl: string;
+  logoUrl: string;
+  rating: number;
+  reviewCount: number;
+  priceLevel: '$' | '$$' | '$$$' | '$$$$';
+  deliveryTime: string;
+  isOpen: boolean;
+  featuredDish: string;
+  tags: string[];
+  productCount: number;
+}
+
+export interface DirectoryFilter {
+  query?: string;
+  cuisineCategory?: string;
+  city?: string;
+  onlyOpen?: boolean;
+}
+
 export interface RestaurantRequest {
   name: string;
   slug: string;
