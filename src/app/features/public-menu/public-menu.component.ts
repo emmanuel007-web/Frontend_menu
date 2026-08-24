@@ -68,6 +68,9 @@ export class PublicMenuComponent {
     this.cart().reduce((sum, item) => sum + item.unitPrice * item.quantity, 0)
   );
 
+  /** El dueño puede cerrar el restaurante: se bloquea todo pedido. */
+  readonly isClosed = computed(() => this.menu()?.restaurant.open === false);
+
   // Filtered categories & products based on search & tags
   readonly filteredCategories = computed(() => {
     const currentMenu = this.menu();
@@ -188,6 +191,7 @@ export class PublicMenuComponent {
     quantity = 1,
     notes = ''
   ): void {
+    if (this.isClosed()) return;
     this.cart.update((items) => {
       const existingIndex = items.findIndex((i) => i.productId === product.id && i.notes === notes);
       if (existingIndex !== -1) {
@@ -262,7 +266,7 @@ export class PublicMenuComponent {
   }
 
   submitOrder(): void {
-    if (this.orderForm.invalid || this.cart().length === 0 || this.submittingOrder()) return;
+    if (this.isClosed() || this.orderForm.invalid || this.cart().length === 0 || this.submittingOrder()) return;
 
     this.submittingOrder.set(true);
     this.orderErrorMessage.set(null);
@@ -298,6 +302,7 @@ export class PublicMenuComponent {
   }
 
   sendOrderByWhatsApp(): void {
+    if (this.isClosed()) return;
     const restaurant = this.menu()?.restaurant;
     const phone = restaurant?.whatsapp || restaurant?.phone || '573009876543';
     const formVal = this.orderForm.value;

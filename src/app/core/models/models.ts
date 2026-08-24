@@ -37,6 +37,7 @@ export interface Restaurant {
   instagram: string | null;
   facebook: string | null;
   active: boolean;
+  open: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -51,6 +52,8 @@ export interface DirectoryRestaurant {
   whatsapp: string | null;
   address: string | null;
   productCount: number;
+  /** Interruptor abierto/cerrado controlado por el dueño. */
+  open?: boolean;
   // Campos enriquecidos opcionales (aun sin datos reales en BD)
   tagline?: string;
   cuisine?: string;
@@ -139,6 +142,7 @@ export interface PublicMenu {
     whatsapp: string | null;
     instagram: string | null;
     facebook: string | null;
+    open: boolean;
   };
   categories: Array<{
     id: number;

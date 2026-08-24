@@ -113,6 +113,21 @@
       </div>
     </div>
 
+    <!-- AVISO: RESTAURANTE CERRADO -->
+    @if (isClosed()) {
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 mt-6">
+        <div class="bg-red-50 border-2 border-red-200 rounded-2xl px-5 py-4 flex items-start gap-3">
+          <span class="text-2xl shrink-0">🔴</span>
+          <div>
+            <p class="font-extrabold text-red-800 text-sm">Estamos cerrados en este momento</p>
+            <p class="text-xs text-red-600 mt-1 leading-relaxed">
+              El restaurante no está recibiendo pedidos ahora mismo. Puedes ver el menú, pero no enviar pedidos. ¡Vuelve pronto!
+            </p>
+          </div>
+        </div>
+      </div>
+    }
+
     <!-- Search & Dietary Filters Section -->
     <div class="max-w-3xl mx-auto px-4 sm:px-6 mt-6 space-y-3">
       <!-- Live Search Bar -->
@@ -290,6 +305,10 @@
                       <span class="inline-flex items-center text-xs font-bold bg-stone-100 text-stone-500 px-3 py-1.5 rounded-xl border border-stone-200">
                         Agotado
                       </span>
+                    } @else if (isClosed()) {
+                      <span class="inline-flex items-center gap-1 text-xs font-bold bg-red-50 text-red-600 px-3 py-1.5 rounded-xl border border-red-200">
+                        🔴 Cerrado
+                      </span>
                     } @else {
                       @if (getItemQuantity(product.id) === 0) {
                         <button
@@ -442,14 +461,20 @@
 
           <!-- Footer Button -->
           <div class="p-4 bg-stone-50 border-t border-stone-100">
-            <button
-              (click)="addDetailToCart()"
-              class="w-full py-4 rounded-2xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-extrabold text-base hover:from-primary-700 hover:to-primary-600 shadow-lg shadow-primary-500/25 transition-all flex items-center justify-center gap-2 btn-shine"
-            >
-              <span>Agregar al Pedido</span>
-              <span>•</span>
-              <span>{{ formatCurrency(selectedDish()!.price * dishDetailQuantity()) }}</span>
-            </button>
+            @if (isClosed()) {
+              <div class="w-full py-4 rounded-2xl bg-red-50 text-red-700 font-extrabold text-sm flex items-center justify-center gap-2 border border-red-200">
+                🔴 Cerrado — no se reciben pedidos
+              </div>
+            } @else {
+              <button
+                (click)="addDetailToCart()"
+                class="w-full py-4 rounded-2xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-extrabold text-base hover:from-primary-700 hover:to-primary-600 shadow-lg shadow-primary-500/25 transition-all flex items-center justify-center gap-2 btn-shine"
+              >
+                <span>Agregar al Pedido</span>
+                <span>•</span>
+                <span>{{ formatCurrency(selectedDish()!.price * dishDetailQuantity()) }}</span>
+              </button>
+            }
           </div>
         </div>
       </div>
@@ -674,26 +699,32 @@
 
             <!-- Submit Buttons: 1) Send direct to Kitchen, 2) Send via WhatsApp -->
             <div class="space-y-2 pt-2">
-              <button
-                type="submit"
-                [disabled]="orderForm.invalid || submittingOrder()"
-                class="w-full rounded-2xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-extrabold py-3.5 text-sm hover:from-primary-700 hover:to-primary-600 disabled:opacity-50 transition-all shadow-lg shadow-primary-500/25 btn-shine flex items-center justify-center gap-2"
-              >
-                @if (submittingOrder()) {
-                  <span class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                  <span>Enviando pedido a cocina…</span>
-                } @else {
-                  <span>🍳 Enviar Pedido a Cocina ({{ formatCurrency(cartTotalAmount()) }})</span>
-                }
-              </button>
+              @if (isClosed()) {
+                <div class="w-full rounded-2xl bg-red-50 text-red-700 font-extrabold py-3.5 text-sm flex items-center justify-center gap-2 border border-red-200">
+                  🔴 El restaurante está cerrado — no puede recibir tu pedido
+                </div>
+              } @else {
+                <button
+                  type="submit"
+                  [disabled]="orderForm.invalid || submittingOrder()"
+                  class="w-full rounded-2xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-extrabold py-3.5 text-sm hover:from-primary-700 hover:to-primary-600 disabled:opacity-50 transition-all shadow-lg shadow-primary-500/25 btn-shine flex items-center justify-center gap-2"
+                >
+                  @if (submittingOrder()) {
+                    <span class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                    <span>Enviando pedido a cocina…</span>
+                  } @else {
+                    <span>🍳 Enviar Pedido a Cocina ({{ formatCurrency(cartTotalAmount()) }})</span>
+                  }
+                </button>
 
-              <button
-                type="button"
-                (click)="sendOrderByWhatsApp()"
-                class="w-full rounded-2xl bg-[#25D366] text-white font-extrabold py-3 text-sm hover:bg-[#1EBE5D] transition-colors shadow-md shadow-[#25D366]/20 flex items-center justify-center gap-2"
-              >
-                <span>💬 Pedir por WhatsApp Directo</span>
-              </button>
+                <button
+                  type="button"
+                  (click)="sendOrderByWhatsApp()"
+                  class="w-full rounded-2xl bg-[#25D366] text-white font-extrabold py-3 text-sm hover:bg-[#1EBE5D] transition-colors shadow-md shadow-[#25D366]/20 flex items-center justify-center gap-2"
+                >
+                  <span>💬 Pedir por WhatsApp Directo</span>
+                </button>
+              }
             </div>
           </form>
         </div>

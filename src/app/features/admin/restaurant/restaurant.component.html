@@ -13,6 +13,49 @@
   }
 
   @if (!loading()) {
+    <!-- ESTADO ABIERTO / CERRADO -->
+    <div
+      class="mt-6 bg-white rounded-3xl border shadow-lg p-6 max-w-2xl flex items-center justify-between gap-4 anim-fade-in-up anim-delay-1"
+      [class.border-emerald-200]="restaurant()?.open"
+      [class.shadow-emerald-100]="restaurant()?.open"
+      [class.border-red-200]="!restaurant()?.open"
+      [class.shadow-red-100]="!restaurant()?.open"
+    >
+      <div class="flex items-center gap-4">
+        <span
+          class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0"
+          [class.bg-emerald-50]="restaurant()?.open"
+          [class.bg-red-50]="!restaurant()?.open"
+        >
+          {{ restaurant()?.open ? '🟢' : '🔴' }}
+        </span>
+        <div>
+          <p class="font-extrabold text-stone-900" [class.text-emerald-700]="restaurant()?.open" [class.text-red-700]="!restaurant()?.open">
+            {{ restaurant()?.open ? 'ABIERTO — recibiendo pedidos' : 'CERRADO — pedidos bloqueados' }}
+          </p>
+          <p class="text-xs text-stone-500 mt-0.5">
+            @if (restaurant()?.open) {
+              Los clientes pueden ver tu menú y enviar pedidos.
+            } @else {
+              Los clientes verán "Cerrado" y no podrán enviar pedidos.
+            }
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        (click)="toggleOpen()"
+        [disabled]="togglingOpen()"
+        class="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all shrink-0 disabled:opacity-60 disabled:cursor-not-allowed"
+        [class.bg-red-600]="restaurant()?.open"
+        [class.hover:bg-red-700]="restaurant()?.open"
+        [class.bg-emerald-600]="!restaurant()?.open"
+        [class.hover:bg-emerald-700]="!restaurant()?.open"
+      >
+        {{ togglingOpen() ? 'Cambiando…' : (restaurant()?.open ? 'Cerrar ahora' : 'Abrir ahora') }}
+      </button>
+    </div>
+
     <form [formGroup]="form" (ngSubmit)="save()" class="mt-8 bg-white rounded-3xl border border-stone-100 shadow-lg shadow-stone-200/50 p-8 space-y-6 max-w-2xl anim-fade-in-up anim-delay-1">
       <!-- Logo Upload -->
       <div class="flex items-center gap-6">

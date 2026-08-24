@@ -87,7 +87,7 @@ export class DirectoryService {
       ...r,
       tagline: r.description?.slice(0, 120) || '',
       city: this.deriveCity(r.address),
-      isOpen: true,
+      isOpen: r.open ?? true,
       tags: [],
       coverUrl: r.logoUrl || null,
       rating: undefined,

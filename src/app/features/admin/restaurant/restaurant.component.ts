@@ -18,6 +18,7 @@ export class RestaurantComponent implements OnInit {
   readonly loading = signal(true);
   readonly saving = signal(false);
   readonly uploading = signal(false);
+  readonly togglingOpen = signal(false);
   readonly message = signal<{ type: 'success' | 'error'; text: string } | null>(null);
 
   readonly form: FormGroup = this.fb.group({
@@ -83,6 +84,30 @@ export class RestaurantComponent implements OnInit {
       error: (err) => {
         this.saving.set(false);
         this.message.set({ type: 'error', text: err.error?.message ?? 'No se pudo guardar' });
+      },
+    });
+  }
+
+  toggleOpen(): void {
+    const restaurant = this.restaurant();
+    if (!restaurant || this.togglingOpen()) return;
+    this.togglingOpen.set(true);
+    this.message.set(null);
+
+    this.restaurantService.setOpen(!restaurant.open).subscribe({
+      next: (updated) => {
+        this.restaurant.set(updated);
+        this.togglingOpen.set(false);
+        this.message.set({
+          type: 'success',
+          text: updated.open
+            ? 'Restaurante ABIERTO: ya puedes recibir pedidos'
+            : 'Restaurante CERRADO: los clientes no pueden hacer pedidos',
+        });
+      },
+      error: (err) => {
+        this.togglingOpen.set(false);
+        this.message.set({ type: 'error', text: err.error?.message ?? 'No se pudo cambiar el estado' });
       },
     });
   }

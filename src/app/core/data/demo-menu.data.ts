@@ -11,6 +11,7 @@ export const DEMO_PUBLIC_MENU: PublicMenu = {
     whatsapp: '573009876543',
     instagram: 'negobistro.oficial',
     facebook: 'negobistro.rest',
+    open: true,
   },
   categories: [
     {

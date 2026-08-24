@@ -214,6 +214,7 @@ export const MULTI_RESTAURANT_MENUS: Record<string, PublicMenu> = {
       whatsapp: '573124567890',
       instagram: 'bellanapoli.med',
       facebook: 'bellanapoli.pizzas',
+      open: true,
     },
     categories: [
       {
@@ -309,6 +310,7 @@ export const MULTI_RESTAURANT_MENUS: Record<string, PublicMenu> = {
       whatsapp: '573208881234',
       instagram: 'smashbros.burgers',
       facebook: 'smashbros.co',
+      open: true,
     },
     categories: [
       {
@@ -380,6 +382,7 @@ export const MULTI_RESTAURANT_MENUS: Record<string, PublicMenu> = {
       whatsapp: '573186543210',
       instagram: 'omakase.nikkei',
       facebook: 'omakase.sushi',
+      open: true,
     },
     categories: [
       {
@@ -427,6 +430,7 @@ export const MULTI_RESTAURANT_MENUS: Record<string, PublicMenu> = {
       whatsapp: '573012223344',
       instagram: 'origencafe.brunch',
       facebook: 'origencafe.col',
+      open: true,
     },
     categories: [
       {

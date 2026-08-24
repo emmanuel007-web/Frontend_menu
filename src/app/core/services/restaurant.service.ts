@@ -24,6 +24,7 @@ export class RestaurantService {
           instagram: DEMO_PUBLIC_MENU.restaurant.instagram,
           facebook: DEMO_PUBLIC_MENU.restaurant.facebook,
           active: true,
+          open: true,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         };
@@ -34,5 +35,9 @@ export class RestaurantService {
 
   updateMine(request: RestaurantRequest): Observable<Restaurant> {
     return this.api.put<Restaurant>('/restaurants/me', request);
+  }
+
+  setOpen(open: boolean): Observable<Restaurant> {
+    return this.api.patch<Restaurant>('/restaurants/me/open', { open });
   }
 }
