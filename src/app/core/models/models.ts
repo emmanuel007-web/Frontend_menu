@@ -209,6 +209,7 @@ export interface AdminUser {
 }
 
 export type OrderStatus = 'PENDING' | 'CONFIRMED' | 'IN_PREPARATION' | 'READY' | 'DELIVERED' | 'CANCELLED';
+export type OrderType = 'DINE_IN' | 'DELIVERY' | 'TAKEAWAY';
 
 export interface OrderItem {
   id: number;
@@ -227,6 +228,7 @@ export interface Order {
   customerName: string;
   customerPhone: string | null;
   tableNumber: string | null;
+  orderType?: OrderType;
   notes: string | null;
   status: OrderStatus;
   totalAmount: number;
@@ -242,6 +244,7 @@ export interface CartItem {
   imageUrl: string | null;
   quantity: number;
   notes?: string;
+  categoryName?: string;
 }
 
 export interface CreateOrderItemRequest {
@@ -254,6 +257,8 @@ export interface CreateOrderRequest {
   customerName: string;
   customerPhone?: string;
   tableNumber?: string;
+  orderType?: OrderType;
+  deliveryAddress?: string;
   notes?: string;
   items: CreateOrderItemRequest[];
 }

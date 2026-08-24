@@ -1,0 +1,8 @@
+{
+  "name": "NegoCode — Menús Digitales",
+  "description": "Digital menu and order management platform for restaurants, featuring QR generation, catalog browsing, and admin dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

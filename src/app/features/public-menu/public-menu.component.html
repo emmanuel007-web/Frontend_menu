@@ -2,7 +2,7 @@
   <div class="min-h-screen flex items-center justify-center bg-stone-50">
     <div class="text-center">
       <div class="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin mx-auto shadow-md"></div>
-      <p class="text-stone-500 mt-4 font-medium animate-pulse">Preparando el menú…</p>
+      <p class="text-stone-500 mt-4 font-semibold animate-pulse text-sm">Cargando la carta digital…</p>
     </div>
   </div>
 } @else if (errorMessage()) {
@@ -10,337 +10,628 @@
     <div class="text-center bg-white p-8 rounded-3xl shadow-xl max-w-sm w-full border border-stone-100">
       <div class="text-6xl mb-6">🍽️</div>
       <h1 class="text-2xl font-bold text-stone-900 mb-2">{{ errorMessage() }}</h1>
-      <p class="text-stone-500">Verifica el enlace o escanea el código QR nuevamente.</p>
+      <p class="text-stone-500 text-sm">Verifica el enlace o escanea el código QR de tu mesa nuevamente.</p>
     </div>
   </div>
 } @else if (menu()) {
-  <div class="min-h-screen bg-stone-50/80 font-sans selection:bg-primary-200 selection:text-primary-900 pb-32">
+  <div class="min-h-screen bg-stone-50/90 font-sans selection:bg-primary-200 selection:text-primary-900 pb-36">
     
-    <!-- Hero Header Banner -->
-    <div class="relative w-full h-44 bg-gradient-to-r from-primary-700 via-primary-600 to-amber-700 overflow-hidden shadow-sm">
-      <div class="absolute inset-0 opacity-15" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 24px 24px;"></div>
-      <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+    <!-- Hero Header Banner with Restaurant Branding -->
+    <div class="relative w-full h-48 sm:h-56 bg-gradient-to-r from-stone-950 via-stone-900 to-amber-950 overflow-hidden shadow-sm">
+      <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 2px 2px, white 1.5px, transparent 0); background-size: 28px 28px;"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+      
+      <!-- Top Badges / Floating Info -->
+      <div class="max-w-3xl mx-auto px-4 pt-4 flex items-center justify-between relative z-10">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 backdrop-blur-md text-emerald-300 border border-emerald-500/30">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          Abierto para pedidos
+        </span>
+
+        @if (selectedTablePreset()) {
+          <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-black bg-white/20 backdrop-blur-md text-white border border-white/30">
+            📍 Mesa {{ selectedTablePreset() }}
+          </span>
+        }
+      </div>
     </div>
 
-    <!-- Restaurant Header Card -->
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 relative -mt-16 z-10">
-      <div class="bg-white rounded-3xl shadow-xl border border-stone-100 p-6 sm:p-7 text-center">
+    <!-- Restaurant Profile Header Card -->
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 relative -mt-16 sm:-mt-20 z-10">
+      <div class="bg-white rounded-3xl shadow-xl border border-stone-100 p-6 sm:p-7 text-center relative">
         <div class="relative inline-block">
           @if (menu()!.restaurant.logoUrl) {
             <img
               [src]="menu()!.restaurant.logoUrl"
               alt="Logo"
               (error)="onImageError($event)"
-              class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl object-cover border-4 border-white shadow-lg mx-auto bg-white -mt-16 sm:-mt-20"
+              class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl object-cover border-4 border-white shadow-xl mx-auto bg-white -mt-16 sm:-mt-20"
             />
           } @else {
-            <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-primary-500 to-primary-700 text-white flex items-center justify-center font-black text-4xl border-4 border-white shadow-lg mx-auto -mt-16 sm:-mt-20">
+            <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-primary-500 to-primary-700 text-white flex items-center justify-center font-black text-4xl border-4 border-white shadow-xl mx-auto -mt-16 sm:-mt-20">
               {{ menu()!.restaurant.name.charAt(0) }}
             </div>
           }
         </div>
         
-        <h1 class="font-black text-3xl sm:text-4xl text-stone-900 mt-3 tracking-tight">{{ menu()!.restaurant.name }}</h1>
+        <div class="flex items-center justify-center gap-2 mt-3">
+          <h1 class="font-black text-2xl sm:text-3xl text-stone-900 tracking-tight">{{ menu()!.restaurant.name }}</h1>
+          <span class="text-primary-600 text-lg" title="Restaurante Verificado">✓</span>
+        </div>
         
+        @if (menu()!.restaurant.description) {
+          <p class="text-stone-600 mt-2 text-xs sm:text-sm leading-relaxed max-w-xl mx-auto font-normal">{{ menu()!.restaurant.description }}</p>
+        }
+
         @if (menu()!.restaurant.address) {
-          <div class="flex items-center justify-center gap-1.5 text-stone-500 mt-2 text-sm font-semibold">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-primary-500">
+          <div class="flex items-center justify-center gap-1.5 text-stone-500 mt-3 text-xs font-semibold">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-primary-500 shrink-0">
               <path fill-rule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.976.544l.062.029.018.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" clip-rule="evenodd" />
             </svg>
             <span>{{ menu()!.restaurant.address }}</span>
           </div>
         }
 
-        @if (menu()!.restaurant.description) {
-          <p class="text-stone-600 mt-3 text-sm leading-relaxed max-w-lg mx-auto font-normal">{{ menu()!.restaurant.description }}</p>
+        <!-- Quick Contacts -->
+        <div class="flex flex-wrap items-center justify-center gap-2 mt-4 pt-4 border-t border-stone-100 text-xs">
+          @if (menu()!.restaurant.whatsapp) {
+            <a
+              [href]="'https://wa.me/' + menu()!.restaurant.whatsapp"
+              target="_blank"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 font-bold hover:bg-emerald-100 transition-colors"
+            >
+              💬 WhatsApp
+            </a>
+          }
+          @if (menu()!.restaurant.phone) {
+            <a
+              [href]="'tel:' + menu()!.restaurant.phone"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-stone-100 text-stone-700 font-bold hover:bg-stone-200 transition-colors"
+            >
+              📞 Llamar
+            </a>
+          }
+          @if (menu()!.restaurant.instagram) {
+            <a
+              [href]="'https://instagram.com/' + menu()!.restaurant.instagram"
+              target="_blank"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-pink-50 text-pink-700 font-bold hover:bg-pink-100 transition-colors"
+            >
+              📸 Instagram
+            </a>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Search & Dietary Filters Section -->
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 mt-6 space-y-3">
+      <!-- Live Search Bar -->
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-stone-400">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+          </svg>
+        </div>
+        <input
+          type="text"
+          [value]="searchQuery()"
+          (input)="searchQuery.set($any($event.target).value)"
+          placeholder="Buscar platos, ingredientes, bebidas…"
+          class="w-full bg-white rounded-2xl border border-stone-200/90 pl-11 pr-10 py-3.5 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm transition-all"
+        />
+        @if (searchQuery()) {
+          <button
+            (click)="clearSearch()"
+            class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-stone-400 hover:text-stone-600 text-sm font-bold"
+          >
+            ✕
+          </button>
         }
+      </div>
+
+      <!-- Quick Tag Filter Pills -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-1 hide-scrollbar">
+        <button
+          (click)="setFilterTag('ALL')"
+          [class]="activeFilterTag() === 'ALL' ? 'bg-stone-900 text-white font-black shadow-sm' : 'bg-white text-stone-600 border border-stone-200/80 hover:bg-stone-100 font-semibold'"
+          class="px-3.5 py-1.5 rounded-xl text-xs whitespace-nowrap transition-all"
+        >
+          🍽️ Todos
+        </button>
+        <button
+          (click)="setFilterTag('POPULAR')"
+          [class]="activeFilterTag() === 'POPULAR' ? 'bg-amber-500 text-white font-black shadow-sm' : 'bg-white text-stone-600 border border-stone-200/80 hover:bg-amber-50 font-semibold'"
+          class="px-3.5 py-1.5 rounded-xl text-xs whitespace-nowrap transition-all"
+        >
+          🔥 Populares
+        </button>
+        <button
+          (click)="setFilterTag('MEAT')"
+          [class]="activeFilterTag() === 'MEAT' ? 'bg-red-600 text-white font-black shadow-sm' : 'bg-white text-stone-600 border border-stone-200/80 hover:bg-red-50 font-semibold'"
+          class="px-3.5 py-1.5 rounded-xl text-xs whitespace-nowrap transition-all"
+        >
+          🥩 Carnes & Parrilla
+        </button>
+        <button
+          (click)="setFilterTag('VEGAN')"
+          [class]="activeFilterTag() === 'VEGAN' ? 'bg-emerald-600 text-white font-black shadow-sm' : 'bg-white text-stone-600 border border-stone-200/80 hover:bg-emerald-50 font-semibold'"
+          class="px-3.5 py-1.5 rounded-xl text-xs whitespace-nowrap transition-all"
+        >
+          🌱 Vegano / Fresco
+        </button>
+        <button
+          (click)="setFilterTag('DRINKS')"
+          [class]="activeFilterTag() === 'DRINKS' ? 'bg-violet-600 text-white font-black shadow-sm' : 'bg-white text-stone-600 border border-stone-200/80 hover:bg-violet-50 font-semibold'"
+          class="px-3.5 py-1.5 rounded-xl text-xs whitespace-nowrap transition-all"
+        >
+          🍹 Bebidas & Bar
+        </button>
       </div>
     </div>
 
     <!-- Sticky Glassmorphism Category Navigation -->
-    <div class="sticky top-0 z-30 mt-6 backdrop-blur-xl bg-white/80 border-y border-stone-200/60 shadow-xs">
+    <div class="sticky top-0 z-30 mt-4 backdrop-blur-xl bg-white/85 border-y border-stone-200/70 shadow-xs">
       <div class="max-w-3xl mx-auto">
-        <nav class="flex gap-2.5 overflow-x-auto py-3 px-4 sm:px-6 hide-scrollbar items-center">
+        <nav class="flex gap-2 overflow-x-auto py-2.5 px-4 sm:px-6 hide-scrollbar items-center">
           @for (category of menu()!.categories; track category.id) {
             <button
-              (click)="selectCategory(category.id)"
+              (click)="setCategory(category.id)"
               [class]="
                 activeCategory() === category.id
-                  ? 'bg-stone-900 text-white shadow-md scale-102 font-extrabold'
+                  ? 'bg-stone-900 text-white shadow-md font-black scale-102'
                   : 'bg-white text-stone-600 hover:bg-stone-100 border border-stone-200/80 font-bold'
               "
-              class="px-5 py-2.5 rounded-2xl text-xs sm:text-sm whitespace-nowrap transition-all duration-200 shrink-0"
+              class="px-4 py-2 rounded-xl text-xs whitespace-nowrap transition-all duration-200 shrink-0 flex items-center gap-1.5"
             >
-              {{ category.name }}
+              <span>{{ category.name }}</span>
+              <span class="text-[10px] opacity-70 px-1.5 py-0.2 rounded-full" [class]="activeCategory() === category.id ? 'bg-white/20 text-white' : 'bg-stone-100 text-stone-500'">
+                {{ category.products.length }}
+              </span>
             </button>
           }
         </nav>
       </div>
     </div>
 
-    <!-- Main Content: Products Grid -->
-    <main class="max-w-3xl mx-auto px-4 sm:px-6 pt-8">
-      @if (menu()!.categories.length === 0) {
-        <div class="text-center py-20 bg-white rounded-3xl border border-stone-100 shadow-sm">
-          <div class="text-5xl mb-3 opacity-40">📋</div>
-          <p class="text-stone-500 font-bold text-lg">El menú aún no tiene categorías disponibles.</p>
+    <!-- Main Dishes Content -->
+    <main class="max-w-3xl mx-auto px-4 sm:px-6 pt-6 space-y-10">
+      @if (filteredCategories().length === 0) {
+        <div class="text-center py-16 bg-white rounded-3xl border border-stone-100 shadow-sm p-8">
+          <div class="text-5xl mb-3 opacity-50">🔍</div>
+          <p class="text-stone-900 font-extrabold text-lg">No encontramos platos con tu búsqueda</p>
+          <p class="text-stone-500 text-xs mt-1">Intenta con otro término o limpia los filtros para ver la carta completa.</p>
+          <button
+            (click)="clearSearch()"
+            class="mt-4 px-4 py-2 bg-stone-900 text-white rounded-xl text-xs font-bold hover:bg-stone-800 transition-colors"
+          >
+            Ver todos los platos
+          </button>
         </div>
       } @else {
-        <div class="space-y-8">
-          @for (category of menu()!.categories; track category.id) {
-            @if (category.id === activeCategory()) {
-              <section class="anim-fade-in-up">
-                <!-- Category Title & Description -->
-                <div class="mb-6 flex flex-wrap items-center justify-between gap-2 border-b border-stone-200/60 pb-3">
-                  <h2 class="text-2xl font-black text-stone-900 tracking-tight">{{ category.name }}</h2>
-                  @if (category.description) {
-                    <span class="text-xs font-bold text-primary-700 bg-primary-50 px-3 py-1 rounded-full border border-primary-100">
-                      {{ category.description }}
-                    </span>
-                  }
-                </div>
-                
-                <!-- Products Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
-                  @for (product of category.products; track product.id) {
-                    <article
-                      class="group bg-white rounded-3xl border border-stone-100 p-5 flex flex-col justify-between shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden"
-                      [class.opacity-50]="!product.available"
-                      [class.grayscale]="!product.available"
-                    >
-                      <!-- Decorative hover blur blob -->
-                      <div class="absolute -right-8 -top-8 w-28 h-28 bg-primary-100/60 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"></div>
-
-                      <!-- Top Section: Image + Title & Description -->
-                      <div class="flex gap-4 relative z-10">
-                        <!-- Image Container with Graceful Fallback -->
-                        <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl shrink-0 overflow-hidden bg-stone-100 border border-stone-100 flex items-center justify-center shadow-xs relative">
-                          @if (product.imageUrl) {
-                            <img
-                              [src]="product.imageUrl"
-                              [alt]="product.name"
-                              (error)="onImageError($event)"
-                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            />
-                          } @else {
-                            <div class="w-full h-full rounded-2xl bg-stone-100 flex items-center justify-center text-3xl shadow-sm border border-stone-200 text-stone-300 select-none">
-                              🍽️
-                            </div>
-                          }
+        @for (category of filteredCategories(); track category.id) {
+          <section [id]="'category-' + category.id" class="anim-fade-in-up scroll-mt-20">
+            <!-- Category Title & Description -->
+            <div class="mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-stone-200/60 pb-3">
+              <div>
+                <h2 class="text-xl sm:text-2xl font-black text-stone-900 tracking-tight">{{ category.name }}</h2>
+                @if (category.description) {
+                  <p class="text-xs text-stone-500 mt-0.5 font-normal">{{ category.description }}</p>
+                }
+              </div>
+              <span class="text-xs font-bold text-stone-400">
+                {{ category.products.length }} {{ category.products.length === 1 ? 'opción' : 'opciones' }}
+              </span>
+            </div>
+            
+            <!-- Products Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              @for (product of category.products; track product.id) {
+                <article
+                  class="group bg-white rounded-3xl border border-stone-100 p-4 sm:p-5 flex flex-col justify-between shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden"
+                  [class.opacity-50]="!product.available"
+                >
+                  <!-- Top Row: Clickable for modal detail -->
+                  <div (click)="openDishModal(product, category.name)" class="flex gap-4 cursor-pointer">
+                    <!-- Image -->
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl shrink-0 overflow-hidden bg-stone-100 border border-stone-100 flex items-center justify-center shadow-xs relative">
+                      @if (product.imageUrl) {
+                        <img
+                          [src]="product.imageUrl"
+                          [alt]="product.name"
+                          (error)="onImageError($event)"
+                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      } @else {
+                        <div class="w-full h-full rounded-2xl bg-stone-100 flex items-center justify-center text-3xl shadow-sm border border-stone-200 text-stone-300 select-none">
+                          🍽️
                         </div>
-
-                        <!-- Product Text Info (Fully visible) -->
-                        <div class="flex-1 min-w-0">
-                          <h3 class="font-extrabold text-stone-900 text-base sm:text-lg leading-snug group-hover:text-primary-600 transition-colors">
-                            {{ product.name }}
-                          </h3>
-                          @if (product.description) {
-                            <p class="text-xs sm:text-sm text-stone-500 mt-1 leading-relaxed font-normal">
-                              {{ product.description }}
-                            </p>
-                          }
-                        </div>
-                      </div>
-
-                      <!-- Bottom Section: Price + Cart Actions (Dedicated full-width row) -->
-                      <div class="mt-4 pt-3 border-t border-stone-100/80 flex items-center justify-between gap-3 relative z-10">
-                        <span class="font-black text-stone-900 text-lg sm:text-xl tracking-tight">
-                          {{ formatCurrency(product.price) }}
+                      }
+                      
+                      @if (product.price > 30000) {
+                        <span class="absolute bottom-1 right-1 text-[9px] font-black bg-amber-500 text-white px-1.5 py-0.5 rounded-md shadow-xs">
+                          Chef ⭐
                         </span>
-                        
-                        @if (!product.available) {
-                          <span class="inline-flex items-center text-xs font-bold bg-stone-100 text-stone-500 px-3 py-1.5 rounded-xl border border-stone-200">
-                            Agotado
-                          </span>
-                        } @else {
-                          @if (getItemQuantity(product.id) === 0) {
-                            <button
-                              (click)="addToCart(product)"
-                              class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-primary-50 text-primary-700 font-bold text-xs hover:bg-primary-600 hover:text-white transition-all shadow-xs border border-primary-100 shrink-0"
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                              </svg>
-                              <span>Agregar</span>
-                            </button>
-                          } @else {
-                            <div class="flex items-center gap-2 bg-stone-100 rounded-xl p-1 border border-stone-200 shadow-inner shrink-0">
-                              <button
-                                (click)="removeFromCart(product.id)"
-                                class="w-7 h-7 rounded-lg bg-white text-stone-800 font-bold flex items-center justify-center hover:bg-red-50 hover:text-red-600 shadow-xs transition-colors"
-                              >
-                                -
-                              </button>
-                              <span class="font-black text-stone-900 text-sm px-1.5">{{ getItemQuantity(product.id) }}</span>
-                              <button
-                                (click)="addToCart(product)"
-                                class="w-7 h-7 rounded-lg bg-primary-600 text-white font-bold flex items-center justify-center hover:bg-primary-700 shadow-xs transition-colors"
-                              >
-                                +
-                              </button>
-                            </div>
-                          }
-                        }
-                      </div>
-                    </article>
-                  } @empty {
-                    <div class="col-span-full bg-white rounded-3xl border border-stone-100 border-dashed p-12 text-center">
-                      <p class="text-stone-500 font-semibold text-sm">No hay productos disponibles en esta categoría.</p>
+                      }
                     </div>
-                  }
-                </div>
-              </section>
-            }
-          }
-        </div>
+
+                    <!-- Details -->
+                    <div class="flex-1 min-w-0">
+                      <h3 class="font-extrabold text-stone-900 text-base leading-snug group-hover:text-primary-600 transition-colors">
+                        {{ product.name }}
+                      </h3>
+                      @if (product.description) {
+                        <p class="text-xs text-stone-500 mt-1 line-clamp-2 leading-relaxed font-normal">
+                          {{ product.description }}
+                        </p>
+                      }
+                      <p class="text-[11px] text-primary-600 font-bold mt-1.5 inline-flex items-center gap-1 group-hover:underline">
+                        Ver detalles & ingredientes →
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- Bottom Row: Price & Add to Cart -->
+                  <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between gap-3">
+                    <span class="font-black text-stone-900 text-lg tracking-tight">
+                      {{ formatCurrency(product.price) }}
+                    </span>
+                    
+                    @if (!product.available) {
+                      <span class="inline-flex items-center text-xs font-bold bg-stone-100 text-stone-500 px-3 py-1.5 rounded-xl border border-stone-200">
+                        Agotado
+                      </span>
+                    } @else {
+                      @if (getItemQuantity(product.id) === 0) {
+                        <button
+                          (click)="addToCart(product, 1, '')"
+                          class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-primary-50 text-primary-700 font-bold text-xs hover:bg-primary-600 hover:text-white transition-all shadow-xs border border-primary-100 shrink-0 active:scale-95"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                          </svg>
+                          <span>Agregar</span>
+                        </button>
+                      } @else {
+                        <div class="flex items-center gap-2 bg-stone-100 rounded-xl p-1 border border-stone-200 shadow-inner shrink-0">
+                          <button
+                            (click)="removeFromCart(product.id)"
+                            class="w-7 h-7 rounded-lg bg-white text-stone-800 font-bold flex items-center justify-center hover:bg-red-50 hover:text-red-600 shadow-xs transition-colors"
+                          >
+                            -
+                          </button>
+                          <span class="font-black text-stone-900 text-sm px-1.5">{{ getItemQuantity(product.id) }}</span>
+                          <button
+                            (click)="addToCart(product, 1, '')"
+                            class="w-7 h-7 rounded-lg bg-primary-600 text-white font-bold flex items-center justify-center hover:bg-primary-700 shadow-xs transition-colors"
+                          >
+                            +
+                          </button>
+                        </div>
+                      }
+                    }
+                  </div>
+                </article>
+              }
+            </div>
+          </section>
+        }
       }
 
-      <!-- Footer: Redes y contacto -->
-      <footer class="mt-16 pt-8 pb-8 text-center">
-        <div class="inline-flex flex-wrap justify-center gap-3 mb-8">
-          @if (menu()!.restaurant.whatsapp) {
-            <a
-              [href]="'https://wa.me/' + menu()!.restaurant.whatsapp"
-              target="_blank"
-              rel="noopener"
-              class="flex items-center gap-2 bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white px-4 py-2 rounded-xl text-sm font-bold transition-colors"
-            >
-              WhatsApp
-            </a>
-          }
-          @if (menu()!.restaurant.instagram) {
-            <a [href]="'https://instagram.com/' + menu()!.restaurant.instagram" target="_blank" rel="noopener" class="flex items-center gap-2 bg-pink-50 text-pink-600 hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 hover:text-white px-4 py-2 rounded-xl text-sm font-bold transition-all">
-              Instagram
-            </a>
-          }
-          @if (menu()!.restaurant.phone) {
-            <a [href]="'tel:' + menu()!.restaurant.phone" class="flex items-center gap-2 bg-stone-100 text-stone-700 hover:bg-stone-200 px-4 py-2 rounded-xl text-sm font-bold transition-colors">
-              Llamar
-            </a>
-          }
+      <!-- Footer Info & Branding -->
+      <footer class="mt-16 pt-8 pb-4 text-center">
+        <div class="bg-white rounded-3xl p-6 border border-stone-100 shadow-sm max-w-lg mx-auto text-center space-y-3">
+          <p class="text-xs font-bold uppercase tracking-wider text-stone-400">¿Tienes alergias o requerimientos especiales?</p>
+          <p class="text-xs text-stone-600 leading-relaxed">
+            Puedes agregar notas especiales a cada plato en tu carrito o avisar directamente a nuestro personal de servicio.
+          </p>
         </div>
         
-        <div class="flex flex-col items-center justify-center opacity-50">
-          <p class="text-xs font-semibold text-stone-400">Desarrollado por</p>
-          <div class="text-sm font-black tracking-widest text-stone-500 mt-0.5">NEGOCODE</div>
+        <div class="flex flex-col items-center justify-center mt-10 pb-6 opacity-75 hover:opacity-100 transition-opacity">
+          <img src="assets/negocode-logo.svg" alt="NegoCode" class="w-10 h-10 mb-2 drop-shadow-sm" />
+          <div class="flex items-center gap-1 text-xs font-black tracking-wider">
+            <span class="text-[#0A1931]">Nego</span><span class="text-[#00B4D8]">code</span>
+          </div>
+          <p class="text-[10px] font-semibold text-stone-400 uppercase tracking-widest mt-0.5">Soluciones Digitales Para Negocios Reales</p>
         </div>
       </footer>
     </main>
 
-    <!-- Floating Shopping Cart Bar -->
-    @if (cartTotalCount() > 0) {
+    <!-- Dish Detail Modal -->
+    @if (selectedDish()) {
+      <div class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-stone-950/70 backdrop-blur-sm anim-fade-in">
+        <div class="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl border border-stone-100 max-w-lg w-full overflow-hidden max-h-[90vh] flex flex-col anim-fade-in-up">
+          
+          <!-- Image Banner with Close Button -->
+          <div class="relative h-56 sm:h-64 w-full bg-stone-900 shrink-0">
+            @if (selectedDish()!.imageUrl) {
+              <img [src]="selectedDish()!.imageUrl" [alt]="selectedDish()!.name" class="w-full h-full object-cover" />
+            } @else {
+              <div class="w-full h-full flex items-center justify-center text-6xl bg-stone-100 text-stone-300">🍽️</div>
+            }
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30"></div>
+            
+            <button
+              (click)="closeDishModal()"
+              class="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 text-white flex items-center justify-center font-bold text-sm hover:bg-black transition-colors backdrop-blur-md"
+            >
+              ✕
+            </button>
+
+            <div class="absolute bottom-4 left-4 right-4 text-white">
+              <span class="text-xs font-bold text-primary-300 uppercase tracking-wider">{{ selectedDish()!.categoryName }}</span>
+              <h2 class="text-2xl font-black tracking-tight leading-tight">{{ selectedDish()!.name }}</h2>
+            </div>
+          </div>
+
+          <!-- Body -->
+          <div class="p-6 space-y-5 overflow-y-auto flex-1">
+            <div class="flex items-center justify-between">
+              <span class="text-2xl font-black text-stone-900">{{ formatCurrency(selectedDish()!.price) }}</span>
+              <span class="text-xs font-bold px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-100">
+                Disponible ahora
+              </span>
+            </div>
+
+            @if (selectedDish()!.description) {
+              <div class="text-sm text-stone-600 leading-relaxed bg-stone-50 p-4 rounded-2xl border border-stone-100">
+                {{ selectedDish()!.description }}
+              </div>
+            }
+
+            <!-- Notes or special instructions -->
+            <div>
+              <label class="block text-xs font-bold text-stone-700 mb-1.5" for="dishNotes">
+                Instrucciones especiales para cocina (opcional)
+              </label>
+              <input
+                id="dishNotes"
+                type="text"
+                [value]="dishDetailNotes()"
+                (input)="dishDetailNotes.set($any($event.target).value)"
+                placeholder="Ej: Sin salsa, término medio, aderezo aparte…"
+                class="w-full rounded-xl border border-stone-200 px-3.5 py-2.5 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-primary-500 bg-stone-50/60"
+              />
+            </div>
+
+            <!-- Quantity Selector & Price Subtotal -->
+            <div class="pt-2 border-t border-stone-100 flex items-center justify-between">
+              <div>
+                <span class="text-xs font-bold text-stone-500 block">Cantidad</span>
+                <span class="text-base font-black text-stone-900">
+                  {{ formatCurrency(selectedDish()!.price * dishDetailQuantity()) }}
+                </span>
+              </div>
+
+              <div class="flex items-center gap-3 bg-stone-100 rounded-2xl p-1.5 border border-stone-200">
+                <button
+                  (click)="decreaseDetailQuantity()"
+                  class="w-9 h-9 rounded-xl bg-white text-stone-800 font-black text-base flex items-center justify-center hover:bg-stone-200 shadow-xs transition-colors"
+                >
+                  -
+                </button>
+                <span class="font-black text-stone-900 text-base px-2">{{ dishDetailQuantity() }}</span>
+                <button
+                  (click)="increaseDetailQuantity()"
+                  class="w-9 h-9 rounded-xl bg-primary-600 text-white font-black text-base flex items-center justify-center hover:bg-primary-700 shadow-xs transition-colors"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer Button -->
+          <div class="p-4 bg-stone-50 border-t border-stone-100">
+            <button
+              (click)="addDetailToCart()"
+              class="w-full py-4 rounded-2xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-extrabold text-base hover:from-primary-700 hover:to-primary-600 shadow-lg shadow-primary-500/25 transition-all flex items-center justify-center gap-2 btn-shine"
+            >
+              <span>Agregar al Pedido</span>
+              <span>•</span>
+              <span>{{ formatCurrency(selectedDish()!.price * dishDetailQuantity()) }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Floating Bottom Cart Bar -->
+    @if (cartTotalCount() > 0 && !showCartModal()) {
       <div class="fixed bottom-4 inset-x-4 max-w-3xl mx-auto z-40 anim-fade-in-up">
         <button
           (click)="openCart()"
-          class="w-full bg-gradient-to-r from-stone-900 via-stone-900 to-stone-800 text-white rounded-3xl p-4 shadow-2xl shadow-stone-900/50 flex items-center justify-between border border-stone-700/60 hover:scale-[1.01] active:scale-[0.99] transition-all btn-shine"
+          class="w-full bg-stone-950 text-white rounded-3xl p-4 shadow-2xl shadow-stone-950/60 flex items-center justify-between border border-stone-800 hover:scale-[1.01] active:scale-[0.99] transition-all btn-shine"
         >
           <div class="flex items-center gap-3">
-            <div class="w-11 h-11 rounded-2xl bg-primary-500 text-white font-black text-base flex items-center justify-center shadow-md">
+            <div class="w-12 h-12 rounded-2xl bg-primary-500 text-white font-black text-lg flex items-center justify-center shadow-md">
               {{ cartTotalCount() }}
             </div>
             <div class="text-left">
-              <p class="text-xs font-bold text-stone-300">Ver pedido</p>
+              <p class="text-xs font-semibold text-stone-300">Tu selección activa</p>
               <p class="text-xl font-black tracking-tight text-white">{{ formatCurrency(cartTotalAmount()) }}</p>
             </div>
           </div>
-          <div class="flex items-center gap-1.5 text-sm font-extrabold text-primary-400">
-            <span>Confirmar</span>
-            <span class="text-lg">→</span>
+          <div class="flex items-center gap-2 px-4 py-2 rounded-2xl bg-primary-600 text-white text-sm font-extrabold shadow-md">
+            <span>Ver Pedido</span>
+            <span class="text-base">→</span>
           </div>
         </button>
       </div>
     }
 
-    <!-- Shopping Cart & Order Modal -->
+    <!-- Shopping Cart & Order Bottom Sheet / Modal -->
     @if (showCartModal()) {
-      <div class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-stone-900/60 backdrop-blur-sm anim-fade-in">
-        <div class="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl border border-stone-100 max-w-lg w-full p-6 space-y-6 max-h-[90vh] overflow-y-auto anim-fade-in-up">
-          <div class="flex items-center justify-between border-b border-stone-100 pb-4">
+      <div class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-stone-950/70 backdrop-blur-sm anim-fade-in">
+        <div class="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl border border-stone-100 max-w-lg w-full p-6 space-y-5 max-h-[92vh] overflow-y-auto anim-fade-in-up">
+          
+          <!-- Modal Header -->
+          <div class="flex items-center justify-between border-b border-stone-100 pb-3">
             <div>
-              <h2 class="text-xl font-extrabold text-stone-900">Tu Pedido 🛒</h2>
+              <h2 class="text-xl font-black text-stone-900">Tu Pedido 🛒</h2>
               <p class="text-xs text-stone-400 mt-0.5">{{ menu()!.restaurant.name }}</p>
             </div>
-            <button (click)="closeCart()" class="text-stone-400 hover:text-stone-600 text-xl font-bold p-1">✕</button>
+            <button (click)="closeCart()" class="w-8 h-8 rounded-full bg-stone-100 text-stone-500 hover:bg-stone-200 text-sm font-bold flex items-center justify-center">
+              ✕
+            </button>
           </div>
 
           @if (orderErrorMessage()) {
-            <div class="rounded-xl bg-red-50 border border-red-200 text-red-700 p-3.5 text-xs font-semibold">
+            <div class="rounded-xl bg-red-50 border border-red-200 text-red-700 p-3 text-xs font-semibold">
               {{ orderErrorMessage() }}
             </div>
           }
 
+          <!-- Order Type Selector (Mesa / Domicilio / Llevar) -->
+          <div class="space-y-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-stone-400 block">Tipo de Pedido</span>
+            <div class="grid grid-cols-3 gap-2 bg-stone-100 p-1 rounded-2xl">
+              <button
+                type="button"
+                (click)="setOrderType('DINE_IN')"
+                [class]="orderType() === 'DINE_IN' ? 'bg-white text-stone-900 shadow-sm font-black' : 'text-stone-600 font-semibold'"
+                class="py-2 rounded-xl text-xs text-center transition-all flex items-center justify-center gap-1"
+              >
+                🍽️ En Mesa
+              </button>
+              <button
+                type="button"
+                (click)="setOrderType('DELIVERY')"
+                [class]="orderType() === 'DELIVERY' ? 'bg-white text-stone-900 shadow-sm font-black' : 'text-stone-600 font-semibold'"
+                class="py-2 rounded-xl text-xs text-center transition-all flex items-center justify-center gap-1"
+              >
+                🛵 Domicilio
+              </button>
+              <button
+                type="button"
+                (click)="setOrderType('TAKEAWAY')"
+                [class]="orderType() === 'TAKEAWAY' ? 'bg-white text-stone-900 shadow-sm font-black' : 'text-stone-600 font-semibold'"
+                class="py-2 rounded-xl text-xs text-center transition-all flex items-center justify-center gap-1"
+              >
+                🛍️ Llevar
+              </button>
+            </div>
+          </div>
+
+          <!-- If DINE_IN: Quick Table Picker -->
+          @if (orderType() === 'DINE_IN') {
+            <div class="space-y-1.5">
+              <span class="text-xs font-semibold text-stone-600">Número de Mesa:</span>
+              <div class="flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar">
+                @for (t of ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '15']; track t) {
+                  <button
+                    type="button"
+                    (click)="selectTable(t)"
+                    [class]="selectedTablePreset() === t ? 'bg-primary-600 text-white font-bold' : 'bg-stone-100 text-stone-700 hover:bg-stone-200 font-medium'"
+                    class="px-3 py-1.5 rounded-xl text-xs shrink-0 transition-colors"
+                  >
+                    Mesa {{ t }}
+                  </button>
+                }
+              </div>
+            </div>
+          }
+
           <!-- Cart Items List -->
-          <div class="space-y-3 divide-y divide-stone-100">
-            @for (item of cart(); track item.productId) {
-              <div class="pt-3 flex items-center justify-between gap-3">
+          <div class="space-y-3 divide-y divide-stone-100 max-h-48 overflow-y-auto pr-1">
+            @for (item of cart(); track item.productId + (item.notes || '')) {
+              <div class="pt-3 flex items-start justify-between gap-3">
                 <div class="flex-1 min-w-0">
                   <h4 class="font-bold text-stone-900 text-sm truncate">{{ item.productName }}</h4>
-                  <p class="text-xs font-semibold text-stone-500">{{ formatCurrency(item.unitPrice) }} c/u</p>
+                  <p class="text-xs text-stone-500 font-medium">{{ formatCurrency(item.unitPrice) }} c/u</p>
+                  @if (item.notes) {
+                    <p class="text-[11px] text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md inline-block mt-0.5">
+                      ✏️ {{ item.notes }}
+                    </p>
+                  }
                 </div>
 
-                <div class="flex items-center gap-2 bg-stone-100 rounded-xl p-1 border border-stone-200">
+                <!-- Quantity controls -->
+                <div class="flex items-center gap-1.5 bg-stone-100 rounded-xl p-1 border border-stone-200">
                   <button
-                    (click)="removeFromCart(item.productId)"
+                    (click)="removeFromCart(item.productId, item.notes)"
                     class="w-6 h-6 rounded-lg bg-white text-stone-800 font-bold text-xs flex items-center justify-center hover:bg-red-50 hover:text-red-600 transition-colors"
                   >
                     -
                   </button>
                   <span class="font-black text-stone-900 text-xs px-1">{{ item.quantity }}</span>
                   <button
-                    (click)="addToCart({ id: item.productId, name: item.productName, price: item.unitPrice, imageUrl: item.imageUrl })"
+                    (click)="addToCart({ id: item.productId, name: item.productName, price: item.unitPrice, imageUrl: item.imageUrl }, 1, item.notes || '')"
                     class="w-6 h-6 rounded-lg bg-primary-600 text-white font-bold text-xs flex items-center justify-center hover:bg-primary-700 transition-colors"
                   >
                     +
                   </button>
                 </div>
 
-                <span class="font-extrabold text-stone-900 text-sm w-20 text-right">
-                  {{ formatCurrency(item.unitPrice * item.quantity) }}
-                </span>
+                <div class="text-right">
+                  <span class="font-extrabold text-stone-900 text-sm block">
+                    {{ formatCurrency(item.unitPrice * item.quantity) }}
+                  </span>
+                  <button
+                    (click)="deleteCartItem(item.productId, item.notes)"
+                    class="text-[10px] text-red-500 hover:underline font-semibold"
+                  >
+                    Eliminar
+                  </button>
+                </div>
               </div>
             }
           </div>
 
-          <!-- Total Summary -->
+          <!-- Total Summary Box -->
           <div class="bg-stone-50 rounded-2xl p-4 border border-stone-100 flex items-center justify-between">
-            <span class="font-bold text-stone-600 text-sm">Total del Pedido</span>
-            <span class="text-2xl font-black text-stone-900">{{ formatCurrency(cartTotalAmount()) }}</span>
+            <div>
+              <span class="font-bold text-stone-500 text-xs block">Total a Pagar</span>
+              <span class="text-2xl font-black text-stone-900">{{ formatCurrency(cartTotalAmount()) }}</span>
+            </div>
+            <span class="text-xs font-bold text-stone-400 bg-white px-2.5 py-1 rounded-xl border border-stone-200">
+              {{ cartTotalCount() }} {{ cartTotalCount() === 1 ? 'ítem' : 'ítems' }}
+            </span>
           </div>
 
           <!-- Customer Form -->
-          <form [formGroup]="orderForm" (ngSubmit)="submitOrder()" class="space-y-4 pt-2">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-stone-400 border-b border-stone-100 pb-2">
-              Datos para la Entrega
-            </h3>
-
+          <form [formGroup]="orderForm" (ngSubmit)="submitOrder()" class="space-y-3 pt-1">
             <div>
               <label class="block text-xs font-semibold text-stone-700 mb-1" for="customerName">Tu nombre *</label>
               <input
                 id="customerName"
                 type="text"
                 formControlName="customerName"
-                placeholder="Ej: Ana María"
+                placeholder="Ej: Laura Gómez"
                 class="w-full rounded-xl border border-stone-200 px-3.5 py-2.5 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-primary-400 bg-stone-50/50"
               />
               @if (orderForm.get('customerName')?.touched && orderForm.get('customerName')?.invalid) {
-                <p class="text-[11px] text-red-600 mt-1">El nombre es obligatorio</p>
+                <p class="text-[11px] text-red-600 mt-0.5">El nombre es requerido</p>
               }
             </div>
 
             <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="block text-xs font-semibold text-stone-700 mb-1" for="tableNumber">Mesa o Ubicación</label>
-                <input
-                  id="tableNumber"
-                  type="text"
-                  formControlName="tableNumber"
-                  placeholder="Ej: Mesa 4 / Llevar"
-                  class="w-full rounded-xl border border-stone-200 px-3.5 py-2.5 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-primary-400 bg-stone-50/50"
-                />
-              </div>
+              @if (orderType() === 'DINE_IN') {
+                <div>
+                  <label class="block text-xs font-semibold text-stone-700 mb-1" for="tableNumber">Mesa</label>
+                  <input
+                    id="tableNumber"
+                    type="text"
+                    formControlName="tableNumber"
+                    placeholder="Mesa 1"
+                    class="w-full rounded-xl border border-stone-200 px-3.5 py-2.5 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-primary-400 bg-stone-50/50"
+                  />
+                </div>
+              } @else if (orderType() === 'DELIVERY') {
+                <div class="col-span-2">
+                  <label class="block text-xs font-semibold text-stone-700 mb-1" for="deliveryAddress">Dirección de Entrega *</label>
+                  <input
+                    id="deliveryAddress"
+                    type="text"
+                    formControlName="deliveryAddress"
+                    placeholder="Calle 100 # 15-20, Apto 501"
+                    class="w-full rounded-xl border border-stone-200 px-3.5 py-2.5 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-primary-400 bg-stone-50/50"
+                  />
+                </div>
+              }
 
-              <div>
-                <label class="block text-xs font-semibold text-stone-700 mb-1" for="customerPhone">Teléfono</label>
+              <div [class]="orderType() === 'DELIVERY' ? 'col-span-2' : ''">
+                <label class="block text-xs font-semibold text-stone-700 mb-1" for="customerPhone">Teléfono / WhatsApp</label>
                 <input
                   id="customerPhone"
                   type="tel"
@@ -352,59 +643,81 @@
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-stone-700 mb-1" for="notes">Notas o indicaciones</label>
+              <label class="block text-xs font-semibold text-stone-700 mb-1" for="orderNotes">Notas adicionales</label>
               <textarea
-                id="notes"
+                id="orderNotes"
                 formControlName="notes"
                 rows="2"
-                placeholder="Sin cebolla, salsa aparte…"
+                placeholder="Servir con factura electrónica, cubiertos extras…"
                 class="w-full rounded-xl border border-stone-200 px-3.5 py-2 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-primary-400 bg-stone-50/50"
               ></textarea>
             </div>
 
-            <!-- Submit Button -->
-            <button
-              type="submit"
-              [disabled]="orderForm.invalid || submittingOrder()"
-              class="w-full rounded-2xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-bold py-4 text-base hover:from-primary-700 hover:to-primary-600 disabled:opacity-50 transition-all shadow-lg shadow-primary-500/30 btn-shine"
-            >
-              @if (submittingOrder()) {
-                Enviando pedido…
-              } @else {
-                Enviar Pedido → {{ formatCurrency(cartTotalAmount()) }}
-              }
-            </button>
+            <!-- Submit Buttons: 1) Send direct to Kitchen, 2) Send via WhatsApp -->
+            <div class="space-y-2 pt-2">
+              <button
+                type="submit"
+                [disabled]="orderForm.invalid || submittingOrder()"
+                class="w-full rounded-2xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-extrabold py-3.5 text-sm hover:from-primary-700 hover:to-primary-600 disabled:opacity-50 transition-all shadow-lg shadow-primary-500/25 btn-shine flex items-center justify-center gap-2"
+              >
+                @if (submittingOrder()) {
+                  <span class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  <span>Enviando pedido a cocina…</span>
+                } @else {
+                  <span>🍳 Enviar Pedido a Cocina ({{ formatCurrency(cartTotalAmount()) }})</span>
+                }
+              </button>
+
+              <button
+                type="button"
+                (click)="sendOrderByWhatsApp()"
+                class="w-full rounded-2xl bg-[#25D366] text-white font-extrabold py-3 text-sm hover:bg-[#1EBE5D] transition-colors shadow-md shadow-[#25D366]/20 flex items-center justify-center gap-2"
+              >
+                <span>💬 Pedir por WhatsApp Directo</span>
+              </button>
+            </div>
           </form>
         </div>
       </div>
     }
 
-    <!-- Order Success Modal -->
+    <!-- Order Success & Live Tracking Modal -->
     @if (orderSuccess()) {
-      <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-sm anim-fade-in-scale">
-        <div class="bg-white rounded-3xl shadow-2xl border border-stone-100 max-w-sm w-full p-8 text-center space-y-5">
-          <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mx-auto shadow-md">
+      <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/70 backdrop-blur-sm anim-fade-in-scale">
+        <div class="bg-white rounded-3xl shadow-2xl border border-stone-100 max-w-sm w-full p-7 text-center space-y-5">
+          <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mx-auto shadow-md animate-bounce">
             🎉
           </div>
           <div>
-            <h2 class="text-2xl font-black text-stone-900 tracking-tight">¡Pedido Recibido!</h2>
-            <p class="text-stone-500 text-sm mt-1">Tu orden ha sido enviada directamente a la cocina.</p>
+            <h2 class="text-2xl font-black text-stone-900 tracking-tight">¡Pedido Recibido con Éxito!</h2>
+            <p class="text-stone-500 text-xs mt-1">Tu comanda ya está en el sistema de cocina del restaurante.</p>
           </div>
 
           <div class="bg-stone-50 border border-stone-100 rounded-2xl p-4">
-            <span class="text-xs text-stone-400 font-semibold uppercase tracking-wider">Número de Pedido</span>
+            <span class="text-xs text-stone-400 font-bold uppercase tracking-wider">Número de Pedido</span>
             <p class="text-3xl font-black text-primary-600 tracking-tight mt-1">{{ orderSuccess()!.orderNumber }}</p>
+            <div class="mt-2 text-xs font-semibold text-stone-600 flex items-center justify-center gap-2">
+              <span>📍 {{ orderSuccess()!.tableNumber }}</span>
+              <span>•</span>
+              <span>{{ formatCurrency(orderSuccess()!.totalAmount) }}</span>
+            </div>
           </div>
 
-          <p class="text-xs text-stone-400 leading-relaxed">
-            Conserva este número para consultar el estado de tu orden con el personal del restaurante.
-          </p>
+          <!-- Step Progress -->
+          <div class="space-y-2 text-left bg-stone-50/70 p-3.5 rounded-2xl border border-stone-100">
+            <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wider block">Estado de preparación:</span>
+            <div class="flex items-center gap-2">
+              <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></div>
+              <span class="text-xs font-bold text-stone-900">1. Recibido por cocina</span>
+            </div>
+            <p class="text-[11px] text-stone-500 pl-4.5">El chef y los meseros han sido notificados.</p>
+          </div>
 
           <button
             (click)="closeSuccessModal()"
-            class="w-full py-3.5 rounded-2xl bg-stone-900 text-white font-bold text-sm hover:bg-stone-800 transition-colors shadow-md"
+            class="w-full py-3.5 rounded-2xl bg-stone-900 text-white font-extrabold text-sm hover:bg-stone-800 transition-colors shadow-md"
           >
-            Entendido / Volver al Menú
+            Volver al Menú
           </button>
         </div>
       </div>

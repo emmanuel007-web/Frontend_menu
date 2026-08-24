@@ -262,3 +262,26 @@ body {
   background-clip: text;
   animation: shimmer 3s linear infinite;
 }
+
+/* Print utilities for Table QR Stands and Kitchen Tickets */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  .print-card-break {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}
+@media screen {
+  .print-only {
+    display: none !important;
+  }
+}

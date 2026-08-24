@@ -1,62 +1,14 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <title>NegoCode — Menús digitales para restaurantes</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    .app-loading-screen {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background-color: #1c1917;
-      color: #ffffff;
-      font-family: 'Inter', system-ui, sans-serif;
-    }
-    .app-loading-logo {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #f97316, #ea580c);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 1.25rem;
-      box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.4);
-    }
-    .app-spinner {
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255, 255, 255, 0.2);
-      border-radius: 50%;
-      border-top-color: #f97316;
-      animation: appSpin 0.8s linear infinite;
-    }
-    @keyframes appSpin {
-      to { transform: rotate(360deg); }
-    }
-  </style>
+  <link rel="icon" type="image/svg+xml" href="assets/negocode-icon.svg">
+  <link rel="alternate icon" type="image/x-icon" href="favicon.ico">
 </head>
-<body class="bg-stone-50 text-stone-900 antialiased">
-  <app-root>
-    <div class="app-loading-screen">
-      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
-        <div class="app-loading-logo">N</div>
-        <span style="font-weight: 800; font-size: 1.5rem; letter-spacing: -0.025em;">NegoCode</span>
-      </div>
-      <div style="display: flex; align-items: center; gap: 10px; color: #a8a29e; font-size: 0.875rem;">
-        <div class="app-spinner"></div>
-        <span>Cargando aplicación...</span>
-      </div>
-    </div>
-  </app-root>
+<body>
+  <app-root></app-root>
 </body>
 </html>

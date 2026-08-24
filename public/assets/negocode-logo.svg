@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- Left green bracket gradient -->
+    <linearGradient id="bracketLeftGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00C853" />
+      <stop offset="100%" stop-color="#00E676" />
+    </linearGradient>
+
+    <!-- Right teal-green bracket gradient -->
+    <linearGradient id="bracketRightGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00BFA5" />
+      <stop offset="100%" stop-color="#00E5FF" />
+    </linearGradient>
+
+    <!-- Code text gradient -->
+    <linearGradient id="codeTextGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00B4D8" />
+      <stop offset="100%" stop-color="#00C49F" />
+    </linearGradient>
+  </defs>
+
+  <!-- EMBLEM < N > -->
+  <g transform="translate(0, 10)">
+    <!-- Left Bracket < -->
+    <path 
+      d="M 148 135 L 102 182 Q 92 191 102 200 L 148 247" 
+      fill="none" 
+      stroke="url(#bracketLeftGrad)" 
+      stroke-width="26" 
+      stroke-linecap="round" 
+      stroke-linejoin="round" 
+    />
+
+    <!-- Stylized Letter N (Deep Navy #0A1931) -->
+    <!-- Left pillar with bottom diagonal cut -->
+    <path 
+      d="M 175 75 
+         C 175 72 177 70 180 70 
+         L 207 70 
+         C 210 70 212 72 212 75 
+         L 212 216 
+         L 175 258 
+         Z" 
+      fill="#0A1931" 
+    />
+
+    <!-- Diagonal stroke & Right pillar -->
+    <path 
+      d="M 224 265 
+         C 220 265 218 262 220 258 
+         L 293 170 
+         L 293 75 
+         C 293 72 295 70 298 70 
+         L 325 70 
+         C 328 70 330 72 330 75 
+         L 330 260 
+         C 330 263 328 265 325 265 
+         L 298 265 
+         C 295 265 293 263 293 260 
+         L 293 125 
+         L 202 230 
+         L 224 265 
+         Z" 
+      fill="#0A1931" 
+    />
+
+    <!-- Right Bracket > -->
+    <path 
+      d="M 352 135 L 398 182 Q 408 191 398 200 L 352 247" 
+      fill="none" 
+      stroke="url(#bracketRightGrad)" 
+      stroke-width="26" 
+      stroke-linecap="round" 
+      stroke-linejoin="round" 
+    />
+  </g>
+
+  <!-- Brand Name: Negocode -->
+  <g transform="translate(250, 355)" text-anchor="middle">
+    <text font-family="system-ui, -apple-system, 'Montserrat', 'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="72" letter-spacing="-1">
+      <tspan fill="#0A1931">Nego</tspan><tspan fill="url(#codeTextGrad)">code</tspan>
+    </text>
+  </g>
+
+  <!-- Tagline: SOLUCIONES DIGITALES -->
+  <g transform="translate(250, 412)" text-anchor="middle">
+    <text 
+      font-family="system-ui, -apple-system, 'Montserrat', 'Plus Jakarta Sans', sans-serif" 
+      font-weight="800" 
+      font-size="19.5" 
+      letter-spacing="5.5" 
+      fill="#0A1931">
+      SOLUCIONES DIGITALES
+    </text>
+  </g>
+
+  <!-- Tagline: PARA NEGOCIOS REALES -->
+  <g transform="translate(250, 444)" text-anchor="middle">
+    <text 
+      font-family="system-ui, -apple-system, 'Montserrat', 'Plus Jakarta Sans', sans-serif" 
+      font-weight="800" 
+      font-size="19.5" 
+      letter-spacing="5.5" 
+      fill="#0A1931">
+      PARA NEGOCIOS REALES
+    </text>
+  </g>
+</svg>

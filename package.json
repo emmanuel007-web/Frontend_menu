@@ -2,14 +2,14 @@
   "name": "frontend-app",
   "version": "0.0.0",
   "scripts": {
+    "dev": "ng serve --host 0.0.0.0 --port 3000",
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --host 0.0.0.0 --port 3000",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
   "private": true,
-  "packageManager": "npm@12.0.2",
   "dependencies": {
     "@angular/common": "^22.0.0",
     "@angular/compiler": "^22.0.0",
