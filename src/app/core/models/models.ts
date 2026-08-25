@@ -63,6 +63,9 @@ export interface DirectoryRestaurant {
   rating?: number;
   reviewCount?: number;
   priceLevel?: '$' | '$$' | '$$$' | '$$$$';
+  minPrice?: number;
+  maxPrice?: number;
+  averagePrice?: number;
   deliveryTime?: string;
   isOpen?: boolean;
   featuredDish?: string;
@@ -101,6 +104,7 @@ export interface DirectoryFilter {
   city?: string;
   onlyOpen?: boolean;
   priceLevel?: string;
+  sortBy?: 'recommended' | 'priceAsc' | 'priceDesc' | 'rating';
   onlyFavorites?: boolean;
   viewMode?: 'restaurants' | 'dishes';
 }

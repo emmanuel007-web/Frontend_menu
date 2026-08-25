@@ -5,40 +5,51 @@
       <!-- Brand Logo -->
       <a routerLink="/explorar" class="flex items-center gap-2.5 group shrink-0">
         <img src="assets/tavita-logo.svg" alt="Tavita" class="w-10 h-10 object-contain transition-transform group-hover:scale-105" />
-        <div class="hidden sm:block">
-          <div class="flex items-center text-xl font-black tracking-tight text-stone-900 leading-none">
-            Tavita
+        <div>
+          <div class="flex items-center gap-1.5 text-xl font-black tracking-tight text-stone-900 leading-none">
+            <span>Tavita</span>
+            <span class="text-[10px] font-extrabold bg-primary-100 text-primary-800 px-1.5 py-0.5 rounded-md uppercase tracking-wider">Carta Abierta</span>
           </div>
-          <span class="text-[10px] font-bold text-primary-600 uppercase tracking-widest block mt-0.5">Explorar Menús</span>
+          <span class="text-[10px] font-bold text-stone-500 block mt-0.5">Directorio Gastronómico • Sin registro requerido</span>
         </div>
       </a>
 
       <!-- Active Launch City Indicator: La Tebaida / Quindío -->
-      <div class="flex items-center gap-2 bg-gradient-to-r from-amber-50 to-orange-50 text-stone-900 px-3 sm:px-4 py-1.5 rounded-xl border border-amber-200/80 shadow-2xs text-xs font-semibold">
-        <span class="text-base sm:text-lg">📍</span>
-        <div class="flex flex-col sm:flex-row sm:items-center sm:gap-2 leading-tight">
+      <div class="hidden md:flex items-center gap-2 bg-gradient-to-r from-amber-50 to-orange-50 text-stone-900 px-3.5 py-1.5 rounded-xl border border-amber-200/80 shadow-2xs text-xs font-semibold">
+        <span class="text-base">📍</span>
+        <div class="flex items-center gap-2 leading-tight">
           <span class="font-extrabold text-stone-900 text-xs sm:text-sm">La Tebaida</span>
-          <span class="text-[10px] sm:text-xs text-amber-700 font-bold bg-amber-200/70 px-2 py-0.5 rounded-md uppercase tracking-wider self-start sm:self-auto">
+          <span class="text-[10px] text-amber-700 font-bold bg-amber-200/70 px-2 py-0.5 rounded-md uppercase tracking-wider">
             Quindío
           </span>
         </div>
       </div>
 
-      <!-- Actions -->
+      <!-- Actions: Client friendly navigation -->
       <div class="flex items-center gap-2 sm:gap-3">
-        <a
-          routerLink="/login"
-          class="px-3.5 py-2 text-xs sm:text-sm font-bold text-stone-700 hover:text-stone-950 transition-colors rounded-xl hover:bg-stone-100"
-        >
-          Iniciar Sesión
-        </a>
-        <a
-          routerLink="/register"
-          class="px-4 py-2 text-xs sm:text-sm font-bold text-white bg-primary-600 hover:bg-primary-700 active:scale-98 shadow-sm transition-all rounded-xl flex items-center gap-1.5"
-        >
-          <span>Registra tu Local</span>
-          <span class="text-xs">✨</span>
-        </a>
+        <!-- Guest Badge / Welcome for clients -->
+        <div class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-stone-100 border border-stone-200 text-stone-700 text-xs font-semibold">
+          <span>👋</span>
+          <span>Modo Comensal</span>
+        </div>
+
+        @if (isAuthenticated()) {
+          <a
+            routerLink="/admin/dashboard"
+            class="px-4 py-2 text-xs sm:text-sm font-bold text-white bg-stone-900 hover:bg-stone-800 active:scale-98 shadow-sm transition-all rounded-xl flex items-center gap-1.5"
+          >
+            <span>Panel de Control</span>
+            <span>⚡</span>
+          </a>
+        } @else {
+          <a
+            routerLink="/login"
+            class="px-3.5 py-2 text-xs sm:text-sm font-bold text-stone-600 hover:text-stone-950 transition-colors rounded-xl hover:bg-stone-100"
+            title="Ingreso para administradores de restaurantes"
+          >
+            Soy Restaurante
+          </a>
+        }
       </div>
     </div>
   </header>
@@ -51,19 +62,20 @@
 
     <div class="max-w-4xl mx-auto text-center relative z-10">
       <!-- Pill Badge -->
-      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary-50 border border-primary-200 text-primary-800 text-xs font-bold mb-5 shadow-xs animate-fade-in">
-        <span>🍽️ Directorio Gastronómico de Restaurantes</span>
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold mb-5 shadow-xs">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span>🍽️ Explora menús, compara precios y ordena sin iniciar sesión</span>
       </div>
 
       <h1 class="text-3xl sm:text-5xl font-black text-stone-900 tracking-tight leading-tight sm:leading-tight">
-        Descubre los mejores menús <br class="hidden sm:inline" />
+        Conoce qué restaurantes están disponibles <br class="hidden sm:inline" />
         <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-amber-600">
-          y ordena sin esperas
+          y qué precios manejan hoy
         </span>
       </h1>
 
       <p class="mt-4 text-sm sm:text-base text-stone-600 max-w-2xl mx-auto leading-relaxed">
-        Explora las cartas digitales de restaurantes de tu ciudad con fotos en alta definición, ingredientes detallados y pide directamente a tu mesa o a domicilio.
+        Navega libremente por las cartas digitales de los restaurantes locales. Consulta el rango de precios, platos recomendados, horarios de atención y pide directamente a tu mesa o por WhatsApp.
       </p>
 
       <!-- LIVE SEARCH BAR -->
@@ -77,7 +89,7 @@
           <input
             type="text"
             [formControl]="searchControl"
-            placeholder="Busca por restaurante, plato estrella (ej. Hamburguesas, Pizza, Bife, Sushi)..."
+            placeholder="Busca por restaurante, comida (ej. Hamburguesas, Pizza, Carne, Café)..."
             class="w-full py-2.5 pr-3 text-sm sm:text-base text-stone-900 placeholder:text-stone-400 bg-transparent focus:outline-none"
           />
           @if (searchControl.value) {
@@ -99,23 +111,23 @@
       @if (categories().length > 1) {
         <div class="mt-6 flex items-center justify-start sm:justify-center gap-2 overflow-x-auto pb-2 scrollbar-none">
           @for (cat of categories(); track cat.id) {
-          <button
-            type="button"
-            (click)="onSelectCategory(cat.id)"
-            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200"
-            [class.bg-stone-900]="filter().cuisineCategory === cat.id"
-            [class.text-white]="filter().cuisineCategory === cat.id"
-            [class.shadow-sm]="filter().cuisineCategory === cat.id"
-            [class.bg-white]="filter().cuisineCategory !== cat.id"
-            [class.text-stone-700]="filter().cuisineCategory !== cat.id"
-            [class.border]="filter().cuisineCategory !== cat.id"
-            [class.border-stone-200]="filter().cuisineCategory !== cat.id"
-            [class.hover:border-stone-300]="filter().cuisineCategory !== cat.id"
-          >
-            <span>{{ cat.icon }}</span>
-            <span>{{ cat.name }}</span>
-          </button>
-        }
+            <button
+              type="button"
+              (click)="onSelectCategory(cat.id)"
+              class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200"
+              [class.bg-stone-900]="filter().cuisineCategory === cat.id"
+              [class.text-white]="filter().cuisineCategory === cat.id"
+              [class.shadow-sm]="filter().cuisineCategory === cat.id"
+              [class.bg-white]="filter().cuisineCategory !== cat.id"
+              [class.text-stone-700]="filter().cuisineCategory !== cat.id"
+              [class.border]="filter().cuisineCategory !== cat.id"
+              [class.border-stone-200]="filter().cuisineCategory !== cat.id"
+              [class.hover:border-stone-300]="filter().cuisineCategory !== cat.id"
+            >
+              <span>{{ cat.icon }}</span>
+              <span>{{ cat.name }}</span>
+            </button>
+          }
         </div>
       }
     </div>
@@ -123,27 +135,110 @@
 
   <!-- MAIN CATALOG CONTENT -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-    <!-- FILTERS AND STATS BAR -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-stone-200">
+    <!-- FILTERS AND PRICE CONTROLS BAR -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-stone-200">
       <div>
         <h2 class="text-xl sm:text-2xl font-black text-stone-900 tracking-tight flex items-center gap-2">
           <span>Restaurantes Disponibles</span>
           <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-primary-100 text-primary-800">
-            {{ activeCount() }} {{ activeCount() === 1 ? 'local' : 'locales' }}
+            {{ activeCount() }} {{ activeCount() === 1 ? 'local disponible' : 'locales disponibles' }}
           </span>
         </h2>
         <p class="text-xs sm:text-sm text-stone-500 mt-0.5">
-          En La Tebaida, Quindío • Haz clic en cualquier restaurante para abrir su carta digital y hacer pedidos
+          Compara precios y toca cualquier restaurante para ver su carta completa y hacer pedidos de inmediato.
         </p>
       </div>
 
-      <!-- Quick Toggles -->
-      <div class="flex items-center gap-3 self-start sm:self-auto">
+      <!-- Quick Filters & Sort Bar -->
+      <div class="flex flex-wrap items-center gap-2.5">
+        <!-- Price Level Badges -->
+        <div class="flex items-center bg-white rounded-xl border border-stone-200 p-1 shadow-2xs">
+          <span class="text-[11px] font-bold text-stone-400 px-2 uppercase tracking-wider">Presupuesto:</span>
+          <button
+            type="button"
+            (click)="onSelectPriceLevel('all')"
+            class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all"
+            [class.bg-stone-900]="!filter().priceLevel || filter().priceLevel === 'all'"
+            [class.text-white]="!filter().priceLevel || filter().priceLevel === 'all'"
+            [class.text-stone-600]="filter().priceLevel && filter().priceLevel !== 'all'"
+          >
+            Todos
+          </button>
+          <button
+            type="button"
+            (click)="onSelectPriceLevel('$')"
+            title="Económico ($)"
+            class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all"
+            [class.bg-stone-900]="filter().priceLevel === '$'"
+            [class.text-white]="filter().priceLevel === '$'"
+            [class.text-stone-600]="filter().priceLevel !== '$'"
+          >
+            $ (Económico)
+          </button>
+          <button
+            type="button"
+            (click)="onSelectPriceLevel('$$')"
+            title="Moderado ($$)"
+            class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all"
+            [class.bg-stone-900]="filter().priceLevel === '$$'"
+            [class.text-white]="filter().priceLevel === '$$'"
+            [class.text-stone-600]="filter().priceLevel !== '$$'"
+          >
+            $$ (Medio)
+          </button>
+          <button
+            type="button"
+            (click)="onSelectPriceLevel('$$$')"
+            title="Gourmet / Premium ($$$)"
+            class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all"
+            [class.bg-stone-900]="filter().priceLevel === '$$$' || filter().priceLevel === '$$$$'"
+            [class.text-white]="filter().priceLevel === '$$$' || filter().priceLevel === '$$$$'"
+            [class.text-stone-600]="filter().priceLevel !== '$$$' && filter().priceLevel !== '$$$$'"
+          >
+            $$$ (Gourmet)
+          </button>
+        </div>
+
+        <!-- Sort by Price / Rating -->
+        <div class="flex items-center bg-white rounded-xl border border-stone-200 p-1 shadow-2xs">
+          <span class="text-[11px] font-bold text-stone-400 px-2 uppercase tracking-wider">Ordenar:</span>
+          <button
+            type="button"
+            (click)="onSelectSort('recommended')"
+            class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all"
+            [class.bg-stone-900]="!filter().sortBy || filter().sortBy === 'recommended'"
+            [class.text-white]="!filter().sortBy || filter().sortBy === 'recommended'"
+            [class.text-stone-600]="filter().sortBy && filter().sortBy !== 'recommended'"
+          >
+            Destacados
+          </button>
+          <button
+            type="button"
+            (click)="onSelectSort('priceAsc')"
+            class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all"
+            [class.bg-stone-900]="filter().sortBy === 'priceAsc'"
+            [class.text-white]="filter().sortBy === 'priceAsc'"
+            [class.text-stone-600]="filter().sortBy !== 'priceAsc'"
+          >
+            Precio: Menor a Mayor
+          </button>
+          <button
+            type="button"
+            (click)="onSelectSort('rating')"
+            class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all"
+            [class.bg-stone-900]="filter().sortBy === 'rating'"
+            [class.text-white]="filter().sortBy === 'rating'"
+            [class.text-stone-600]="filter().sortBy !== 'rating'"
+          >
+            Mejor Calificados
+          </button>
+        </div>
+
         <!-- Only open switch -->
         <button
           type="button"
           (click)="onToggleOpenOnly()"
-          class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold transition-colors"
+          class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold transition-colors shadow-2xs"
           [class.bg-emerald-50]="filter().onlyOpen"
           [class.border-emerald-300]="filter().onlyOpen"
           [class.text-emerald-800]="filter().onlyOpen"
@@ -155,11 +250,11 @@
           <span>Solo Abiertos Ahora</span>
         </button>
 
-        @if (filter().query || filter().cuisineCategory !== 'all' || filter().city !== 'Todas las ciudades' || filter().onlyOpen) {
+        @if (filter().query || filter().cuisineCategory !== 'all' || (filter().priceLevel && filter().priceLevel !== 'all') || filter().onlyOpen || filter().sortBy !== 'recommended') {
           <button
             type="button"
             (click)="resetAllFilters()"
-            class="text-xs font-bold text-stone-500 hover:text-stone-800 underline transition-colors"
+            class="text-xs font-bold text-stone-500 hover:text-stone-800 underline transition-colors px-2 py-1"
           >
             Limpiar filtros
           </button>
@@ -220,10 +315,10 @@
                   🍽️
                 </div>
               }
-              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent"></div>
 
               <!-- Top Left: Open / Closed Badge -->
-              <div class="absolute top-3 left-3">
+              <div class="absolute top-3 left-3 flex items-center gap-1.5">
                 @if (r.isOpen) {
                   <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/90 backdrop-blur-md text-white text-[11px] font-extrabold tracking-wide uppercase shadow-sm">
                     <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
@@ -234,9 +329,15 @@
                     Cerrado
                   </span>
                 }
+
+                @if (r.priceLevel) {
+                  <span class="px-2 py-1 rounded-lg bg-stone-900/80 backdrop-blur-md text-amber-300 text-[11px] font-black tracking-widest shadow-sm">
+                    {{ r.priceLevel }}
+                  </span>
+                }
               </div>
 
-              <!-- Top Right: Rating & Price -->
+              <!-- Top Right: Rating & Product Count -->
               <div class="absolute top-3 right-3 flex items-center gap-1.5">
                 @if (r.rating != null) {
                   <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/95 backdrop-blur-md text-stone-900 text-xs font-black shadow-sm">
@@ -288,22 +389,52 @@
             <div class="p-5 flex-1 flex flex-col justify-between">
               <div>
                 <!-- Restaurant Name -->
-                <h3
-                  (click)="openMenu(r.slug)"
-                  class="text-lg font-black text-stone-900 hover:text-primary-600 transition-colors cursor-pointer tracking-tight leading-snug"
-                >
-                  {{ r.name }}
-                </h3>
+                <div class="flex items-start justify-between gap-2">
+                  <h3
+                    (click)="openMenu(r.slug)"
+                    class="text-lg font-black text-stone-900 hover:text-primary-600 transition-colors cursor-pointer tracking-tight leading-snug"
+                  >
+                    {{ r.name }}
+                  </h3>
+                </div>
 
                 <!-- Tagline -->
                 <p class="text-xs text-stone-600 mt-1 line-clamp-2 leading-relaxed">
                   {{ r.tagline }}
                 </p>
 
+                <!-- PRICE RANGE HIGHLIGHT BADGE (Key for customer price clarity) -->
+                <div class="mt-3.5 bg-gradient-to-r from-stone-50 to-amber-50/50 border border-stone-200/80 rounded-xl p-2.5 flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm">💵</span>
+                    <div>
+                      <span class="text-[10px] font-extrabold text-stone-400 uppercase tracking-wider block leading-none">Rango de Precios:</span>
+                      @if (r.minPrice && r.maxPrice) {
+                        <span class="text-xs font-extrabold text-stone-900 leading-tight">
+                          {{ formatCurrency(r.minPrice) }} - {{ formatCurrency(r.maxPrice) }}
+                        </span>
+                      } @else {
+                        <span class="text-xs font-extrabold text-stone-900 leading-tight">
+                          Precios asequibles en carta
+                        </span>
+                      }
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    (click)="openQuickView(r, $event)"
+                    class="text-[11px] font-bold text-primary-700 bg-primary-50 hover:bg-primary-100 border border-primary-200 px-2 py-1 rounded-lg transition-colors whitespace-nowrap"
+                    title="Vista rápida de platos y precios"
+                  >
+                    Ver detalles 👁️
+                  </button>
+                </div>
+
                 <!-- Featured Dish Highlight -->
                 @if (r.featuredDish) {
-                  <div class="mt-3.5 bg-amber-50/70 border border-amber-200/80 rounded-xl p-2.5 flex items-start gap-2">
-                    <span class="text-sm">✨</span>
+                  <div class="mt-2.5 bg-amber-50/70 border border-amber-200/80 rounded-xl p-2.5 flex items-start gap-2">
+                    <span class="text-sm shrink-0">✨</span>
                     <div class="text-xs">
                       <span class="font-bold text-amber-900 block leading-tight">Plato Recomendado:</span>
                       <span class="text-amber-800 font-medium leading-tight line-clamp-1">{{ r.featuredDish }}</span>
@@ -313,7 +444,7 @@
 
                 <!-- Tags -->
                 @if (r.tags?.length) {
-                  <div class="mt-3.5 flex flex-wrap gap-1.5">
+                  <div class="mt-3 flex flex-wrap gap-1.5">
                     @for (tag of r.tags; track tag) {
                       <span class="text-[10px] font-semibold bg-stone-100 text-stone-600 px-2 py-0.5 rounded-md">
                         #{{ tag }}
@@ -330,7 +461,7 @@
                   (click)="openMenu(r.slug)"
                   class="flex-1 py-2.5 px-3 bg-stone-900 hover:bg-stone-800 active:scale-98 text-white rounded-xl text-xs sm:text-sm font-bold shadow-xs transition-all flex items-center justify-center gap-1.5"
                 >
-                  <span>Ver Menú Digital</span>
+                  <span>Ver Menú Completo</span>
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
@@ -341,7 +472,7 @@
                   <button
                     type="button"
                     (click)="openWhatsApp(r.whatsapp, r.name)"
-                    title="Contactar o consultar por WhatsApp"
+                    title="Preguntar por WhatsApp al restaurante"
                     class="p-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-xl transition-colors shrink-0"
                   >
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -360,9 +491,9 @@
         <div class="w-16 h-16 bg-stone-100 text-stone-400 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl">
           🔍
         </div>
-        <h3 class="text-xl font-extrabold text-stone-900 tracking-tight">No encontramos restaurantes</h3>
+        <h3 class="text-xl font-extrabold text-stone-900 tracking-tight">No encontramos restaurantes con ese criterio</h3>
         <p class="text-sm text-stone-500 mt-2 leading-relaxed">
-          No hay resultados para "{{ filter().query || filter().city }}". Intenta buscar con otros términos o limpia los filtros activos.
+          Prueba cambiando el presupuesto o limpiando los filtros para ver la oferta gastronómica completa.
         </p>
         <button
           type="button"
@@ -374,33 +505,118 @@
       </div>
     }
 
+    <!-- QUICK PREVIEW MODAL FOR CLIENTS (No login required) -->
+    @if (quickViewRestaurant(); as qv) {
+      <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/70 backdrop-blur-xs animate-fade-in">
+        <div class="bg-white rounded-3xl shadow-2xl border border-stone-100 max-w-lg w-full overflow-hidden flex flex-col max-h-[90vh]">
+          <!-- Modal Header Banner -->
+          <div class="relative h-36 bg-gradient-to-r from-stone-900 via-stone-800 to-amber-950 p-4 text-white flex flex-col justify-between">
+            <button
+              type="button"
+              (click)="closeQuickView()"
+              class="self-end w-8 h-8 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition-colors text-sm"
+              title="Cerrar ventana"
+            >
+              ✕
+            </button>
+            <div>
+              <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider block">{{ qv.cuisine || 'Gastronomía Local' }}</span>
+              <h3 class="text-xl font-black tracking-tight">{{ qv.name }}</h3>
+            </div>
+          </div>
+
+          <!-- Modal Body -->
+          <div class="p-6 overflow-y-auto space-y-4">
+            <div class="flex items-center justify-between bg-stone-50 rounded-2xl p-3.5 border border-stone-200">
+              <div>
+                <span class="text-[10px] font-extrabold text-stone-400 uppercase tracking-wider block">Rango de Precios</span>
+                <span class="text-sm font-black text-stone-900">
+                  @if (qv.minPrice && qv.maxPrice) {
+                    {{ formatCurrency(qv.minPrice) }} a {{ formatCurrency(qv.maxPrice) }}
+                  } @else {
+                    Precios en carta
+                  }
+                </span>
+              </div>
+              <div class="text-right">
+                <span class="text-[10px] font-extrabold text-stone-400 uppercase tracking-wider block">Estado Actual</span>
+                <span class="text-xs font-bold" [class.text-emerald-600]="qv.isOpen" [class.text-stone-500]="!qv.isOpen">
+                  {{ qv.isOpen ? '🟢 Abierto para ordenar' : '🔴 Cerrado' }}
+                </span>
+              </div>
+            </div>
+
+            @if (qv.description) {
+              <div>
+                <h4 class="text-xs font-bold text-stone-500 uppercase tracking-wider">Acerca del restaurante</h4>
+                <p class="text-sm text-stone-700 mt-1 leading-relaxed">{{ qv.description }}</p>
+              </div>
+            }
+
+            @if (qv.featuredDish) {
+              <div class="bg-amber-50 border border-amber-200 rounded-2xl p-3">
+                <span class="text-xs font-bold text-amber-900 block">⭐ Especialidad recomendada</span>
+                <span class="text-xs text-amber-800 mt-0.5 block">{{ qv.featuredDish }}</span>
+              </div>
+            }
+
+            @if (qv.address) {
+              <div class="text-xs text-stone-600 flex items-center gap-1.5">
+                <span>📍</span>
+                <span>{{ qv.address }}</span>
+              </div>
+            }
+          </div>
+
+          <!-- Modal Footer Actions -->
+          <div class="p-4 bg-stone-50 border-t border-stone-200 flex items-center gap-3">
+            <button
+              type="button"
+              (click)="closeQuickView()"
+              class="px-4 py-2.5 rounded-xl border border-stone-300 text-stone-700 text-xs font-bold hover:bg-stone-200 transition-colors"
+            >
+              Cerrar
+            </button>
+            <button
+              type="button"
+              (click)="closeQuickView(); openMenu(qv.slug)"
+              class="flex-1 py-2.5 px-4 bg-primary-600 hover:bg-primary-700 active:scale-98 text-white rounded-xl text-xs font-bold shadow-md transition-all flex items-center justify-center gap-2"
+            >
+              <span>Abrir Menú & Ordenar</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+
     <!-- HOW IT WORKS BANNER -->
     <section class="mt-16 sm:mt-20 bg-gradient-to-br from-stone-900 to-stone-950 rounded-3xl p-8 sm:p-12 text-white shadow-xl relative overflow-hidden">
       <div class="absolute -right-10 -top-10 w-64 h-64 bg-primary-600/20 rounded-full blur-3xl pointer-events-none"></div>
       
       <div class="relative z-10 max-w-3xl">
-        <span class="text-xs font-extrabold text-primary-400 uppercase tracking-widest block mb-2">Experiencia Sin Fricción</span>
+        <span class="text-xs font-extrabold text-primary-400 uppercase tracking-widest block mb-2">Experiencia de Usuario</span>
         <h2 class="text-2xl sm:text-4xl font-black tracking-tight leading-tight">
-          ¿Cómo funciona pedir con Tavita?
+          ¿Cómo consultar y pedir en Tavita?
         </h2>
         <p class="text-sm text-stone-400 mt-2 max-w-xl leading-relaxed">
-          Diseñado para que los comensales tengan una experiencia gastronómica fluida y los restaurantes atiendan más rápido.
+          Como cliente o comensal no necesitas crear cuenta ni iniciar sesión. Puedes navegar cartas, comparar precios y ordenar libremente.
         </p>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8">
           <div class="bg-white/5 border border-white/10 rounded-2xl p-5 backdrop-blur-xs">
-            <span class="text-3xl block mb-3">📱</span>
-            <h4 class="font-extrabold text-base text-white">1. Explora o Escanea</h4>
+            <span class="text-3xl block mb-3">🔍</span>
+            <h4 class="font-extrabold text-base text-white">1. Explora Menús</h4>
             <p class="text-xs text-stone-400 mt-1 leading-relaxed">
-              Abre el menú con el código QR en mesa o desde el directorio en tu navegador.
+              Consulta fotos, ingredientes y el rango de precios de los restaurantes de la ciudad.
             </p>
           </div>
 
           <div class="bg-white/5 border border-white/10 rounded-2xl p-5 backdrop-blur-xs">
             <span class="text-3xl block mb-3">🛒</span>
-            <h4 class="font-extrabold text-base text-white">2. Arma tu Orden</h4>
+            <h4 class="font-extrabold text-base text-white">2. Arma tu Pedido</h4>
             <p class="text-xs text-stone-400 mt-1 leading-relaxed">
-              Selecciona platos, agrega notas especiales de cocina y revisa los precios en vivo.
+              Añade tus platos favoritos, especifica notas a cocina y revisa el total transparente.
             </p>
           </div>
 
@@ -408,7 +624,7 @@
             <span class="text-3xl block mb-3">⚡</span>
             <h4 class="font-extrabold text-base text-white">3. Pide sin Esperas</h4>
             <p class="text-xs text-stone-400 mt-1 leading-relaxed">
-              Envía la comanda con un toque directamente a cocina o al WhatsApp del restaurante.
+              Envía la comanda directo a la cocina del local o pide a domicilio por WhatsApp.
             </p>
           </div>
         </div>
@@ -419,10 +635,10 @@
     <section class="mt-12 bg-primary-500 rounded-3xl p-8 sm:p-10 text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-lg shadow-primary-500/20">
       <div class="max-w-xl">
         <h3 class="text-2xl sm:text-3xl font-black tracking-tight leading-tight">
-          ¿Tienes un restaurante o negocio de comida?
+          ¿Tienes un restaurante o negocio gastronómico?
         </h3>
         <p class="text-sm text-primary-100 mt-2 leading-relaxed">
-          Crea tu menú digital con código QR en minutos, actualiza precios al instante y gestiona tus pedidos desde cualquier dispositivo.
+          Publica tu carta digital, genera tus códigos QR personalizados y recibe pedidos directos a cocina.
         </p>
       </div>
 
@@ -430,7 +646,7 @@
         routerLink="/register"
         class="px-6 py-3.5 bg-white text-stone-900 hover:bg-stone-100 active:scale-98 rounded-xl font-extrabold text-sm shadow-md transition-all whitespace-nowrap shrink-0 flex items-center gap-2"
       >
-        <span>Empezar Gratis con Tavita</span>
+        <span>Registrar mi Restaurante</span>
         <span>→</span>
       </a>
     </section>
@@ -443,7 +659,7 @@
         <img src="assets/tavita-logo.svg" alt="Tavita" class="w-9 h-9 object-contain" />
         <div>
           <span class="text-base font-black text-stone-900 block leading-tight">Tavita</span>
-          <span class="text-[11px] text-stone-500 font-medium">Plataforma de Menús Digitales & Directorio Gastronómico</span>
+          <span class="text-[11px] text-stone-500 font-medium">Cartas Digitales & Directorio de Restaurantes</span>
         </div>
       </div>
 
@@ -454,7 +670,7 @@
       </div>
 
       <p class="text-xs text-stone-400 font-medium">
-        © 2026 Tavita. Todos los derechos reservados.
+        © 2026 Tavita. Diseñado para comensales y restaurantes.
       </p>
     </div>
   </footer>

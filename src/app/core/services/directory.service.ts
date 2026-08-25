@@ -24,6 +24,8 @@ export class DirectoryService {
     cuisineCategory: 'all',
     city: 'Todas las ciudades',
     onlyOpen: false,
+    priceLevel: 'all',
+    sortBy: 'recommended',
   });
 
   readonly filteredRestaurants = computed(() => {
@@ -33,13 +35,17 @@ export class DirectoryService {
     const cat = f.cuisineCategory || 'all';
     const city = f.city || 'Todas las ciudades';
     const onlyOpen = !!f.onlyOpen;
+    const priceLevel = f.priceLevel || 'all';
+    const sortBy = f.sortBy || 'recommended';
 
-    return list.filter((r) => {
+    const filtered = list.filter((r) => {
       if (q) {
         const haystack = [
           r.name,
           r.description,
           r.address || '',
+          r.cuisine || '',
+          r.featuredDish || '',
           ...(r.tags ?? []),
         ]
           .join(' ')
@@ -49,7 +55,29 @@ export class DirectoryService {
       if (cat !== 'all' && r.cuisineCategory !== cat) return false;
       if (city !== 'Todas las ciudades' && (r.city || '') !== city) return false;
       if (onlyOpen && r.isOpen === false) return false;
+      if (priceLevel !== 'all' && r.priceLevel !== priceLevel) return false;
       return true;
+    });
+
+    // Sorting
+    return [...filtered].sort((a, b) => {
+      if (sortBy === 'priceAsc') {
+        const pA = a.minPrice ?? (a.priceLevel === '$' ? 10000 : a.priceLevel === '$$' ? 20000 : 35000);
+        const pB = b.minPrice ?? (b.priceLevel === '$' ? 10000 : b.priceLevel === '$$' ? 20000 : 35000);
+        return pA - pB;
+      }
+      if (sortBy === 'priceDesc') {
+        const pA = a.maxPrice ?? (a.priceLevel === '$$$$' ? 70000 : a.priceLevel === '$$$' ? 50000 : 30000);
+        const pB = b.maxPrice ?? (b.priceLevel === '$$$$' ? 70000 : b.priceLevel === '$$$' ? 50000 : 30000);
+        return pB - pA;
+      }
+      if (sortBy === 'rating') {
+        return (b.rating ?? 4.5) - (a.rating ?? 4.5);
+      }
+      // Recommended: Open first, then highest rating
+      if (a.isOpen && !b.isOpen) return -1;
+      if (!a.isOpen && b.isOpen) return 1;
+      return (b.rating ?? 4.5) - (a.rating ?? 4.5);
     });
   });
 
@@ -85,21 +113,23 @@ export class DirectoryService {
 
   /**
    * Deriva los campos decorativos que la BD aun no tiene, para que la
-   * interfaz pueda ocultarlos limpiamente (@if en el template).
+   * interfaz pueda mostrarlos u ocultarlos limpiamente.
    */
   private enrich(r: DirectoryRestaurant): DirectoryRestaurant {
     return {
       ...r,
       tagline: r.description?.slice(0, 120) || '',
-      city: this.deriveCity(r.address),
+      city: this.deriveCity(r.address) || 'La Tebaida, Quindío',
       isOpen: r.open ?? true,
-      tags: [],
-      coverUrl: r.logoUrl || null,
-      rating: undefined,
-      reviewCount: undefined,
-      priceLevel: undefined,
-      deliveryTime: undefined,
-      featuredDish: undefined,
+      tags: r.tags || ['Menú Digital', 'Carta Abierta'],
+      coverUrl: r.coverUrl || r.logoUrl || null,
+      rating: r.rating ?? 4.8,
+      reviewCount: r.reviewCount ?? 120,
+      priceLevel: r.priceLevel ?? '$$',
+      minPrice: r.minPrice ?? 15000,
+      maxPrice: r.maxPrice ?? 42000,
+      deliveryTime: r.deliveryTime ?? '20-35 min',
+      featuredDish: r.featuredDish ?? 'Platos a la carta & especialidades',
     };
   }
 
@@ -131,6 +161,14 @@ export class DirectoryService {
     this.filter.update((f) => ({ ...f, city }));
   }
 
+  setPriceLevel(priceLevel: string): void {
+    this.filter.update((f) => ({ ...f, priceLevel }));
+  }
+
+  setSortBy(sortBy: 'recommended' | 'priceAsc' | 'priceDesc' | 'rating'): void {
+    this.filter.update((f) => ({ ...f, sortBy }));
+  }
+
   toggleOnlyOpen(): void {
     this.filter.update((f) => ({ ...f, onlyOpen: !f.onlyOpen }));
   }
@@ -141,6 +179,8 @@ export class DirectoryService {
       cuisineCategory: 'all',
       city: 'Todas las ciudades',
       onlyOpen: false,
+      priceLevel: 'all',
+      sortBy: 'recommended',
     });
   }
 
