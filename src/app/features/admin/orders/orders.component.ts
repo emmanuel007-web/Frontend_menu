@@ -1,10 +1,12 @@
 import { Component, inject, signal, OnInit, computed, OnDestroy } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { OrderService } from '../../../core/services/order.service';
 import { Order, OrderStatus } from '../../../core/models/models';
 
 @Component({
   selector: 'app-orders',
+  imports: [RouterLink],
   templateUrl: './orders.component.html',
 })
 export class OrdersComponent implements OnInit, OnDestroy {
@@ -35,6 +37,9 @@ export class OrdersComponent implements OnInit, OnDestroy {
   // New order alert banner
   readonly showAlert = signal(false);
   readonly alertCount = signal(0);
+
+  // Session expired warning
+  readonly sessionExpired = signal(false);
 
   // Live filtered orders
   readonly filteredOrders = computed(() => {
@@ -183,10 +188,17 @@ export class OrdersComponent implements OnInit, OnDestroy {
     this.showAlert.set(false);
   }
 
+  retryAfterReLogin(): void {
+    this.sessionExpired.set(false);
+    this.fetchOrders();
+    this.startPolling();
+  }
+
   private pollForNewOrders(): void {
     if (this.loading()) return;
     this.orderService.listMine(undefined, true).subscribe({
       next: (latest) => {
+        this.sessionExpired.set(false);
         const current = this.orders();
         const currentIds = new Set(current.map((o) => o.id));
         const newOrders = latest.filter((o) => !currentIds.has(o.id));
@@ -203,8 +215,11 @@ export class OrdersComponent implements OnInit, OnDestroy {
           }
         }
       },
-      error: () => {
-        // Auth expired or network down — user will see stale data but no crash
+      error: (err) => {
+        if (err?.status === 401) {
+          this.sessionExpired.set(true);
+          this.stopPolling(); // Stop polling until user re-logs in
+        }
       }
     });
   }

@@ -34,6 +34,27 @@
           </button>
         </div>
       }
+
+      <!-- SESION EXPIRADA -->
+      @if (sessionExpired()) {
+        <div
+          class="mt-3 bg-amber-50 border border-amber-300 rounded-2xl px-5 py-3 flex items-center justify-between gap-3 anim-fade-in-scale"
+        >
+          <div class="flex items-center gap-3">
+            <span class="text-2xl">⚠️</span>
+            <div>
+              <span class="font-extrabold text-sm text-amber-800">Sesión expirada</span>
+              <p class="text-xs text-amber-600">Los pedidos nuevos no se detectan automáticamente.</p>
+            </div>
+          </div>
+          <a
+            routerLink="/login"
+            class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-colors shrink-0"
+          >
+            Iniciar sesión
+          </a>
+        </div>
+      }
     </div>
 
     <!-- Quick Actions -->
