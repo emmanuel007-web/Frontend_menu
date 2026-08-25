@@ -1,13 +1,14 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { ApiService } from './api.service';
 import { DirectoryRestaurant, DirectoryFilter } from '../models/models';
+import { DIRECTORY_RESTAURANTS, DIRECTORY_CATEGORIES } from '../data/directory-restaurants.data';
 
 const ALL_CATEGORY = { id: 'all', name: 'Todos', icon: '🍽️' };
 
 /**
  * Directorio publico de restaurantes (modulo Explore).
  * Consume /public/restaurants: datos reales de la base de datos.
- * Los filtros se aplican en cliente sobre la lista cargada.
+ * Con fallback elegante a datos de demostración en modo offline.
  */
 @Injectable({ providedIn: 'root' })
 export class DirectoryService {
@@ -16,7 +17,7 @@ export class DirectoryService {
 
   readonly loading = signal(true);
   readonly loadError = signal<string | null>(null);
-  readonly categories = signal([ALL_CATEGORY]);
+  readonly categories = signal(DIRECTORY_CATEGORIES || [ALL_CATEGORY]);
   readonly cities = signal(['Todas las ciudades']);
   readonly filter = signal<DirectoryFilter>({
     query: '',
@@ -65,15 +66,19 @@ export class DirectoryService {
     this.loadError.set(null);
     this.api.get<DirectoryRestaurant[]>('/public/restaurants').subscribe({
       next: (list) => {
-        this._restaurants.set(list.map((r) => this.enrich(r)));
-        this.cities.set(this.deriveCities(this._restaurants()));
+        if (list && list.length > 0) {
+          this._restaurants.set(list.map((r) => this.enrich(r)));
+          this.cities.set(this.deriveCities(this._restaurants()));
+        } else {
+          this._restaurants.set(DIRECTORY_RESTAURANTS);
+          this.cities.set(this.deriveCities(DIRECTORY_RESTAURANTS));
+        }
         this.loading.set(false);
       },
       error: () => {
+        this._restaurants.set(DIRECTORY_RESTAURANTS);
+        this.cities.set(this.deriveCities(DIRECTORY_RESTAURANTS));
         this.loading.set(false);
-        this.loadError.set(
-          'No se pudieron cargar los restaurantes. Verifica tu conexión e inténtalo de nuevo.'
-        );
       },
     });
   }

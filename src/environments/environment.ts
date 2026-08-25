@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8080/api',
-  appBaseUrl: 'http://localhost:4200',
+  apiUrl: '/api',
+  appBaseUrl: typeof window !== 'undefined' ? window.location.origin : '',
 };

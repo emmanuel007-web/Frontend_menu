@@ -3,25 +3,29 @@
   <!-- Screen Header (Hidden on Print) -->
   <div class="no-print flex flex-col md:flex-row md:items-center justify-between gap-4">
     <div>
-      <h1 class="text-3xl font-extrabold text-stone-900 tracking-tight">Generador de Códigos QR para Mesas 🖨️</h1>
-      <p class="text-stone-500 mt-1">Crea, personaliza e imprime stands y tarjetas de mesa con enlace directo a tu menú.</p>
+      <div class="flex items-center gap-2">
+        <span class="text-xs font-black px-2.5 py-1 rounded-lg bg-primary-100 text-primary-700 tracking-wide uppercase">Estudio de Diseño QR</span>
+        <span class="text-xs font-bold text-stone-400">• Alta Resolución & Impresión</span>
+      </div>
+      <h1 class="text-3xl font-extrabold text-stone-900 tracking-tight mt-1">Generador de Códigos QR Personalizados 🖨️</h1>
+      <p class="text-stone-500 text-sm mt-1">Diseña códigos QR artísticos con logos, gradientes, formas de esquinas y stands listos para imprimir.</p>
     </div>
 
     <!-- Mode switch -->
-    <div class="flex items-center gap-2 bg-stone-100 p-1 rounded-2xl border border-stone-200 self-start md:self-auto">
+    <div class="flex items-center gap-2 bg-stone-100 p-1.5 rounded-2xl border border-stone-200 self-start md:self-auto">
       <button
         (click)="switchMode('SINGLE')"
         [class]="mode() === 'SINGLE' ? 'bg-white text-stone-900 shadow-sm font-black' : 'text-stone-600 font-semibold'"
-        class="px-4 py-2 rounded-xl text-xs transition-all"
+        class="px-4 py-2 rounded-xl text-xs transition-all flex items-center gap-1.5"
       >
-        📍 Mesa Individual
+        <span>📍 Mesa Individual</span>
       </button>
       <button
         (click)="switchMode('BATCH')"
         [class]="mode() === 'BATCH' ? 'bg-white text-stone-900 shadow-sm font-black' : 'text-stone-600 font-semibold'"
-        class="px-4 py-2 rounded-xl text-xs transition-all"
+        class="px-4 py-2 rounded-xl text-xs transition-all flex items-center gap-1.5"
       >
-        📑 Lote para Todas las Mesas
+        <span>📑 Lote de Mesas</span>
       </button>
     </div>
   </div>
@@ -33,202 +37,824 @@
   }
 
   <!-- ========================================================================= -->
-  <!-- SINGLE QR & TABLE STAND MODE -->
+  <!-- SINGLE QR & TABLE STAND STUDIO MODE -->
   <!-- ========================================================================= -->
   @if (mode() === 'SINGLE') {
     <div class="no-print grid grid-cols-1 lg:grid-cols-12 gap-8">
       
-      <!-- Left Column: Customization Controls -->
-      <div class="lg:col-span-5 space-y-6">
+      <!-- Left Column: Comprehensive Customization Controls -->
+      <div class="lg:col-span-6 space-y-6">
         
-        <!-- Table & URL Settings -->
-        <div class="bg-white rounded-3xl border border-stone-100 p-6 shadow-sm space-y-5">
-          <h2 class="text-base font-extrabold text-stone-900 border-b border-stone-100 pb-3">1. Configuración de Mesa</h2>
-          
-          <div class="flex items-center gap-3">
-            <input
-              type="checkbox"
-              id="isTableCheck"
-              [checked]="isTableSpecific()"
-              (change)="isTableSpecific.set($any($event.target).checked); generateQr()"
-              class="w-4 h-4 text-primary-600 rounded-md focus:ring-primary-500 border-stone-300"
-            />
-            <label for="isTableCheck" class="text-xs font-bold text-stone-800 cursor-pointer">
-              Asignar número de mesa específico
-            </label>
-          </div>
+        <!-- Navigation Tabs for Customization -->
+        <div class="bg-stone-100 p-1.5 rounded-2xl flex items-center gap-1 border border-stone-200 overflow-x-auto">
+          <button
+            (click)="activeTab.set('SHAPES')"
+            [class]="activeTab() === 'SHAPES' ? 'bg-white text-stone-900 font-black shadow-xs' : 'text-stone-600 font-bold hover:text-stone-900'"
+            class="flex-1 py-2 px-3 rounded-xl text-xs whitespace-nowrap transition-all flex items-center justify-center gap-1.5"
+          >
+            <span>📐 Formas</span>
+          </button>
+          <button
+            (click)="activeTab.set('COLORS')"
+            [class]="activeTab() === 'COLORS' ? 'bg-white text-stone-900 font-black shadow-xs' : 'text-stone-600 font-bold hover:text-stone-900'"
+            class="flex-1 py-2 px-3 rounded-xl text-xs whitespace-nowrap transition-all flex items-center justify-center gap-1.5"
+          >
+            <span>🎨 Colores</span>
+          </button>
+          <button
+            (click)="activeTab.set('LOGO')"
+            [class]="activeTab() === 'LOGO' ? 'bg-white text-stone-900 font-black shadow-xs' : 'text-stone-600 font-bold hover:text-stone-900'"
+            class="flex-1 py-2 px-3 rounded-xl text-xs whitespace-nowrap transition-all flex items-center justify-center gap-1.5"
+          >
+            <span>🏷️ Logo & Icono</span>
+          </button>
+          <button
+            (click)="activeTab.set('STAND')"
+            [class]="activeTab() === 'STAND' ? 'bg-white text-stone-900 font-black shadow-xs' : 'text-stone-600 font-bold hover:text-stone-900'"
+            class="flex-1 py-2 px-3 rounded-xl text-xs whitespace-nowrap transition-all flex items-center justify-center gap-1.5"
+          >
+            <span>📄 Stand & Datos</span>
+          </button>
+        </div>
 
-          @if (isTableSpecific()) {
+        <!-- TAB 1: SHAPES & PATTERNS -->
+        @if (activeTab() === 'SHAPES') {
+          <div class="bg-white rounded-3xl border border-stone-100 p-6 shadow-sm space-y-6">
             <div>
-              <label class="block text-xs font-semibold text-stone-700 mb-1" for="tableInput">Número o Identificador de Mesa</label>
-              <div class="flex gap-2">
-                <input
-                  id="tableInput"
-                  type="text"
-                  [value]="tableNumber()"
-                  (input)="tableNumber.set($any($event.target).value); generateQr()"
-                  placeholder="Ej: 5, Terraza 2, Barra 1"
-                  class="flex-1 rounded-xl border border-stone-200 px-3.5 py-2 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-primary-400 bg-stone-50/50"
-                />
+              <h2 class="text-base font-extrabold text-stone-900">1. Estilo de Puntos y Módulos</h2>
+              <p class="text-xs text-stone-500 mt-0.5">Define cómo se dibujan los puntos internos del código QR.</p>
+            </div>
+
+            <!-- Dot Shapes -->
+            <div>
+              <label class="block text-xs font-bold text-stone-700 mb-2">Forma de Puntos:</label>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                <button
+                  (click)="dotStyle.set('ROUNDED'); generateQr()"
+                  [class]="dotStyle() === 'ROUNDED' ? 'border-primary-500 bg-primary-50 text-primary-900 ring-2 ring-primary-400 font-extrabold' : 'border-stone-200 bg-stone-50/70 text-stone-700 hover:bg-stone-100 font-semibold'"
+                  class="p-3 rounded-2xl border text-center transition-all flex flex-col items-center gap-1"
+                >
+                  <div class="w-6 h-6 rounded-lg bg-stone-900 mb-1"></div>
+                  <span class="text-xs">Redondeado</span>
+                </button>
+                
+                <button
+                  (click)="dotStyle.set('DOTS'); generateQr()"
+                  [class]="dotStyle() === 'DOTS' ? 'border-primary-500 bg-primary-50 text-primary-900 ring-2 ring-primary-400 font-extrabold' : 'border-stone-200 bg-stone-50/70 text-stone-700 hover:bg-stone-100 font-semibold'"
+                  class="p-3 rounded-2xl border text-center transition-all flex flex-col items-center gap-1"
+                >
+                  <div class="w-6 h-6 rounded-full bg-stone-900 mb-1"></div>
+                  <span class="text-xs">Círculos (Dots)</span>
+                </button>
+
+                <button
+                  (click)="dotStyle.set('SQUARE'); generateQr()"
+                  [class]="dotStyle() === 'SQUARE' ? 'border-primary-500 bg-primary-50 text-primary-900 ring-2 ring-primary-400 font-extrabold' : 'border-stone-200 bg-stone-50/70 text-stone-700 hover:bg-stone-100 font-semibold'"
+                  class="p-3 rounded-2xl border text-center transition-all flex flex-col items-center gap-1"
+                >
+                  <div class="w-6 h-6 bg-stone-900 mb-1"></div>
+                  <span class="text-xs">Clásico Cuadrado</span>
+                </button>
+
+                <button
+                  (click)="dotStyle.set('DIAMOND'); generateQr()"
+                  [class]="dotStyle() === 'DIAMOND' ? 'border-primary-500 bg-primary-50 text-primary-900 ring-2 ring-primary-400 font-extrabold' : 'border-stone-200 bg-stone-50/70 text-stone-700 hover:bg-stone-100 font-semibold'"
+                  class="p-3 rounded-2xl border text-center transition-all flex flex-col items-center gap-1"
+                >
+                  <div class="w-5 h-5 rotate-45 bg-stone-900 mb-1 my-0.5"></div>
+                  <span class="text-xs">Diamante</span>
+                </button>
               </div>
-              <p class="text-[11px] text-stone-400 mt-1">Al escanearlo, el comensal tendrá la mesa preseleccionada en su pedido.</p>
             </div>
-          }
 
-          <div>
-            <label class="block text-xs font-semibold text-stone-700 mb-1" for="ctaInput">Texto de Llamado a la Acción</label>
-            <input
-              id="ctaInput"
-              type="text"
-              [value]="callToAction()"
-              (input)="callToAction.set($any($event.target).value)"
-              placeholder="Escanea con tu celular para ver la carta y pedir"
-              class="w-full rounded-xl border border-stone-200 px-3.5 py-2 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-primary-400 bg-stone-50/50"
-            />
+            <!-- Eye Frame Shapes -->
+            <div>
+              <label class="block text-xs font-bold text-stone-700 mb-2">Marco de Ojos de Esquina (Finder Frames):</label>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                <button
+                  (click)="eyeFrameStyle.set('ROUNDED'); generateQr()"
+                  [class]="eyeFrameStyle() === 'ROUNDED' ? 'border-primary-500 bg-primary-50 text-primary-900 ring-2 ring-primary-400 font-extrabold' : 'border-stone-200 bg-stone-50/70 text-stone-700 hover:bg-stone-100 font-semibold'"
+                  class="p-3 rounded-2xl border text-center transition-all flex flex-col items-center gap-1"
+                >
+                  <div class="w-7 h-7 rounded-xl border-4 border-stone-900 p-0.5 mb-1 flex items-center justify-center">
+                    <div class="w-2.5 h-2.5 rounded-sm bg-stone-900"></div>
+                  </div>
+                  <span class="text-xs">Curvo Suave</span>
+                </button>
+
+                <button
+                  (click)="eyeFrameStyle.set('CIRCLE'); generateQr()"
+                  [class]="eyeFrameStyle() === 'CIRCLE' ? 'border-primary-500 bg-primary-50 text-primary-900 ring-2 ring-primary-400 font-extrabold' : 'border-stone-200 bg-stone-50/70 text-stone-700 hover:bg-stone-100 font-semibold'"
+                  class="p-3 rounded-2xl border text-center transition-all flex flex-col items-center gap-1"
+                >
+                  <div class="w-7 h-7 rounded-full border-4 border-stone-900 p-0.5 mb-1 flex items-center justify-center">
+                    <div class="w-2.5 h-2.5 rounded-full bg-stone-900"></div>
+                  </div>
+                  <span class="text-xs">Circular</span>
+                </button>
+
+                <button
+                  (click)="eyeFrameStyle.set('LEAF'); generateQr()"
+                  [class]="eyeFrameStyle() === 'LEAF' ? 'border-primary-500 bg-primary-50 text-primary-900 ring-2 ring-primary-400 font-extrabold' : 'border-stone-200 bg-stone-50/70 text-stone-700 hover:bg-stone-100 font-semibold'"
+                  class="p-3 rounded-2xl border text-center transition-all flex flex-col items-center gap-1"
+                >
+                  <div class="w-7 h-7 rounded-tl-xl rounded-br-xl border-4 border-stone-900 p-0.5 mb-1 flex items-center justify-center">
+                    <div class="w-2.5 h-2.5 rounded-tl-sm rounded-br-sm bg-stone-900"></div>
+                  </div>
+                  <span class="text-xs">Hoja / Orgánico</span>
+                </button>
+
+                <button
+                  (click)="eyeFrameStyle.set('SQUARE'); generateQr()"
+                  [class]="eyeFrameStyle() === 'SQUARE' ? 'border-primary-500 bg-primary-50 text-primary-900 ring-2 ring-primary-400 font-extrabold' : 'border-stone-200 bg-stone-50/70 text-stone-700 hover:bg-stone-100 font-semibold'"
+                  class="p-3 rounded-2xl border text-center transition-all flex flex-col items-center gap-1"
+                >
+                  <div class="w-7 h-7 border-4 border-stone-900 p-0.5 mb-1 flex items-center justify-center">
+                    <div class="w-2.5 h-2.5 bg-stone-900"></div>
+                  </div>
+                  <span class="text-xs">Cuadrado</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Eye Ball / Pupil Shapes -->
+            <div>
+              <label class="block text-xs font-bold text-stone-700 mb-2">Pupila Central del Ojo:</label>
+              <div class="grid grid-cols-4 gap-2">
+                <button
+                  (click)="eyeBallStyle.set('ROUNDED'); generateQr()"
+                  [class]="eyeBallStyle() === 'ROUNDED' ? 'bg-primary-600 text-white font-bold' : 'bg-stone-100 text-stone-700'"
+                  class="py-2 rounded-xl text-xs text-center transition-all"
+                >
+                  Curva
+                </button>
+                <button
+                  (click)="eyeBallStyle.set('CIRCLE'); generateQr()"
+                  [class]="eyeBallStyle() === 'CIRCLE' ? 'bg-primary-600 text-white font-bold' : 'bg-stone-100 text-stone-700'"
+                  class="py-2 rounded-xl text-xs text-center transition-all"
+                >
+                  Círculo
+                </button>
+                <button
+                  (click)="eyeBallStyle.set('DIAMOND'); generateQr()"
+                  [class]="eyeBallStyle() === 'DIAMOND' ? 'bg-primary-600 text-white font-bold' : 'bg-stone-100 text-stone-700'"
+                  class="py-2 rounded-xl text-xs text-center transition-all"
+                >
+                  Rombo
+                </button>
+                <button
+                  (click)="eyeBallStyle.set('SQUARE'); generateQr()"
+                  [class]="eyeBallStyle() === 'SQUARE' ? 'bg-primary-600 text-white font-bold' : 'bg-stone-100 text-stone-700'"
+                  class="py-2 rounded-xl text-xs text-center transition-all"
+                >
+                  Cuadrado
+                </button>
+              </div>
+            </div>
           </div>
+        }
 
-          <!-- URL box with copy button -->
-          <div class="bg-stone-50 rounded-2xl p-3.5 border border-stone-100 space-y-1.5">
-            <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wider block">Enlace de Destino</span>
-            <div class="flex items-center justify-between gap-2">
-              <span class="text-xs font-mono text-stone-700 truncate">{{ currentMenuUrl() }}</span>
-              <button
-                (click)="copyLink()"
-                class="shrink-0 px-3 py-1 bg-white border border-stone-200 rounded-lg text-xs font-bold text-stone-700 hover:bg-stone-100 shadow-2xs"
-              >
-                {{ copiedFeedback() ? '¡Copiado!' : 'Copiar' }}
-              </button>
+        <!-- TAB 2: COLORS & GRADIENTS -->
+        @if (activeTab() === 'COLORS') {
+          <div class="bg-white rounded-3xl border border-stone-100 p-6 shadow-sm space-y-6">
+            <div>
+              <h2 class="text-base font-extrabold text-stone-900">2. Paletas de Color y Gradientes</h2>
+              <p class="text-xs text-stone-500 mt-0.5">Elige colores de marca, fondos y gradientes con alto contraste para lectura rápida.</p>
             </div>
+
+            <!-- Color Presets -->
+            <div>
+              <label class="block text-xs font-bold text-stone-700 mb-2.5">Paletas Rápidas:</label>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                @for (preset of colorPresets; track preset.name) {
+                  <button
+                    (click)="applyColorPreset(preset)"
+                    class="p-2.5 rounded-2xl border border-stone-200 bg-stone-50/60 hover:bg-stone-100 transition-all flex items-center gap-2.5 text-left group"
+                  >
+                    <div
+                      class="w-6 h-6 rounded-full shrink-0 shadow-2xs border border-stone-300"
+                      [style.background]="preset.dark2 ? 'linear-gradient(135deg, ' + preset.dark + ', ' + preset.dark2 + ')' : preset.dark"
+                    ></div>
+                    <span class="text-[11px] font-bold text-stone-800 truncate group-hover:text-primary-600">{{ preset.name }}</span>
+                  </button>
+                }
+              </div>
+            </div>
+
+            <!-- Color Mode Selection -->
+            <div>
+              <label class="block text-xs font-bold text-stone-700 mb-2">Modo de Relleno:</label>
+              <div class="grid grid-cols-3 gap-2">
+                <button
+                  (click)="colorMode.set('SOLID'); generateQr()"
+                  [class]="colorMode() === 'SOLID' ? 'bg-stone-900 text-white font-bold' : 'bg-stone-100 text-stone-700'"
+                  class="py-2.5 rounded-xl text-xs text-center transition-all"
+                >
+                  Color Sólido
+                </button>
+                <button
+                  (click)="colorMode.set('GRADIENT_LINEAR'); generateQr()"
+                  [class]="colorMode() === 'GRADIENT_LINEAR' ? 'bg-stone-900 text-white font-bold' : 'bg-stone-100 text-stone-700'"
+                  class="py-2.5 rounded-xl text-xs text-center transition-all"
+                >
+                  Gradiente Lineal
+                </button>
+                <button
+                  (click)="colorMode.set('GRADIENT_RADIAL'); generateQr()"
+                  [class]="colorMode() === 'GRADIENT_RADIAL' ? 'bg-stone-900 text-white font-bold' : 'bg-stone-100 text-stone-700'"
+                  class="py-2.5 rounded-xl text-xs text-center transition-all"
+                >
+                  Gradiente Radial
+                </button>
+              </div>
+            </div>
+
+            <!-- Exact Hex Inputs -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-stone-50 p-4 rounded-2xl border border-stone-100">
+              <div>
+                <label class="block text-xs font-bold text-stone-700 mb-1" for="color1Input">Color Primario (QR):</label>
+                <div class="flex items-center gap-2">
+                  <input
+                    id="color1Picker"
+                    type="color"
+                    [value]="qrDarkColor()"
+                    (input)="qrDarkColor.set($any($event.target).value); generateQr()"
+                    class="w-10 h-10 rounded-xl cursor-pointer border border-stone-300 p-0.5 bg-white"
+                  />
+                  <input
+                    id="color1Input"
+                    type="text"
+                    [value]="qrDarkColor()"
+                    (input)="qrDarkColor.set($any($event.target).value); generateQr()"
+                    class="flex-1 rounded-xl border border-stone-200 px-3 py-2 text-xs font-mono font-bold uppercase text-stone-800 bg-white"
+                  />
+                </div>
+              </div>
+
+              @if (colorMode() !== 'SOLID') {
+                <div>
+                  <label class="block text-xs font-bold text-stone-700 mb-1" for="color2Input">Color Secundario (Gradiente):</label>
+                  <div class="flex items-center gap-2">
+                    <input
+                      id="color2Picker"
+                      type="color"
+                      [value]="qrDarkColor2()"
+                      (input)="qrDarkColor2.set($any($event.target).value); generateQr()"
+                      class="w-10 h-10 rounded-xl cursor-pointer border border-stone-300 p-0.5 bg-white"
+                    />
+                    <input
+                      id="color2Input"
+                      type="text"
+                      [value]="qrDarkColor2()"
+                      (input)="qrDarkColor2.set($any($event.target).value); generateQr()"
+                      class="flex-1 rounded-xl border border-stone-200 px-3 py-2 text-xs font-mono font-bold uppercase text-stone-800 bg-white"
+                    />
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Eye Custom Color Toggle -->
+            <div class="space-y-3">
+              <div class="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  id="customEyeCheck"
+                  [checked]="customEyeColor()"
+                  (change)="customEyeColor.set($any($event.target).checked); generateQr()"
+                  class="w-4 h-4 text-primary-600 rounded-md focus:ring-primary-500 border-stone-300"
+                />
+                <label for="customEyeCheck" class="text-xs font-bold text-stone-800 cursor-pointer">
+                  Personalizar color de ojos de esquina (Acento de Marca)
+                </label>
+              </div>
+
+              @if (customEyeColor()) {
+                <div class="flex items-center gap-2 pl-7">
+                  <input
+                    type="color"
+                    [value]="qrEyeColor()"
+                    (input)="qrEyeColor.set($any($event.target).value); generateQr()"
+                    class="w-8 h-8 rounded-lg cursor-pointer border border-stone-300 p-0.5 bg-white"
+                  />
+                  <input
+                    type="text"
+                    [value]="qrEyeColor()"
+                    (input)="qrEyeColor.set($any($event.target).value); generateQr()"
+                    class="w-32 rounded-xl border border-stone-200 px-3 py-1.5 text-xs font-mono font-bold uppercase text-stone-800 bg-white"
+                  />
+                </div>
+              }
+            </div>
+
+            <!-- Background color & Transparent option -->
+            <div class="space-y-3 pt-2 border-t border-stone-100">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-stone-700">Fondo del Código QR:</span>
+                <div class="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="transBgCheck"
+                    [checked]="transparentBg()"
+                    (change)="transparentBg.set($any($event.target).checked); generateQr()"
+                    class="w-4 h-4 text-primary-600 rounded-md focus:ring-primary-500 border-stone-300"
+                  />
+                  <label for="transBgCheck" class="text-xs font-semibold text-stone-600 cursor-pointer">
+                    Fondo Transparente (PNG)
+                  </label>
+                </div>
+              </div>
+
+              @if (!transparentBg()) {
+                <div class="flex items-center gap-3">
+                  <button
+                    (click)="qrLightColor.set('#ffffff'); generateQr()"
+                    [class.ring-2]="qrLightColor() === '#ffffff'"
+                    class="px-3 py-1.5 rounded-xl border border-stone-200 bg-white text-xs font-bold text-stone-800 ring-primary-500 shadow-2xs"
+                  >
+                    Blanco Puro
+                  </button>
+                  <button
+                    (click)="qrLightColor.set('#fffbeb'); generateQr()"
+                    [class.ring-2]="qrLightColor() === '#fffbeb'"
+                    class="px-3 py-1.5 rounded-xl border border-amber-200 bg-amber-50 text-xs font-bold text-amber-900 ring-primary-500 shadow-2xs"
+                  >
+                    Crema Cálido
+                  </button>
+                  <button
+                    (click)="qrLightColor.set('#0f172a'); generateQr()"
+                    [class.ring-2]="qrLightColor() === '#0f172a'"
+                    class="px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-900 text-xs font-bold text-white ring-primary-500 shadow-2xs"
+                  >
+                    Dark Slate
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- TAB 3: CENTER LOGO & ICONS -->
+        @if (activeTab() === 'LOGO') {
+          <div class="bg-white rounded-3xl border border-stone-100 p-6 shadow-sm space-y-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-base font-extrabold text-stone-900">3. Logo e Icono Central</h2>
+                <p class="text-xs text-stone-500 mt-0.5">Incrusta el logo de tu restaurante o un icono gastronómico en el centro del QR.</p>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="showLogoCheck"
+                  [checked]="showLogo()"
+                  (change)="showLogo.set($any($event.target).checked); generateQr()"
+                  class="w-4 h-4 text-primary-600 rounded-md focus:ring-primary-500 border-stone-300"
+                />
+                <label for="showLogoCheck" class="text-xs font-extrabold text-stone-800 cursor-pointer">
+                  Activar Logo
+                </label>
+              </div>
+            </div>
+
+            @if (showLogo()) {
+              <!-- Logo Source Switch -->
+              <div>
+                <label class="block text-xs font-bold text-stone-700 mb-2">Origen del Logo:</label>
+                <div class="grid grid-cols-3 gap-2">
+                  <button
+                    (click)="logoType.set('PRESET_ICON'); generateQr()"
+                    [class]="logoType() === 'PRESET_ICON' ? 'bg-stone-900 text-white font-bold' : 'bg-stone-100 text-stone-700'"
+                    class="py-2.5 rounded-xl text-xs text-center transition-all"
+                  >
+                    Iconos Gastronómicos
+                  </button>
+                  <button
+                    (click)="logoType.set('REST_LOGO'); generateQr()"
+                    [class]="logoType() === 'REST_LOGO' ? 'bg-stone-900 text-white font-bold' : 'bg-stone-100 text-stone-700'"
+                    class="py-2.5 rounded-xl text-xs text-center transition-all"
+                  >
+                    Logo del Restaurante
+                  </button>
+                  <button
+                    (click)="logoType.set('CUSTOM_URL'); generateQr()"
+                    [class]="logoType() === 'CUSTOM_URL' ? 'bg-stone-900 text-white font-bold' : 'bg-stone-100 text-stone-700'"
+                    class="py-2.5 rounded-xl text-xs text-center transition-all"
+                  >
+                    Subir Imagen
+                  </button>
+                </div>
+              </div>
+
+              <!-- PRESET ICONS GRID -->
+              @if (logoType() === 'PRESET_ICON') {
+                <div>
+                  <label class="block text-xs font-bold text-stone-700 mb-2">Selecciona un Icono:</label>
+                  <div class="grid grid-cols-5 gap-2.5">
+                    @for (icon of presetIcons; track icon.id) {
+                      <button
+                        (click)="selectedPresetIcon.set(icon.id); generateQr()"
+                        [class]="selectedPresetIcon() === icon.id ? 'border-primary-500 bg-primary-50 ring-2 ring-primary-400' : 'border-stone-200 bg-stone-50/70 hover:bg-stone-100'"
+                        class="p-2.5 rounded-2xl border text-center transition-all flex flex-col items-center gap-1"
+                        [title]="icon.label"
+                      >
+                        <span class="text-2xl">{{ icon.emoji }}</span>
+                        <span class="text-[10px] font-semibold text-stone-600 truncate w-full">{{ icon.label }}</span>
+                      </button>
+                    }
+                  </div>
+                </div>
+              }
+
+              <!-- RESTAURANT LOGO PREVIEW -->
+              @if (logoType() === 'REST_LOGO') {
+                <div class="bg-stone-50 p-4 rounded-2xl border border-stone-100 flex items-center gap-4">
+                  @if (restaurantLogo()) {
+                    <img [src]="restaurantLogo()" alt="Logo" class="w-14 h-14 rounded-2xl object-cover border border-stone-200 shadow-xs" />
+                    <div>
+                      <p class="text-xs font-bold text-stone-800">Logo actual: {{ restaurantName() }}</p>
+                      <p class="text-[11px] text-stone-500">Se usará el logo configurado en la información de tu restaurante.</p>
+                    </div>
+                  } @else {
+                    <div class="text-xs text-stone-500">
+                      ⚠️ No tienes un logo cargado en tu restaurante. Puedes subir uno en la pestaña "Subir Imagen" o en el panel de Configuración.
+                    </div>
+                  }
+                </div>
+              }
+
+              <!-- FILE UPLOAD / CUSTOM URL -->
+              @if (logoType() === 'CUSTOM_URL') {
+                <div class="space-y-3 bg-stone-50 p-4 rounded-2xl border border-stone-100">
+                  <div>
+                    <label class="block text-xs font-bold text-stone-700 mb-1">Subir Archivo de Logo (PNG, SVG o JPG):</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      (change)="onFileUpload($event)"
+                      class="w-full text-xs text-stone-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-stone-900 file:text-white hover:file:bg-stone-800 cursor-pointer"
+                    />
+                  </div>
+                  @if (customLogoUrl()) {
+                    <div class="flex items-center gap-3 pt-2">
+                      <img [src]="customLogoUrl()" alt="Preview" class="w-12 h-12 rounded-xl object-contain border border-stone-200 bg-white" />
+                      <span class="text-xs font-bold text-emerald-600">✓ Imagen cargada correctamente</span>
+                    </div>
+                  }
+                </div>
+              }
+
+              <!-- LOGO BADGE SHAPE & SIZE -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-stone-100">
+                <div>
+                  <label class="block text-xs font-bold text-stone-700 mb-1.5">Forma del Marco:</label>
+                  <div class="grid grid-cols-3 gap-2">
+                    <button
+                      (click)="logoShape.set('CIRCLE'); generateQr()"
+                      [class]="logoShape() === 'CIRCLE' ? 'bg-stone-900 text-white font-bold' : 'bg-stone-100 text-stone-700'"
+                      class="py-2 rounded-xl text-xs text-center transition-all"
+                    >
+                      Círculo
+                    </button>
+                    <button
+                      (click)="logoShape.set('ROUNDED'); generateQr()"
+                      [class]="logoShape() === 'ROUNDED' ? 'bg-stone-900 text-white font-bold' : 'bg-stone-100 text-stone-700'"
+                      class="py-2 rounded-xl text-xs text-center transition-all"
+                    >
+                      Cuadrado
+                    </button>
+                    <button
+                      (click)="logoShape.set('SHIELD'); generateQr()"
+                      [class]="logoShape() === 'SHIELD' ? 'bg-stone-900 text-white font-bold' : 'bg-stone-100 text-stone-700'"
+                      class="py-2 rounded-xl text-xs text-center transition-all"
+                    >
+                      Escudo
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-stone-700 mb-1.5">Tamaño del Logo:</label>
+                  <div class="grid grid-cols-3 gap-2">
+                    <button
+                      (click)="logoSize.set('SM'); generateQr()"
+                      [class]="logoSize() === 'SM' ? 'bg-stone-900 text-white font-bold' : 'bg-stone-100 text-stone-700'"
+                      class="py-2 rounded-xl text-xs text-center transition-all"
+                    >
+                      Pequeño
+                    </button>
+                    <button
+                      (click)="logoSize.set('MD'); generateQr()"
+                      [class]="logoSize() === 'MD' ? 'bg-stone-900 text-white font-bold' : 'bg-stone-100 text-stone-700'"
+                      class="py-2 rounded-xl text-xs text-center transition-all"
+                    >
+                      Medio
+                    </button>
+                    <button
+                      (click)="logoSize.set('LG'); generateQr()"
+                      [class]="logoSize() === 'LG' ? 'bg-stone-900 text-white font-bold' : 'bg-stone-100 text-stone-700'"
+                      class="py-2 rounded-xl text-xs text-center transition-all"
+                    >
+                      Grande
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- TAB 4: STAND & TEXT INFORMATION -->
+        @if (activeTab() === 'STAND') {
+          <div class="bg-white rounded-3xl border border-stone-100 p-6 shadow-sm space-y-6">
+            <div>
+              <h2 class="text-base font-extrabold text-stone-900">4. Configuración del Stand y Textos</h2>
+              <p class="text-xs text-stone-500 mt-0.5">Personaliza los títulos, número de mesa, WiFi y llamados a la acción de la tarjeta.</p>
+            </div>
+
+            <!-- Stand Template Selection -->
+            <div>
+              <label class="block text-xs font-bold text-stone-700 mb-2">Plantilla Visual del Stand:</label>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                <button
+                  (click)="setTemplate('MODERN')"
+                  [class]="templateStyle() === 'MODERN' ? 'bg-stone-900 text-white font-extrabold shadow-sm' : 'bg-stone-100 text-stone-700 border border-stone-200 font-semibold'"
+                  class="py-2.5 px-3 rounded-xl text-xs text-center transition-all"
+                >
+                  Minimalista Clean
+                </button>
+                <button
+                  (click)="setTemplate('GOURMET')"
+                  [class]="templateStyle() === 'GOURMET' ? 'bg-amber-950 text-amber-300 font-extrabold border border-amber-800 shadow-sm' : 'bg-stone-100 text-stone-700 border border-stone-200 font-semibold'"
+                  class="py-2.5 px-3 rounded-xl text-xs text-center transition-all"
+                >
+                  Gourmet & Gold
+                </button>
+                <button
+                  (click)="setTemplate('CASUAL')"
+                  [class]="templateStyle() === 'CASUAL' ? 'bg-amber-100 text-amber-900 font-extrabold border border-amber-300 shadow-sm' : 'bg-stone-100 text-stone-700 border border-stone-200 font-semibold'"
+                  class="py-2.5 px-3 rounded-xl text-xs text-center transition-all"
+                >
+                  Bistro Cálido
+                </button>
+                <button
+                  (click)="setTemplate('NEON')"
+                  [class]="templateStyle() === 'NEON' ? 'bg-slate-900 text-cyan-400 font-extrabold border border-cyan-500 shadow-sm' : 'bg-stone-100 text-stone-700 border border-stone-200 font-semibold'"
+                  class="py-2.5 px-3 rounded-xl text-xs text-center transition-all"
+                >
+                  Neon Cyber Bar
+                </button>
+                <button
+                  (click)="setTemplate('STICKER')"
+                  [class]="templateStyle() === 'STICKER' ? 'bg-primary-600 text-white font-extrabold shadow-sm' : 'bg-stone-100 text-stone-700 border border-stone-200 font-semibold'"
+                  class="py-2.5 px-3 rounded-xl text-xs text-center transition-all"
+                >
+                  Pegatina / Sticker
+                </button>
+                <button
+                  (click)="setTemplate('ACRYLIC')"
+                  [class]="templateStyle() === 'ACRYLIC' ? 'bg-indigo-900 text-white font-extrabold shadow-sm' : 'bg-stone-100 text-stone-700 border border-stone-200 font-semibold'"
+                  class="py-2.5 px-3 rounded-xl text-xs text-center transition-all"
+                >
+                  Display Acrílico
+                </button>
+              </div>
+            </div>
+
+            <!-- Table Assignment -->
+            <div class="space-y-3 bg-stone-50 p-4 rounded-2xl border border-stone-100">
+              <div class="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  id="isTableCheck"
+                  [checked]="isTableSpecific()"
+                  (change)="isTableSpecific.set($any($event.target).checked); generateQr()"
+                  class="w-4 h-4 text-primary-600 rounded-md focus:ring-primary-500 border-stone-300"
+                />
+                <label for="isTableCheck" class="text-xs font-bold text-stone-800 cursor-pointer">
+                  Asignar a una mesa o ubicación específica
+                </label>
+              </div>
+
+              @if (isTableSpecific()) {
+                <div class="grid grid-cols-2 gap-3 pt-2">
+                  <div>
+                    <label class="block text-xs font-semibold text-stone-700 mb-1" for="tablePrefixInput">Etiqueta:</label>
+                    <input
+                      id="tablePrefixInput"
+                      type="text"
+                      [value]="tablePrefix()"
+                      (input)="tablePrefix.set($any($event.target).value)"
+                      placeholder="Mesa, Terraza, Barra..."
+                      class="w-full rounded-xl border border-stone-200 px-3 py-2 text-xs text-stone-900 bg-white focus:ring-2 focus:ring-primary-400"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-stone-700 mb-1" for="tableNumInput">Número o ID:</label>
+                    <input
+                      id="tableNumInput"
+                      type="text"
+                      [value]="tableNumber()"
+                      (input)="tableNumber.set($any($event.target).value); generateQr()"
+                      placeholder="Ej: 1, 5, VIP..."
+                      class="w-full rounded-xl border border-stone-200 px-3 py-2 text-xs text-stone-900 bg-white font-bold focus:ring-2 focus:ring-primary-400"
+                    />
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Call to Action Text -->
+            <div>
+              <label class="block text-xs font-bold text-stone-700 mb-1" for="ctaInput">Llamado a la Acción (CTA):</label>
+              <input
+                id="ctaInput"
+                type="text"
+                [value]="callToAction()"
+                (input)="callToAction.set($any($event.target).value)"
+                placeholder="Escanea con tu celular para ver la carta y pedir"
+                class="w-full rounded-xl border border-stone-200 px-3.5 py-2.5 text-sm text-stone-900 bg-stone-50/50 focus:ring-2 focus:ring-primary-400"
+              />
+            </div>
+
+            <!-- WiFi Details Toggle -->
+            <div class="space-y-3 pt-2 border-t border-stone-100">
+              <div class="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  id="showWifiCheck"
+                  [checked]="showWifi()"
+                  (change)="showWifi.set($any($event.target).checked)"
+                  class="w-4 h-4 text-primary-600 rounded-md focus:ring-primary-500 border-stone-300"
+                />
+                <label for="showWifiCheck" class="text-xs font-bold text-stone-800 cursor-pointer">
+                  Incluir Red WiFi en la tarjeta para clientes
+                </label>
+              </div>
+
+              @if (showWifi()) {
+                <div class="grid grid-cols-2 gap-3 bg-stone-50 p-3.5 rounded-2xl border border-stone-100">
+                  <div>
+                    <label class="block text-[11px] font-bold text-stone-600 mb-1" for="wifiNet">Nombre de Red WiFi:</label>
+                    <input
+                      id="wifiNet"
+                      type="text"
+                      [value]="wifiNetwork()"
+                      (input)="wifiNetwork.set($any($event.target).value)"
+                      placeholder="Ej: Negobistro_WiFi"
+                      class="w-full rounded-xl border border-stone-200 px-3 py-1.5 text-xs text-stone-900 bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold text-stone-600 mb-1" for="wifiPass">Contraseña:</label>
+                    <input
+                      id="wifiPass"
+                      type="text"
+                      [value]="wifiPassword()"
+                      (input)="wifiPassword.set($any($event.target).value)"
+                      placeholder="Ej: gourmet2026"
+                      class="w-full rounded-xl border border-stone-200 px-3 py-1.5 text-xs text-stone-900 bg-white font-mono"
+                    />
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Social Media Toggle -->
+            <div class="space-y-3">
+              <div class="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  id="showSocialCheck"
+                  [checked]="showSocial()"
+                  (change)="showSocial.set($any($event.target).checked)"
+                  class="w-4 h-4 text-primary-600 rounded-md focus:ring-primary-500 border-stone-300"
+                />
+                <label for="showSocialCheck" class="text-xs font-bold text-stone-800 cursor-pointer">
+                  Mostrar Usuario de Instagram
+                </label>
+              </div>
+
+              @if (showSocial()) {
+                <div class="pl-7">
+                  <input
+                    type="text"
+                    [value]="instagramHandle()"
+                    (input)="instagramHandle.set($any($event.target).value)"
+                    placeholder="Ej: @negobistro"
+                    class="w-full max-w-xs rounded-xl border border-stone-200 px-3 py-1.5 text-xs text-stone-900 bg-white"
+                  />
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- URL Destination Box -->
+        <div class="bg-stone-50 rounded-2xl p-4 border border-stone-200/80 space-y-1.5">
+          <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wider block">Enlace de Destino del QR</span>
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-xs font-mono text-stone-700 truncate select-all">{{ currentMenuUrl() }}</span>
+            <button
+              (click)="copyLink()"
+              class="shrink-0 px-3 py-1 bg-white border border-stone-200 rounded-lg text-xs font-bold text-stone-700 hover:bg-stone-100 shadow-2xs flex items-center gap-1"
+            >
+              <span>{{ copiedFeedback() ? '✓ ¡Copiado!' : '📋 Copiar' }}</span>
+            </button>
           </div>
         </div>
 
-        <!-- Visual Style & Color Customization -->
-        <div class="bg-white rounded-3xl border border-stone-100 p-6 shadow-sm space-y-5">
-          <h2 class="text-base font-extrabold text-stone-900 border-b border-stone-100 pb-3">2. Estilo Visual y Colores</h2>
-
-          <!-- Template Preset -->
-          <div>
-            <label class="block text-xs font-semibold text-stone-700 mb-2">Plantilla de Stand:</label>
-            <div class="grid grid-cols-3 gap-2">
-              <button
-                (click)="setTemplate('MODERN')"
-                [class]="templateStyle() === 'MODERN' ? 'bg-stone-900 text-white font-bold' : 'bg-stone-100 text-stone-700 border border-stone-200 font-medium'"
-                class="py-2.5 px-2 rounded-xl text-xs text-center transition-all"
-              >
-                Minimalista
-              </button>
-              <button
-                (click)="setTemplate('GOURMET')"
-                [class]="templateStyle() === 'GOURMET' ? 'bg-amber-950 text-amber-300 font-bold border border-amber-800' : 'bg-stone-100 text-stone-700 border border-stone-200 font-medium'"
-                class="py-2.5 px-2 rounded-xl text-xs text-center transition-all"
-              >
-                Gourmet Dark
-              </button>
-              <button
-                (click)="setTemplate('CASUAL')"
-                [class]="templateStyle() === 'CASUAL' ? 'bg-amber-100 text-amber-900 font-bold border border-amber-300' : 'bg-stone-100 text-stone-700 border border-stone-200 font-medium'"
-                class="py-2.5 px-2 rounded-xl text-xs text-center transition-all"
-              >
-                Cálido / Bistro
-              </button>
-            </div>
-          </div>
-
-          <!-- Color palette for QR -->
-          <div>
-            <label class="block text-xs font-semibold text-stone-700 mb-2">Color del Código QR:</label>
-            <div class="flex flex-wrap items-center gap-3">
-              <button
-                (click)="setQrColor('#1c1917')"
-                [class.ring-2]="qrDarkColor() === '#1c1917'"
-                class="w-8 h-8 rounded-full bg-[#1c1917] ring-primary-500 ring-offset-2 border border-stone-300 transition-all shadow-xs"
-                title="Negro Carbón"
-              ></button>
-              <button
-                (click)="setQrColor('#ea580c')"
-                [class.ring-2]="qrDarkColor() === '#ea580c'"
-                class="w-8 h-8 rounded-full bg-[#ea580c] ring-primary-500 ring-offset-2 border border-stone-300 transition-all shadow-xs"
-                title="Naranja Gourmet"
-              ></button>
-              <button
-                (click)="setQrColor('#1e3a8a')"
-                [class.ring-2]="qrDarkColor() === '#1e3a8a'"
-                class="w-8 h-8 rounded-full bg-[#1e3a8a] ring-primary-500 ring-offset-2 border border-stone-300 transition-all shadow-xs"
-                title="Azul Marino"
-              ></button>
-              <button
-                (click)="setQrColor('#065f46')"
-                [class.ring-2]="qrDarkColor() === '#065f46'"
-                class="w-8 h-8 rounded-full bg-[#065f46] ring-primary-500 ring-offset-2 border border-stone-300 transition-all shadow-xs"
-                title="Verde Botánico"
-              ></button>
-              <button
-                (click)="setQrColor('#831843')"
-                [class.ring-2]="qrDarkColor() === '#831843'"
-                class="w-8 h-8 rounded-full bg-[#831843] ring-primary-500 ring-offset-2 border border-stone-300 transition-all shadow-xs"
-                title="Borgoña"
-              ></button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Action Buttons -->
+        <!-- Export Buttons Multi-Format Grid -->
         <div class="space-y-3 pt-2">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-stone-400">Descarga y Exportación</h3>
+          
           <button
             (click)="downloadCardPng()"
             class="w-full py-4 rounded-2xl bg-gradient-to-r from-primary-600 to-primary-500 text-white font-extrabold text-sm hover:from-primary-700 hover:to-primary-600 transition-all shadow-lg shadow-primary-500/25 btn-shine flex items-center justify-center gap-2"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
               <path d="M10.75 2.75a.75.75 0 00-1.5 0v8.614L6.295 8.235a.75.75 0 10-1.09 1.03l4.25 4.5a.75.75 0 001.09 0l4.25-4.5a.75.75 0 00-1.09-1.03l-2.955 3.129V2.75z" />
               <path d="M3.5 12.75a.75.75 0 00-1.5 0v2.5A2.75 2.75 0 004.75 18h10.5A2.75 2.75 0 0018 15.25v-2.5a.75.75 0 00-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5z" />
             </svg>
-            <span>Descargar Tarjeta PNG en Alta Resolución</span>
+            <span>Descargar Stand Completo HD (PNG 1200x1600)</span>
           </button>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button
+              (click)="downloadPureQrPng()"
+              class="py-3 rounded-2xl bg-stone-100 hover:bg-stone-200 border border-stone-200 text-stone-800 font-extrabold text-xs transition-colors flex items-center justify-center gap-1.5"
+            >
+              <span>🎯 Descargar Solo QR (PNG)</span>
+            </button>
+
+            <button
+              (click)="downloadSvg()"
+              class="py-3 rounded-2xl bg-stone-100 hover:bg-stone-200 border border-stone-200 text-stone-800 font-extrabold text-xs transition-colors flex items-center justify-center gap-1.5"
+            >
+              <span>📐 Descargar Vectorial (SVG)</span>
+            </button>
+          </div>
 
           <button
             (click)="printStands()"
-            class="w-full py-3.5 rounded-2xl bg-stone-900 text-white font-extrabold text-sm hover:bg-stone-800 transition-colors shadow-md flex items-center justify-center gap-2"
+            class="w-full py-3 rounded-2xl bg-stone-900 text-white font-extrabold text-xs hover:bg-stone-800 transition-colors shadow-md flex items-center justify-center gap-2"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
               <path fill-rule="evenodd" d="M5 2.75C5 1.784 5.784 1 6.75 1h6.5c.966 0 1.75.784 1.75 1.75v3.5A1.75 1.75 0 0116.75 8H17a2 2 0 012 2v5a2 2 0 01-2 2h-1.25v1.25a1.75 1.75 0 01-1.75 1.75h-8A1.75 1.75 0 014.25 18.25V17H3a2 2 0 01-2-2v-5a2 2 0 012-2h.25A1.75 1.75 0 015 6.25v-3.5zm1.5 0v3.5h7v-3.5h-7zM5.75 12a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 3a.75.75 0 000 1.5h5.5a.75.75 0 000-1.5h-5.5z" clip-rule="evenodd" />
             </svg>
-            <span>Imprimir Tarjeta de Mesa (PDF / Impresora)</span>
+            <span>🖨️ Imprimir Stand Directo (PDF / A4)</span>
           </button>
         </div>
       </div>
 
       <!-- Right Column: Live Table Stand Visual Preview -->
-      <div class="lg:col-span-7 flex flex-col items-center justify-center">
-        <div class="text-center mb-3">
-          <span class="text-xs font-bold uppercase tracking-wider text-stone-400">Vista Previa del Stand de Mesa</span>
+      <div class="lg:col-span-6 flex flex-col items-center justify-start sticky top-6">
+        <div class="w-full flex items-center justify-between mb-3 px-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-stone-400">Vista Previa en Vivo del Stand</span>
+          <span class="text-[11px] font-bold text-primary-600 bg-primary-50 px-2 py-0.5 rounded-md">Escaneable 100%</span>
         </div>
 
-        <!-- Stand Graphic Card -->
+        <!-- Stand Graphic Card Container -->
         <div
           [class]="
             templateStyle() === 'GOURMET'
-              ? 'bg-slate-950 text-white border-amber-900/60 shadow-2xl'
+              ? 'bg-slate-950 text-white border-amber-700/60 shadow-2xl ring-1 ring-amber-500/20'
+              : templateStyle() === 'NEON'
+              ? 'bg-black text-white border-cyan-500/70 shadow-2xl ring-1 ring-cyan-400/30'
               : templateStyle() === 'CASUAL'
-              ? 'bg-amber-50 text-stone-900 border-amber-200 shadow-xl'
+              ? 'bg-[#fffbeb] text-stone-900 border-amber-300 shadow-xl'
+              : templateStyle() === 'STICKER'
+              ? 'bg-white text-stone-900 border-stone-300 shadow-xl rounded-full aspect-square justify-center'
               : 'bg-white text-stone-900 border-stone-200 shadow-xl'
           "
-          class="w-full max-w-sm rounded-3xl border p-8 flex flex-col items-center text-center space-y-6 relative transition-all duration-300"
+          class="w-full max-w-sm rounded-3xl border p-7 flex flex-col items-center text-center space-y-5 relative transition-all duration-300"
         >
           <!-- Top Tag -->
           <div class="w-full flex items-center justify-between">
-            <div class="flex items-center gap-1.5 opacity-90">
-              <img src="assets/tavita-icon.svg" alt="Tavita" class="w-4 h-4 object-contain" />
+            <div class="flex items-center gap-1.5 opacity-80">
+              <span class="text-xs">✨</span>
               <span class="text-[10px] font-black uppercase tracking-widest">Tavita Menu</span>
             </div>
-            <span class="text-xs opacity-70">📱</span>
+            <span class="text-xs opacity-70 font-semibold">• CARTA DIGITAL •</span>
           </div>
 
           <!-- Restaurant Name & Table -->
           <div>
-            <h3 class="text-2xl font-black tracking-tight">{{ restaurantName() }}</h3>
+            <h3 class="text-2xl font-black tracking-tight leading-tight">{{ restaurantName() }}</h3>
             @if (isTableSpecific() && tableNumber()) {
-              <div class="mt-1.5 inline-block px-4 py-1 rounded-xl font-black text-sm" [class]="templateStyle() === 'GOURMET' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-primary-500 text-white shadow-xs'">
-                MESA {{ tableNumber() }}
+              <div
+                class="mt-2 inline-block px-4 py-1.5 rounded-2xl font-black text-sm shadow-xs"
+                [class]="
+                  templateStyle() === 'GOURMET'
+                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                    : templateStyle() === 'NEON'
+                    ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400'
+                    : templateStyle() === 'CASUAL'
+                    ? 'bg-amber-600 text-white'
+                    : 'bg-stone-900 text-white'
+                "
+              >
+                {{ tablePrefix().toUpperCase() }} {{ tableNumber() }}
               </div>
             } @else {
               <p class="text-xs font-semibold opacity-60 mt-1">CARTA DIGITAL & PEDIDOS</p>
@@ -236,21 +862,42 @@
           </div>
 
           <!-- QR Container -->
-          <div class="bg-white p-5 rounded-3xl shadow-inner border border-stone-100/60">
+          <div class="bg-white p-4 rounded-3xl shadow-md border border-stone-100">
             @if (loading()) {
               <div class="w-56 h-56 flex items-center justify-center">
                 <div class="w-8 h-8 border-4 border-primary-300 border-t-primary-600 rounded-full animate-spin"></div>
               </div>
             } @else if (qrDataUrl()) {
-              <img [src]="qrDataUrl()" alt="Código QR" class="w-56 h-56 object-contain" />
+              <img [src]="qrDataUrl()" alt="Código QR Personalizado" class="w-56 h-56 object-contain rounded-xl" />
             }
           </div>
 
-          <!-- Call to action -->
+          <!-- Call to action & Steps -->
           <div class="space-y-2">
             <p class="text-sm font-extrabold leading-snug">{{ callToAction() }}</p>
-            <p class="text-[11px] opacity-60">1. Abre tu cámara  •  2. Escanea  •  3. Pide directo</p>
+            @if (showInstructions()) {
+              <p class="text-[11px] opacity-70">{{ instructionsText() }}</p>
+            }
           </div>
+
+          <!-- WiFi badge if enabled -->
+          @if (showWifi() && wifiNetwork()) {
+            <div
+              class="w-full py-1.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2"
+              [class]="templateStyle() === 'GOURMET' ? 'bg-amber-500/15 text-amber-300' : 'bg-stone-100 text-stone-700'"
+            >
+              <span>📶 WiFi: {{ wifiNetwork() }}</span>
+              <span class="opacity-40">•</span>
+              <span>Clave: {{ wifiPassword() || 'Libre' }}</span>
+            </div>
+          }
+
+          <!-- Instagram Handle if enabled -->
+          @if (showSocial() && instagramHandle()) {
+            <div class="text-[11px] font-bold opacity-70">
+              📸 {{ instagramHandle() }}
+            </div>
+          }
 
           <div class="pt-2 border-t border-current/10 w-full text-[10px] font-semibold opacity-40">
             www.tavita.app
@@ -269,36 +916,49 @@
       <!-- Batch Controls Banner -->
       <div class="bg-white rounded-3xl border border-stone-100 p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 class="text-lg font-extrabold text-stone-900">Generación por Lotes de Mesas</h2>
-          <p class="text-stone-500 text-xs mt-0.5">Genera automáticamente stands individuales para cada mesa del restaurante.</p>
+          <h2 class="text-lg font-extrabold text-stone-900">Generador en Lote para Todas las Mesas</h2>
+          <p class="text-stone-500 text-xs mt-0.5">Aplica todas tus personalizaciones (colores, marcos, logo y plantilla) automáticamente a toda tu sala.</p>
         </div>
 
-        <div class="flex items-center gap-3">
+        <div class="flex flex-wrap items-center gap-3">
           <div class="flex items-center gap-2">
-            <label class="text-xs font-bold text-stone-700">Cantidad de Mesas:</label>
+            <label class="text-xs font-bold text-stone-700" for="batchPrefixInp">Prefijo:</label>
             <input
+              id="batchPrefixInp"
+              type="text"
+              [value]="batchPrefix()"
+              (input)="batchPrefix.set($any($event.target).value)"
+              placeholder="Mesa"
+              class="w-20 rounded-xl border border-stone-200 px-2 py-1.5 text-xs font-bold text-stone-900 text-center"
+            />
+          </div>
+
+          <div class="flex items-center gap-2">
+            <label class="text-xs font-bold text-stone-700" for="batchCountInp">Cantidad:</label>
+            <input
+              id="batchCountInp"
               type="number"
               min="1"
               max="50"
               [value]="batchCount()"
               (input)="batchCount.set(+$any($event.target).value)"
-              class="w-20 rounded-xl border border-stone-200 px-3 py-1.5 text-sm font-bold text-stone-900 text-center focus:outline-none focus:ring-2 focus:ring-primary-400"
+              class="w-16 rounded-xl border border-stone-200 px-2 py-1.5 text-xs font-bold text-stone-900 text-center"
             />
           </div>
 
           <button
             (click)="generateBatch()"
             [disabled]="generatingBatch()"
-            class="px-4 py-2 bg-primary-600 text-white rounded-xl text-xs font-bold hover:bg-primary-700 transition-colors shadow-sm disabled:opacity-50"
+            class="px-4 py-2 bg-primary-600 text-white rounded-xl text-xs font-bold hover:bg-primary-700 transition-colors shadow-sm disabled:opacity-50 flex items-center gap-1.5"
           >
-            {{ generatingBatch() ? 'Generando…' : '🔄 Regenerar Lote' }}
+            <span>{{ generatingBatch() ? 'Generando…' : '🔄 Regenerar Mesas' }}</span>
           </button>
 
           <button
             (click)="printStands()"
             class="px-4 py-2 bg-stone-900 text-white rounded-xl text-xs font-bold hover:bg-stone-800 transition-colors shadow-sm flex items-center gap-1.5"
           >
-            <span>🖨️ Imprimir Todas las Mesas</span>
+            <span>🖨️ Imprimir Todas</span>
           </button>
         </div>
       </div>
@@ -307,14 +967,16 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         @for (item of batchQrs(); track item.tableNum) {
           <div class="bg-white rounded-3xl border border-stone-200/80 p-5 flex flex-col items-center text-center space-y-4 shadow-sm hover:shadow-md transition-shadow">
-            <span class="text-xs font-black px-3 py-1 bg-stone-900 text-white rounded-xl">
-              MESA {{ item.tableNum }}
+            <span class="text-xs font-black px-3.5 py-1.5 bg-stone-900 text-white rounded-xl">
+              {{ item.tableLabel }}
             </span>
             <div class="bg-white p-3 rounded-2xl border border-stone-100 shadow-inner">
-              <img [src]="item.qrDataUrl" [alt]="'Mesa ' + item.tableNum" class="w-40 h-40" />
+              <img [src]="item.qrDataUrl" [alt]="item.tableLabel" class="w-40 h-40 object-contain rounded-lg" />
             </div>
-            <p class="text-xs font-extrabold text-stone-900">{{ restaurantName() }}</p>
-            <p class="text-[10px] text-stone-400 font-mono truncate max-w-[200px]">{{ item.url }}</p>
+            <div>
+              <p class="text-xs font-extrabold text-stone-900">{{ restaurantName() }}</p>
+              <p class="text-[10px] text-stone-400 font-mono truncate max-w-[200px] mt-0.5">{{ item.url }}</p>
+            </div>
           </div>
         }
       </div>
@@ -330,16 +992,22 @@
         <h2 class="text-3xl font-black">{{ restaurantName() }}</h2>
         @if (isTableSpecific() && tableNumber()) {
           <div class="inline-block px-6 py-2 bg-black text-white font-black text-2xl rounded-2xl">
-            MESA {{ tableNumber() }}
+            {{ tablePrefix().toUpperCase() }} {{ tableNumber() }}
           </div>
         }
         <div class="flex justify-center p-4">
-          <img [src]="qrDataUrl()" alt="QR Mesa" class="w-72 h-72" />
+          <img [src]="qrDataUrl()" alt="QR Mesa" class="w-72 h-72 object-contain" />
         </div>
         <p class="text-xl font-black">{{ callToAction() }}</p>
-        <p class="text-sm text-stone-600">Abre tu cámara y escanea para ver la carta y ordenar</p>
+        <p class="text-sm text-stone-600">{{ instructionsText() }}</p>
+        
+        @if (showWifi() && wifiNetwork()) {
+          <div class="py-2 px-4 border border-black rounded-xl text-sm font-bold">
+            WiFi: {{ wifiNetwork() }} | Clave: {{ wifiPassword() || 'Libre' }}
+          </div>
+        }
+
         <div class="pt-4 border-t border-stone-300 text-xs font-bold text-stone-500 flex items-center justify-center gap-2">
-          <img src="assets/tavita-logo.svg" alt="Tavita" class="w-5 h-5 object-contain inline-block" />
           <span>POWERED BY TAVITA DIGITAL MENU</span>
         </div>
       </div>
@@ -349,13 +1017,13 @@
           <div class="border-2 border-black border-dashed p-6 rounded-2xl text-center space-y-4 print-card-break">
             <h3 class="text-xl font-black">{{ restaurantName() }}</h3>
             <div class="inline-block px-4 py-1 bg-black text-white font-black text-lg rounded-xl">
-              MESA {{ item.tableNum }}
+              {{ item.tableLabel }}
             </div>
             <div class="flex justify-center">
-              <img [src]="item.qrDataUrl" alt="QR" class="w-48 h-48" />
+              <img [src]="item.qrDataUrl" alt="QR" class="w-48 h-48 object-contain" />
             </div>
             <p class="text-xs font-bold">{{ callToAction() }}</p>
-            <p class="text-[10px] text-stone-500">Escanea con tu cámara para pedir</p>
+            <p class="text-[10px] text-stone-500">Escanea con tu cámara para ver la carta y pedir</p>
           </div>
         }
       </div>
