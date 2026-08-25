@@ -10,6 +10,14 @@ import { Order, OrderStatus } from '../../../core/models/models';
 export class OrdersComponent implements OnInit, OnDestroy {
   private readonly orderService = inject(OrderService);
   private orderSub?: Subscription;
+  private pollingTimer?: ReturnType<typeof setInterval> | ReturnType<typeof setTimeout>;
+  private pollCount = 0;
+  private pollCountdownTimer?: ReturnType<typeof setInterval>;
+
+  // Aggressive polling: 3s for the first 60s, then 12s
+  private readonly FAST_POLL_MS = 3_000;
+  private readonly SLOW_POLL_MS = 12_000;
+  private readonly FAST_POLL_DURATION_S = 60;
 
   readonly orders = signal<Order[]>([]);
   readonly loading = signal(true);
@@ -23,6 +31,10 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
   // Selected order for Ticket / Detail Modal
   readonly selectedTicketOrder = signal<Order | null>(null);
+
+  // New order alert banner
+  readonly showAlert = signal(false);
+  readonly alertCount = signal(0);
 
   // Live filtered orders
   readonly filteredOrders = computed(() => {
@@ -91,10 +103,16 @@ export class OrdersComponent implements OnInit, OnDestroy {
         this.playKitchenNotificationSound();
       }
     });
+
+    // Polling: starts fast (3s) then slows down (12s) after 60s
+    this.startPolling();
+    document.addEventListener('visibilitychange', this.onVisibilityChange);
   }
 
   ngOnDestroy(): void {
     this.orderSub?.unsubscribe();
+    this.stopPolling();
+    document.removeEventListener('visibilitychange', this.onVisibilityChange);
   }
 
   fetchOrders(): void {
@@ -108,6 +126,86 @@ export class OrdersComponent implements OnInit, OnDestroy {
       error: () => {
         this.loading.set(false);
       },
+    });
+  }
+
+  // --- Polling: detect new orders from other devices & fire alarm ---
+
+  private startPolling(): void {
+    this.pollCount = 0;
+    this.pollForNewOrders(); // Immediate first poll
+    this.scheduleNextPoll();
+
+    // Countdown to switch from fast → slow polling
+    this.pollCountdownTimer = setInterval(() => {
+      if (this.pollCount >= this.FAST_POLL_DURATION_S) {
+        this.stopPolling();
+        this.startSlowPolling();
+      }
+    }, 1_000);
+  }
+
+  private scheduleNextPoll(): void {
+    this.pollingTimer = setTimeout(() => {
+      this.pollForNewOrders();
+      this.scheduleNextPoll();
+    }, this.FAST_POLL_MS);
+  }
+
+  private startSlowPolling(): void {
+    this.pollCountdownTimer = undefined;
+    this.pollingTimer = setInterval(() => this.pollForNewOrders(), this.SLOW_POLL_MS);
+  }
+
+  private stopPolling(): void {
+    if (this.pollingTimer) {
+      clearTimeout(this.pollingTimer as ReturnType<typeof setTimeout>);
+      clearInterval(this.pollingTimer as ReturnType<typeof setInterval>);
+      this.pollingTimer = undefined;
+    }
+    if (this.pollCountdownTimer) {
+      clearInterval(this.pollCountdownTimer);
+      this.pollCountdownTimer = undefined;
+    }
+  }
+
+  private onVisibilityChange = (): void => {
+    if (document.hidden) {
+      this.stopPolling();
+    } else {
+      this.pollCount = 0;
+      this.stopPolling();
+      this.startPolling(); // Restart fast polling when page becomes visible again
+    }
+  };
+
+  dismissAlert(): void {
+    this.showAlert.set(false);
+  }
+
+  private pollForNewOrders(): void {
+    if (this.loading()) return;
+    this.orderService.listMine(undefined, true).subscribe({
+      next: (latest) => {
+        const current = this.orders();
+        const currentIds = new Set(current.map((o) => o.id));
+        const newOrders = latest.filter((o) => !currentIds.has(o.id));
+
+        this.orders.set(latest);
+
+        if (newOrders.length > 0) {
+          this.alertCount.set(newOrders.length);
+          this.showAlert.set(true);
+          setTimeout(() => this.showAlert.set(false), 6_000);
+
+          if (this.soundEnabled()) {
+            this.playKitchenNotificationSound();
+          }
+        }
+      },
+      error: () => {
+        // Auth expired or network down — user will see stale data but no crash
+      }
     });
   }
 
@@ -149,37 +247,53 @@ export class OrdersComponent implements OnInit, OnDestroy {
     this.soundEnabled.update((s) => !s);
   }
 
-  // Synthesized Web Audio chime for kitchen alerts
+  // Synthesized Web Audio chime for kitchen alerts (~5 seconds)
   private playKitchenNotificationSound(): void {
     try {
       const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       if (!AudioCtx) return;
       const ctx = new AudioCtx();
-      
-      const now = ctx.currentTime;
-      const osc1 = ctx.createOscillator();
-      const osc2 = ctx.createOscillator();
-      const gain = ctx.createGain();
 
-      osc1.type = 'sine';
-      osc1.frequency.setValueAtTime(587.33, now); // D5
-      osc1.frequency.setValueAtTime(880.00, now + 0.12); // A5
+      const CHIME_INTERVAL_MS = 800;
+      const TOTAL_DURATION_MS = 5000;
+      const CHIMES = Math.ceil(TOTAL_DURATION_MS / CHIME_INTERVAL_MS);
 
-      osc2.type = 'triangle';
-      osc2.frequency.setValueAtTime(440.00, now);
-      osc2.frequency.setValueAtTime(659.25, now + 0.12);
+      const playChime = (index: number) => {
+        const t = ctx.currentTime;
 
-      gain.gain.setValueAtTime(0.3, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+        // First tone: D5
+        const osc1 = ctx.createOscillator();
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(587.33, t);
 
-      osc1.connect(gain);
-      osc2.connect(gain);
-      gain.connect(ctx.destination);
+        // Second tone: A5 (rises up for kitchen bell feel)
+        const osc2 = ctx.createOscillator();
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(440.00, t);
+        osc2.frequency.setValueAtTime(659.25, t + 0.06);
 
-      osc1.start(now);
-      osc2.start(now);
-      osc1.stop(now + 0.6);
-      osc2.stop(now + 0.6);
+        const gain = ctx.createGain();
+        // Slightly louder on first two chimes for attention
+        const peakVol = index < 2 ? 0.35 : 0.25;
+        gain.gain.setValueAtTime(peakVol, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc1.start(t);
+        osc2.start(t);
+        osc1.stop(t + 0.35);
+        osc2.stop(t + 0.35);
+      };
+
+      for (let i = 0; i < CHIMES; i++) {
+        setTimeout(() => playChime(i), i * CHIME_INTERVAL_MS);
+      }
+
+      // Close the AudioContext after all chimes finish
+      setTimeout(() => ctx.close(), TOTAL_DURATION_MS + 200);
     } catch {
       // Audio context might be restricted before interaction
     }

@@ -13,6 +13,27 @@
         </span>
       </div>
       <p class="text-stone-500 text-sm mt-0.5">Gestión de comandas de cocina y despacho de mesas en tiempo real.</p>
+
+      <!-- ALERTA DE PEDIDO NUEVO -->
+      @if (showAlert()) {
+        <div
+          class="mt-3 bg-emerald-500 text-white rounded-2xl px-5 py-3 flex items-center justify-between gap-3 shadow-lg shadow-emerald-500/30 anim-fade-in-scale"
+        >
+          <div class="flex items-center gap-3">
+            <span class="text-2xl animate-bounce">🔔</span>
+            <span class="font-extrabold text-sm">
+              {{ alertCount() === 1 ? '¡Nuevo pedido recibido!' : '¡' + alertCount() + ' pedidos nuevos recibidos!' }}
+            </span>
+          </div>
+          <button
+            type="button"
+            (click)="dismissAlert()"
+            class="text-white/70 hover:text-white text-lg font-bold transition-colors px-2 py-1"
+          >
+            ✕
+          </button>
+        </div>
+      }
     </div>
 
     <!-- Quick Actions -->

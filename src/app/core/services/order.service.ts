@@ -95,9 +95,11 @@ export class OrderService {
     );
   }
 
-  listMine(status?: OrderStatus): Observable<Order[]> {
+  listMine(status?: OrderStatus, raw = false): Observable<Order[]> {
     const path = status ? `/orders?status=${status}` : '/orders';
-    return this.api.get<Order[]>(path).pipe(
+    const req = this.api.get<Order[]>(path);
+    if (raw) return req;
+    return req.pipe(
       catchError(() => {
         const orders = this.getStoredOrders();
         if (status) {
