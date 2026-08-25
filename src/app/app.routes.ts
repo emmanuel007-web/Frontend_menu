@@ -3,11 +3,7 @@ import { authGuard } from './core/guards/auth.guard';
 import { guestGuard } from './core/guards/guest.guard';
 
 export const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: '/explorar' },
-  {
-    path: 'explorar',
-    loadComponent: () => import('./features/explore/explore.component').then((m) => m.ExploreComponent),
-  },
+  { path: '', pathMatch: 'full', redirectTo: '/login' },
   {
     path: 'login',
     canActivate: [guestGuard],
