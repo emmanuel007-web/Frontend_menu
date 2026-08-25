@@ -102,6 +102,39 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div class="space-y-1.5">
+          <label class="block text-sm font-semibold text-stone-700">⏱️ Tiempo estimado de preparación / entrega</label>
+          <input
+            type="text"
+            formControlName="estimatedPrepTime"
+            placeholder="Ej: 20-30 min, 15-25 min"
+            class="w-full rounded-xl border border-stone-200 px-4 py-3 focus:outline-none input-glow transition-all duration-200 bg-stone-50/50 hover:bg-white"
+          />
+          <div class="flex flex-wrap gap-1.5 pt-1">
+            @for (preset of ['10-20 min', '15-25 min', '20-30 min', '30-45 min']; track preset) {
+              <button
+                type="button"
+                (click)="form.patchValue({ estimatedPrepTime: preset })"
+                class="px-2.5 py-1 text-[11px] font-bold rounded-lg border border-stone-200 bg-stone-100 hover:bg-stone-200 text-stone-700 transition-colors"
+              >
+                {{ preset }}
+              </button>
+            }
+          </div>
+        </div>
+        <div class="space-y-1.5">
+          <label class="block text-sm font-semibold text-stone-700">📄 NIT / Identificación Fiscal (para facturas)</label>
+          <input
+            type="text"
+            formControlName="taxId"
+            placeholder="Ej: NIT: 901.458.912-4"
+            class="w-full rounded-xl border border-stone-200 px-4 py-3 focus:outline-none input-glow transition-all duration-200 bg-stone-50/50 hover:bg-white"
+          />
+          <p class="text-[11px] text-stone-400">Aparecerá en el encabezado de las facturas descargables</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div class="space-y-1.5">
           <label class="block text-sm font-semibold text-stone-700">Teléfono</label>
           <input type="text" formControlName="phone" class="w-full rounded-xl border border-stone-200 px-4 py-3 focus:outline-none input-glow transition-all duration-200 bg-stone-50/50 hover:bg-white" />
         </div>

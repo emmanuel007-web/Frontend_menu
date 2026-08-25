@@ -27,6 +27,8 @@ export class RestaurantService {
       whatsapp: DEMO_PUBLIC_MENU.restaurant.whatsapp,
       instagram: DEMO_PUBLIC_MENU.restaurant.instagram,
       facebook: DEMO_PUBLIC_MENU.restaurant.facebook,
+      taxId: DEMO_PUBLIC_MENU.restaurant.taxId || 'NIT: 901.458.912-4',
+      estimatedPrepTime: DEMO_PUBLIC_MENU.restaurant.estimatedPrepTime || '20-30 min',
       active: true,
       open: true,
       createdAt: new Date().toISOString(),
@@ -64,6 +66,8 @@ export class RestaurantService {
           whatsapp: request.whatsapp ?? null,
           instagram: request.instagram ?? null,
           facebook: request.facebook ?? null,
+          taxId: request.taxId ?? curr.taxId ?? null,
+          estimatedPrepTime: request.estimatedPrepTime ?? curr.estimatedPrepTime ?? '20-30 min',
           updatedAt: new Date().toISOString(),
         };
         this.saveStored(updated);

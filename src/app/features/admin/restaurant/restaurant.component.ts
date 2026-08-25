@@ -30,6 +30,8 @@ export class RestaurantComponent implements OnInit {
     whatsapp: [''],
     instagram: [''],
     facebook: [''],
+    taxId: [''],
+    estimatedPrepTime: ['20-30 min', [Validators.required]],
   });
 
   ngOnInit(): void {
@@ -45,6 +47,8 @@ export class RestaurantComponent implements OnInit {
           whatsapp: restaurant.whatsapp ?? '',
           instagram: restaurant.instagram ?? '',
           facebook: restaurant.facebook ?? '',
+          taxId: restaurant.taxId ?? '',
+          estimatedPrepTime: restaurant.estimatedPrepTime ?? '20-30 min',
         });
         this.loading.set(false);
       },

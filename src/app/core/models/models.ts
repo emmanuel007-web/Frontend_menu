@@ -36,6 +36,8 @@ export interface Restaurant {
   whatsapp: string | null;
   instagram: string | null;
   facebook: string | null;
+  taxId?: string | null;
+  estimatedPrepTime?: string | null;
   active: boolean;
   open: boolean;
   createdAt: string;
@@ -119,6 +121,8 @@ export interface RestaurantRequest {
   whatsapp?: string | null;
   instagram?: string | null;
   facebook?: string | null;
+  taxId?: string | null;
+  estimatedPrepTime?: string | null;
   active?: boolean | null;
 }
 
@@ -175,6 +179,8 @@ export interface PublicMenu {
     whatsapp: string | null;
     instagram: string | null;
     facebook: string | null;
+    taxId?: string | null;
+    estimatedPrepTime?: string | null;
     open: boolean;
   };
   categories: Array<{
@@ -301,6 +307,7 @@ export interface Order {
   notes: string | null;
   status: OrderStatus;
   totalAmount: number;
+  estimatedPrepTime?: string | null;
   createdAt: string;
   updatedAt: string;
   items: OrderItem[];

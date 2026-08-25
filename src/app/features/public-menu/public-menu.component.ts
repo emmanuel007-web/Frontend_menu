@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MenuService } from '../../core/services/menu.service';
 import { OrderService } from '../../core/services/order.service';
+import { InvoiceService } from '../../core/services/invoice.service';
 import { CartItem, Order, OrderType, PublicMenu } from '../../core/models/models';
 
 interface DishModalItem {
@@ -22,6 +23,7 @@ interface DishModalItem {
 export class PublicMenuComponent {
   private readonly menuService = inject(MenuService);
   private readonly orderService = inject(OrderService);
+  private readonly invoiceService = inject(InvoiceService);
   private readonly route = inject(ActivatedRoute);
   private readonly fb = inject(FormBuilder);
 
@@ -48,6 +50,10 @@ export class PublicMenuComponent {
   readonly orderSuccess = signal<Order | null>(null);
   readonly orderErrorMessage = signal<string | null>(null);
 
+  // Invoice view / download modal
+  readonly showInvoiceModal = signal(false);
+  readonly invoiceOrder = signal<Order | null>(null);
+
   // Order Type: DINE_IN, DELIVERY, TAKEAWAY
   readonly orderType = signal<OrderType>('DINE_IN');
   readonly selectedTablePreset = signal<string>('1');
@@ -70,6 +76,11 @@ export class PublicMenuComponent {
 
   /** El dueño puede cerrar el restaurante: se bloquea todo pedido. */
   readonly isClosed = computed(() => this.menu()?.restaurant.open === false);
+
+  /** Tiempo estimado de preparación configurado por el restaurante */
+  readonly estimatedPrepTime = computed(
+    () => this.menu()?.restaurant.estimatedPrepTime || '20-30 min'
+  );
 
   // Filtered categories & products based on search & tags
   readonly filteredCategories = computed(() => {
@@ -313,11 +324,13 @@ export class PublicMenuComponent {
     const formVal = this.orderForm.value;
     const name = formVal.customerName || 'Cliente';
     const typeLabel = this.orderType() === 'DINE_IN' ? `📍 Mesa: ${formVal.tableNumber}` : this.orderType() === 'DELIVERY' ? `🛵 Domicilio: ${formVal.deliveryAddress || 'Dirección no indicada'}` : '🛍️ Para Llevar';
+    const prepTime = this.estimatedPrepTime();
 
     let message = `¡Hola *${restaurant?.name || 'Restaurante'}*! 🍽️\n\n`;
     message += `Deseo realizar el siguiente pedido:\n`;
     message += `👤 *Cliente:* ${name}\n`;
     message += `${typeLabel}\n`;
+    message += `⏱️ *Tiempo estimado de preparación:* ${prepTime}\n`;
     if (formVal.customerPhone) {
       message += `📞 *Teléfono:* ${formVal.customerPhone}\n`;
     }
@@ -360,11 +373,65 @@ export class PublicMenuComponent {
       })),
     };
     const targetSlug = this.slug().trim() || this.menu()?.restaurant.slug || 'negobistro-gourmet';
-    this.orderService.createPublicOrder(targetSlug, payload).subscribe();
+    this.orderService.createPublicOrder(targetSlug, payload).subscribe({
+      next: (savedOrder) => {
+        this.orderSuccess.set(savedOrder);
+      },
+    });
   }
 
   closeSuccessModal(): void {
     this.orderSuccess.set(null);
+  }
+
+  // Invoice Actions
+  private getInvoiceRestaurantInfo() {
+    const r = this.menu()?.restaurant;
+    return {
+      name: r?.name || 'Restaurante Gourmet',
+      slug: r?.slug || 'restaurante',
+      logoUrl: r?.logoUrl,
+      phone: r?.phone,
+      whatsapp: r?.whatsapp,
+      address: r?.address,
+      taxId: r?.taxId || 'NIT: 901.458.912-4',
+      estimatedPrepTime: this.estimatedPrepTime(),
+    };
+  }
+
+  openInvoiceModal(order?: Order): void {
+    const targetOrder = order || this.orderSuccess();
+    if (targetOrder) {
+      this.invoiceOrder.set(targetOrder);
+      this.showInvoiceModal.set(true);
+    }
+  }
+
+  closeInvoiceModal(): void {
+    this.showInvoiceModal.set(false);
+  }
+
+  downloadInvoice(order?: Order): void {
+    const targetOrder = order || this.invoiceOrder() || this.orderSuccess();
+    if (targetOrder) {
+      this.invoiceService.downloadInvoice(targetOrder, this.getInvoiceRestaurantInfo());
+    }
+  }
+
+  printInvoice(order?: Order): void {
+    const targetOrder = order || this.invoiceOrder() || this.orderSuccess();
+    if (targetOrder) {
+      this.invoiceService.printInvoice(targetOrder, this.getInvoiceRestaurantInfo());
+    }
+  }
+
+  calculateEstimatedReadyTime(createdAtIso?: string): string {
+    if (!createdAtIso) return '';
+    return this.invoiceService.calculateReadyTime(createdAtIso, this.estimatedPrepTime());
+  }
+
+  formatDate(isoString: string): string {
+    return this.invoiceService.formatDateTime(isoString);
   }
 
   onImageError(event: Event): void {

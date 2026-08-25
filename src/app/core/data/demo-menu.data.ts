@@ -11,6 +11,8 @@ export const DEMO_PUBLIC_MENU: PublicMenu = {
     whatsapp: '573009876543',
     instagram: 'negobistro.oficial',
     facebook: 'negobistro.rest',
+    taxId: 'NIT: 901.458.912-4',
+    estimatedPrepTime: '20-30 min',
     open: true,
   },
   categories: [

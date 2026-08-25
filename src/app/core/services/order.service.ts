@@ -79,6 +79,7 @@ export class OrderService {
           notes: payload.notes ?? null,
           status: 'PENDING',
           totalAmount: total,
+          estimatedPrepTime: DEMO_PUBLIC_MENU.restaurant.estimatedPrepTime || '20-30 min',
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           items,
