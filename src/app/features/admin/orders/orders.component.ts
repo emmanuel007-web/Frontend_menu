@@ -10,6 +10,10 @@ import { Order, OrderStatus } from '../../../core/models/models';
 export class OrdersComponent implements OnInit, OnDestroy {
   private readonly orderService = inject(OrderService);
   private orderSub?: Subscription;
+  private pollingTimer?: ReturnType<typeof setInterval>;
+
+  private readonly POLL_INTERVAL_MS = 12_000;
+  private readonly visiblePageHandler = () => this.onVisibilityChange();
 
   readonly orders = signal<Order[]>([]);
   readonly loading = signal(true);
@@ -91,10 +95,16 @@ export class OrdersComponent implements OnInit, OnDestroy {
         this.playKitchenNotificationSound();
       }
     });
+
+    // Polling: fetch new orders periodically when the page is visible
+    this.startPolling();
+    document.addEventListener('visibilitychange', this.visiblePageHandler);
   }
 
   ngOnDestroy(): void {
     this.orderSub?.unsubscribe();
+    this.stopPolling();
+    document.removeEventListener('visibilitychange', this.visiblePageHandler);
   }
 
   fetchOrders(): void {
@@ -108,6 +118,48 @@ export class OrdersComponent implements OnInit, OnDestroy {
       error: () => {
         this.loading.set(false);
       },
+    });
+  }
+
+  // --- Polling: detect new orders from other devices & fire alarm ---
+
+  private startPolling(): void {
+    this.pollingTimer = setInterval(() => this.pollForNewOrders(), this.POLL_INTERVAL_MS);
+  }
+
+  private stopPolling(): void {
+    if (this.pollingTimer) {
+      clearInterval(this.pollingTimer);
+      this.pollingTimer = undefined;
+    }
+  }
+
+  private onVisibilityChange(): void {
+    if (document.hidden) {
+      this.stopPolling();
+    } else {
+      this.pollForNewOrders(); // Immediately refresh when the tab comes back
+      this.startPolling();
+    }
+  }
+
+  private pollForNewOrders(): void {
+    if (this.loading()) return;
+    this.orderService.listMine().subscribe({
+      next: (latest) => {
+        const current = this.orders();
+        const currentIds = new Set(current.map((o) => o.id));
+        const newOrders = latest.filter((o) => !currentIds.has(o.id));
+
+        this.orders.set(latest);
+
+        if (newOrders.length > 0 && this.soundEnabled()) {
+          for (let i = 0; i < newOrders.length; i++) {
+            setTimeout(() => this.playKitchenNotificationSound(), i * 400);
+          }
+        }
+      },
+      error: () => {} // Silent — polling failures are transient
     });
   }
 
