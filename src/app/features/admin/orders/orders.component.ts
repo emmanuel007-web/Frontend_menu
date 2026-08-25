@@ -154,9 +154,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
         this.orders.set(latest);
 
         if (newOrders.length > 0 && this.soundEnabled()) {
-          for (let i = 0; i < newOrders.length; i++) {
-            setTimeout(() => this.playKitchenNotificationSound(), i * 400);
-          }
+          this.playKitchenNotificationSound();
         }
       },
       error: () => {} // Silent — polling failures are transient
@@ -201,37 +199,53 @@ export class OrdersComponent implements OnInit, OnDestroy {
     this.soundEnabled.update((s) => !s);
   }
 
-  // Synthesized Web Audio chime for kitchen alerts
+  // Synthesized Web Audio chime for kitchen alerts (~5 seconds)
   private playKitchenNotificationSound(): void {
     try {
       const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       if (!AudioCtx) return;
       const ctx = new AudioCtx();
-      
-      const now = ctx.currentTime;
-      const osc1 = ctx.createOscillator();
-      const osc2 = ctx.createOscillator();
-      const gain = ctx.createGain();
 
-      osc1.type = 'sine';
-      osc1.frequency.setValueAtTime(587.33, now); // D5
-      osc1.frequency.setValueAtTime(880.00, now + 0.12); // A5
+      const CHIME_INTERVAL_MS = 800;
+      const TOTAL_DURATION_MS = 5000;
+      const CHIMES = Math.ceil(TOTAL_DURATION_MS / CHIME_INTERVAL_MS);
 
-      osc2.type = 'triangle';
-      osc2.frequency.setValueAtTime(440.00, now);
-      osc2.frequency.setValueAtTime(659.25, now + 0.12);
+      const playChime = (index: number) => {
+        const t = ctx.currentTime;
 
-      gain.gain.setValueAtTime(0.3, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+        // First tone: D5
+        const osc1 = ctx.createOscillator();
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(587.33, t);
 
-      osc1.connect(gain);
-      osc2.connect(gain);
-      gain.connect(ctx.destination);
+        // Second tone: A5 (rises up for kitchen bell feel)
+        const osc2 = ctx.createOscillator();
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(440.00, t);
+        osc2.frequency.setValueAtTime(659.25, t + 0.06);
 
-      osc1.start(now);
-      osc2.start(now);
-      osc1.stop(now + 0.6);
-      osc2.stop(now + 0.6);
+        const gain = ctx.createGain();
+        // Slightly louder on first two chimes for attention
+        const peakVol = index < 2 ? 0.35 : 0.25;
+        gain.gain.setValueAtTime(peakVol, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc1.start(t);
+        osc2.start(t);
+        osc1.stop(t + 0.35);
+        osc2.stop(t + 0.35);
+      };
+
+      for (let i = 0; i < CHIMES; i++) {
+        setTimeout(() => playChime(i), i * CHIME_INTERVAL_MS);
+      }
+
+      // Close the AudioContext after all chimes finish
+      setTimeout(() => ctx.close(), TOTAL_DURATION_MS + 200);
     } catch {
       // Audio context might be restricted before interaction
     }
